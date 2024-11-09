@@ -26,6 +26,12 @@ import { document } from '@keystone-6/fields-document'
 // the generated types from '.keystone/types'
 import { type Lists } from '.keystone/types'
 
+const IsNotNull = {
+  read: true,
+  update: true,
+  create: true,
+};
+
 export const lists = {
   User: list({
     // WARNING
@@ -38,13 +44,14 @@ export const lists = {
     fields: {
       // by adding isRequired, we enforce that every User should have a name
       //   if no name is provided, an error will be displayed
-      name: text({ validation: { isRequired: true } }),
+      name: text({ validation: { isRequired: true }, graphql: { isNonNull: IsNotNull } }),
 
       email: text({
         validation: { isRequired: true },
         // by adding isIndexed: 'unique', we're saying that no user can have the same
         // email as another user - this may or may not be a good idea for your project
         isIndexed: 'unique',
+        graphql: { isNonNull: IsNotNull },
       }),
 
       password: password({ validation: { isRequired: true } }),

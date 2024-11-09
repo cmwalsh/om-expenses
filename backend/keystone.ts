@@ -23,6 +23,9 @@ export default withAuth(
       provider: 'sqlite',
       url: 'file:./keystone.db',
     },
+    server: {
+      cors: { origin: ['http://localhost:3001'], credentials: true },
+    },
     lists,
     session,
   })

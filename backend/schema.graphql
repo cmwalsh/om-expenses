@@ -3,8 +3,8 @@
 
 type User {
   id: ID!
-  name: String
-  email: String
+  name: String!
+  email: String!
   password: PasswordState
   posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   postsCount(where: PostWhereInput! = {}): Int
@@ -102,8 +102,8 @@ enum OrderDirection {
 }
 
 input UserUpdateInput {
-  name: String
-  email: String
+  name: String!
+  email: String!
   password: String
   posts: PostRelateToManyForUpdateInput
   createdAt: DateTime
@@ -122,8 +122,8 @@ input UserUpdateArgs {
 }
 
 input UserCreateInput {
-  name: String
-  email: String
+  name: String! = ""
+  email: String! = ""
   password: String
   posts: PostRelateToManyForCreateInput
   createdAt: DateTime
@@ -295,8 +295,8 @@ type UserAuthenticationWithPasswordFailure {
 }
 
 input CreateInitialUserInput {
-  name: String
-  email: String
+  name: String! = ""
+  email: String! = ""
   password: String
 }
 
