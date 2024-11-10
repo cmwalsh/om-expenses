@@ -1,11 +1,14 @@
 {
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/release-24.05";
+  inputs.flake-utils.url = "github:numtide/flake-utils";
   inputs.prisma-utils.url = "github:VanCoding/nix-prisma-utils";
 
   outputs =
-    { nixpkgs, prisma-utils, ... }:
+    { nixpkgs, flake-utils, prisma-utils, ... }:
+    flake-utils.lib.eachDefaultSystem (system:
+
     let
-      pkgs = import nixpkgs { system = "x86_64-linux"; };
+      pkgs = import nixpkgs { inherit system; };
       prisma =
         (prisma-utils.lib.prisma-factory {
           nixpkgs = pkgs;
@@ -17,12 +20,14 @@
           ./package-lock.json; # <--- path to our package-lock.json file that contains the version of prisma-engines
     in
     {
-      devShells.x86_64-linux.default = pkgs.mkShell {
-        shellHook = prisma.shellHook;
+      devShell = pkgs.mkShell {
+        # shellHook = prisma.shellHook;
 
         buildInputs = with pkgs; [
           nodejs_22
+          nixpkgs-fmt
+          prisma-engines
         ];
       };
-    };
+    });
 }
