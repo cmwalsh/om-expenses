@@ -1,46 +1,33 @@
-import {
-  useSubmission,
-  type RouteSectionProps
-} from "@solidjs/router";
-import { GraphQLClient } from 'graphql-request';
+import { useNavigate, type RouteSectionProps } from "@solidjs/router";
 import { createSignal } from "solid-js";
-import { loginOrRegister } from "~/lib";
-import { getSdk } from "~/lib/gql";
-
-async function getUser(email: string) {
-  const client = new GraphQLClient('http://localhost:3000/api/graphql');
-
-  const sdk = getSdk(client);
-
-  const data = await sdk.GetUsers({});
-  if (!data.data.users) return null;
-
-  const user = data.data.users.find(u => u.email === email);
-  if (!user) return null;
-
-  return user;
-}
+import { AppService } from "~/lib";
 
 export default function Login(props: RouteSectionProps) {
-  const loggingIn = useSubmission(loginOrRegister);
+  const navigate = useNavigate();
 
   const [email, setEmail] = createSignal('');
   const [password, setPassword] = createSignal('');
 
   async function doLogin() {
-    const user = await getUser(email());
+    try {
+      const user = await AppService.get().login(email(), password());
 
-    if (user) {
-      alert(`Hello ${user.name}`);
-    } else {
-      alert("Not found");
+      if (user) {
+        navigate('/');
+      } else {
+        alert("User not found");
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        alert(err.message);
+      }
     }
   }
 
   return (
     <main>
       <h1>Login</h1>
-      <form action={loginOrRegister} method="post">
+      <form on:submit={(e) => e.preventDefault()}>
         <input type="hidden" name="redirectTo" value={props.params.redirectTo ?? "/"} />
         <fieldset>
           <legend>Login or Register?</legend>

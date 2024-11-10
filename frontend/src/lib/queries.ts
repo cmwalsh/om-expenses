@@ -1,4 +1,4 @@
-import { GraphQLClient, gql } from 'graphql-request';
+import { gql } from 'graphql-request';
 
 gql`
   query GetUsers { 
@@ -13,6 +13,22 @@ gql`
     posts {
       id
       title
+    }
+  }
+
+  mutation AuthenticateUserWithPassword($email: String!, $password: String!) {
+    authenticateUserWithPassword(email: $email, password: $password) {
+      ... on UserAuthenticationWithPasswordSuccess {
+        sessionToken
+        item {
+          id
+          name
+          email
+        }
+      }
+      ... on UserAuthenticationWithPasswordFailure {
+        message
+      }
     }
   }
 `;

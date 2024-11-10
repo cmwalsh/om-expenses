@@ -711,6 +711,14 @@ export type GetPostsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetPostsQuery = { __typename?: 'Query', posts?: Array<{ __typename?: 'Post', id: string, title?: string | null }> | null };
 
+export type AuthenticateUserWithPasswordMutationVariables = Exact<{
+  email: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+}>;
+
+
+export type AuthenticateUserWithPasswordMutation = { __typename?: 'Mutation', authenticateUserWithPassword?: { __typename?: 'UserAuthenticationWithPasswordFailure', message: string } | { __typename?: 'UserAuthenticationWithPasswordSuccess', sessionToken: string, item: { __typename?: 'User', id: string, name: string, email: string } } | null };
+
 
 export const GetUsersDocument = gql`
     query GetUsers {
@@ -729,6 +737,23 @@ export const GetPostsDocument = gql`
   }
 }
     `;
+export const AuthenticateUserWithPasswordDocument = gql`
+    mutation AuthenticateUserWithPassword($email: String!, $password: String!) {
+  authenticateUserWithPassword(email: $email, password: $password) {
+    ... on UserAuthenticationWithPasswordSuccess {
+      sessionToken
+      item {
+        id
+        name
+        email
+      }
+    }
+    ... on UserAuthenticationWithPasswordFailure {
+      message
+    }
+  }
+}
+    `;
 
 export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string, operationType?: string, variables?: any) => Promise<T>;
 
@@ -736,6 +761,7 @@ export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, str
 const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationType, _variables) => action();
 const GetUsersDocumentString = print(GetUsersDocument);
 const GetPostsDocumentString = print(GetPostsDocument);
+const AuthenticateUserWithPasswordDocumentString = print(AuthenticateUserWithPasswordDocument);
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
     GetUsers(variables?: GetUsersQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GetUsersQuery; errors?: GraphQLError[]; extensions?: unknown; headers: Headers; status: number; }> {
@@ -743,6 +769,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     GetPosts(variables?: GetPostsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GetPostsQuery; errors?: GraphQLError[]; extensions?: unknown; headers: Headers; status: number; }> {
         return withWrapper((wrappedRequestHeaders) => client.rawRequest<GetPostsQuery>(GetPostsDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetPosts', 'query', variables);
+    },
+    AuthenticateUserWithPassword(variables: AuthenticateUserWithPasswordMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: AuthenticateUserWithPasswordMutation; errors?: GraphQLError[]; extensions?: unknown; headers: Headers; status: number; }> {
+        return withWrapper((wrappedRequestHeaders) => client.rawRequest<AuthenticateUserWithPasswordMutation>(AuthenticateUserWithPasswordDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'AuthenticateUserWithPassword', 'mutation', variables);
     }
   };
 }

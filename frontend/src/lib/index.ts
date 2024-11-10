@@ -1,53 +1,43 @@
-import { action, query, redirect } from "@solidjs/router";
-// import { db } from "./db";
-// import {
-//   getSession,
-//   login,
-//   logout as logoutSession,
-//   register,
-//   validatePassword,
-//   validateUsername
-// } from "./server";
+import { ApiService } from './api';
+import { SessionUser } from './common';
+import { SessionService } from './session';
 
-export const getUser = query(async () => {
-  // "use server";
-  // try {
-  //   const session = await getSession();
-  //   const userId = session.data.userId;
-  //   if (userId === undefined) throw new Error("User not found");
-  //   const user = await db.user.findUnique({ where: { id: userId } });
-  //   if (!user) throw new Error("User not found");
-  //   return { id: user.id, username: user.username };
-  // } catch {
-  //   await logoutSession();
-  //   throw redirect("/login");
-  // }
-}, "user");
+export class AppService {
+  private static appService?: AppService;
 
-export const loginOrRegister = action(async (formData: FormData) => {
-  // "use server";
-  // const username = String(formData.get("username"));
-  // const password = String(formData.get("password"));
-  // const loginType = String(formData.get("loginType"));
-  // let error = validateUsername(username) || validatePassword(password);
-  // if (error) return new Error(error);
+  public static get() {
+    if (this.appService) return this.appService;
+    return this.appService = new AppService();
+  }
 
-  // try {
-  //   const user = await (loginType !== "login"
-  //     ? register(username, password)
-  //     : login(username, password));
-  //   const session = await getSession();
-  //   await session.update(d => {
-  //     d.userId = user.id;
-  //   });
-  // } catch (err) {
-  //   return err as Error;
-  // }
-  // return redirect("/");
-});
+  public api;
 
-export const logout = action(async () => {
-  // "use server";
-  // await logoutSession();
-  // return redirect("/login");
-});
+  constructor() {
+    console.log('AppService init');
+    this.api = this.newApiService();
+  }
+
+  public getCurrentUser(): SessionUser | null {
+    const session = SessionService.getSession();
+
+    return session?.sessionUser ?? null;
+  }
+
+  public async login(email: string, password: string) {
+    const api = new ApiService();
+    const sessionUser = await api.login(email, password);
+
+    SessionService.newSession(sessionUser);
+
+    return sessionUser;
+  }
+
+  public logout() {
+    SessionService.clearSession();
+  }
+
+  private newApiService() {
+    const user = this.getCurrentUser();
+    return new ApiService(user?.sessionToken);
+  }
+}
