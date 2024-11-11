@@ -1,0 +1,37 @@
+@import "bootstrap/scss/bootstrap";
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background-color: #f5f5f5;
+}
+
+.container {
+  background: $body-bg;
+  box-shadow: 0 0 10px $gray-500;
+  min-height: 100vh;
+}
+
+header {
+  padding: 1rem 0;
+
+  h1 {
+    margin: 0;
+  }
+}
+
+.navbar {
+    border-top: solid 1px $border-color;
+    border-bottom: solid 1px $border-color;
+}
+
+.card {
+  box-shadow: 0 0 10px $gray-500;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}

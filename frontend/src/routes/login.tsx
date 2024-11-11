@@ -26,33 +26,59 @@ export default function Login(props: RouteSectionProps) {
 
   return (
     <main>
-      <h1>Login</h1>
-      <form on:submit={(e) => e.preventDefault()}>
-        <input type="hidden" name="redirectTo" value={props.params.redirectTo ?? "/"} />
-        <fieldset>
-          <legend>Login or Register?</legend>
-          <label>
-            <input type="radio" name="loginType" value="login" checked={true} /> Login
-          </label>
-          <label>
-            <input type="radio" name="loginType" value="register" /> Register
-          </label>
-        </fieldset>
-        <div>
-          <label for="username-input">Username</label>
-          <input name="username" placeholder="username" value={email()} on:change={e => setEmail(e.target.value)} />
+
+      <div class="d-flex justify-content-center align-items-center">
+        <div class="col-12 col-md-6 col-lg-4">
+
+          <form class="card login-form mt-3" on:submit={(e) => e.preventDefault()}>
+            <div class="card-body">
+              <fieldset>
+                <legend class="text-center mb-3">Login</legend>
+
+                <div class="form-group">
+                  <label for="inputEmail">Email address</label>
+                  <input
+                    type="email"
+                    id="inputEmail"
+                    class="form-control"
+                    placeholder="Email address"
+                    required
+                    autofocus
+                    value={email()}
+                    on:change={e => setEmail(e.target.value)}
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label for="inputPassword">Password</label>
+                  <input
+                    type="password"
+                    id="inputPassword"
+                    class="form-control"
+                    placeholder="Password"
+                    required
+                    value={password()}
+                    on:change={e => setPassword(e.target.value)}
+                  />
+                </div>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                  <button
+                    class="btn btn-primary"
+                    type="submit"
+                    on:click={doLogin}
+                  >
+                    Login
+                  </button>
+                </div>
+
+              </fieldset>
+            </div>
+          </form>
+
         </div>
-        <div>
-          <label for="password-input">Password</label>
-          <input name="password" type="password" placeholder="password" value={password()} on:change={e => setPassword(e.target.value)} />
-        </div>
-        <button type="submit" on:click={doLogin}>Login</button>
-        {/* <Show when={loggingIn.result}>
-          <p style={{ color: "red" }} role="alert" id="error-message">
-            {loggingIn.result!.message}
-          </p>
-        </Show> */}
-      </form>
-    </main>
+      </div>
+
+    </main >
   );
 }
