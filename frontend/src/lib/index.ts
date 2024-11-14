@@ -24,10 +24,12 @@ export class AppService {
   }
 
   public async login(email: string, password: string) {
-    const api = new ApiService();
-    const sessionUser = await api.login(email, password);
+    const sessionUser = await this.api.login(email, password);
 
     SessionService.newSession(sessionUser);
+
+    // Need to create a new API for the granted session token
+    this.api = this.newApiService();
 
     return sessionUser;
   }
