@@ -20,6 +20,10 @@ export default function App() {
               </li>
 
               <li class="nav-item">
+                <a class="nav-link active" href="/users">Users</a>
+              </li>
+
+              <li class="nav-item">
                 <a class="nav-link active" href="/about">About</a>
               </li>
             </ul>

@@ -5,7 +5,7 @@
 // Keystone imports the default export of this file, expecting a Keystone configuration object
 //   you can find out more at https://keystonejs.com/docs/apis/config
 
-import { config } from '@keystone-6/core'
+import { config, graphql } from '@keystone-6/core'
 
 // to keep this file tidy, we define our schema in a different file
 import { lists } from './schema'
@@ -13,6 +13,37 @@ import { lists } from './schema'
 // authentication is configured separately here too, but you might move this elsewhere
 // when you write your list-level access control functions, as they typically rely on session data
 import { withAuth, session } from './auth'
+
+import { Context } from ".keystone/types";
+import { hello } from 'common';
+
+const GraphQLHelper = {
+  String: () => graphql.arg({ type: graphql.nonNull(graphql.String) }),
+};
+
+export const AddUserToTripInput = graphql.inputObject({
+  name: "AddUserToTripInput",
+  fields: {
+    userId: GraphQLHelper.String(),
+  },
+});
+
+export interface AddUserToTripResult {
+  message: string;
+}
+
+export const AddUserToTripResult = graphql.object<AddUserToTripResult>()({
+  name: "AddUserToTripResult",
+  fields: {
+    message: graphql.field({
+      type: graphql.String,
+      resolve({ message }, args, context: Context) {
+        return message;
+      },
+    }),
+  },
+});
+
 
 export default withAuth(
   config({
@@ -28,5 +59,24 @@ export default withAuth(
     },
     lists,
     session,
+    graphql: {
+      extendGraphqlSchema: graphql.extend((base) => ([Plugin(base)]))
+    },
   })
 )
+
+function Plugin(base: graphql.BaseSchemaMeta) {
+  return {
+    mutation: {
+      addUserToTrip: graphql.field({
+        type: AddUserToTripResult,
+        args: {
+          data: graphql.arg({ type: graphql.nonNull(AddUserToTripInput) }),
+        },
+        resolve: async (source, { data: { userId } }, context: Context) => {
+          return { message: hello() + ' ' + userId };
+        },
+      }),
+    }
+  };
+}

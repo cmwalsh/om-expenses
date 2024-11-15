@@ -281,6 +281,15 @@ type Mutation {
   endSession: Boolean!
   authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult
   createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
+  addUserToTrip(data: AddUserToTripInput!): AddUserToTripResult
+}
+
+type AddUserToTripResult {
+  message: String
+}
+
+input AddUserToTripInput {
+  userId: String!
 }
 
 union UserAuthenticationWithPasswordResult = UserAuthenticationWithPasswordSuccess | UserAuthenticationWithPasswordFailure

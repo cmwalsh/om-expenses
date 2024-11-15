@@ -20,6 +20,15 @@ export type Scalars = {
   JSON: { input: any; output: any; }
 };
 
+export type AddUserToTripInput = {
+  userId: Scalars['String']['input'];
+};
+
+export type AddUserToTripResult = {
+  __typename?: 'AddUserToTripResult';
+  message?: Maybe<Scalars['String']['output']>;
+};
+
 export type AuthenticatedItem = User;
 
 export type CreateInitialUserInput = {
@@ -203,6 +212,7 @@ export type KeystoneMeta = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addUserToTrip?: Maybe<AddUserToTripResult>;
   authenticateUserWithPassword?: Maybe<UserAuthenticationWithPasswordResult>;
   createInitialUser: UserAuthenticationWithPasswordSuccess;
   createPost?: Maybe<Post>;
@@ -224,6 +234,11 @@ export type Mutation = {
   updateTags?: Maybe<Array<Maybe<Tag>>>;
   updateUser?: Maybe<User>;
   updateUsers?: Maybe<Array<Maybe<User>>>;
+};
+
+
+export type MutationAddUserToTripArgs = {
+  data: AddUserToTripInput;
 };
 
 
@@ -719,6 +734,45 @@ export type AuthenticateUserWithPasswordMutationVariables = Exact<{
 
 export type AuthenticateUserWithPasswordMutation = { __typename?: 'Mutation', authenticateUserWithPassword?: { __typename?: 'UserAuthenticationWithPasswordFailure', message: string } | { __typename?: 'UserAuthenticationWithPasswordSuccess', sessionToken: string, item: { __typename?: 'User', id: string, name: string, email: string } } | null };
 
+export type SearchUsersQueryVariables = Exact<{
+  take: Scalars['Int']['input'];
+  skip: Scalars['Int']['input'];
+  search: Scalars['String']['input'];
+  orderBy: Array<UserOrderByInput> | UserOrderByInput;
+}>;
+
+
+export type SearchUsersQuery = { __typename?: 'Query', usersCount?: number | null, usersFilteredCount?: number | null, users?: Array<{ __typename?: 'User', id: string, name: string, email: string }> | null };
+
+export type GetUserQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type GetUserQuery = { __typename?: 'Query', user?: { __typename?: 'User', id: string, name: string, email: string } | null };
+
+export type CreateUserMutationVariables = Exact<{
+  data: UserCreateInput;
+}>;
+
+
+export type CreateUserMutation = { __typename?: 'Mutation', createUser?: { __typename?: 'User', id: string, name: string, email: string } | null };
+
+export type UpdateUserMutationVariables = Exact<{
+  where: UserWhereUniqueInput;
+  data: UserUpdateInput;
+}>;
+
+
+export type UpdateUserMutation = { __typename?: 'Mutation', updateUser?: { __typename?: 'User', id: string, name: string, email: string } | null };
+
+export type DeleteUserMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type DeleteUserMutation = { __typename?: 'Mutation', deleteUser?: { __typename?: 'User', id: string } | null };
+
 
 export const GetUsersDocument = gql`
     query GetUsers {
@@ -754,6 +808,56 @@ export const AuthenticateUserWithPasswordDocument = gql`
   }
 }
     `;
+export const SearchUsersDocument = gql`
+    query SearchUsers($take: Int!, $skip: Int!, $search: String!, $orderBy: [UserOrderByInput!]!) {
+  usersCount
+  usersFilteredCount: usersCount(where: {OR: [{name: {contains: $search}}]})
+  users(
+    take: $take
+    skip: $skip
+    orderBy: $orderBy
+    where: {OR: [{name: {contains: $search}}]}
+  ) {
+    id
+    name
+    email
+  }
+}
+    `;
+export const GetUserDocument = gql`
+    query GetUser($id: ID!) {
+  user(where: {id: $id}) {
+    id
+    name
+    email
+  }
+}
+    `;
+export const CreateUserDocument = gql`
+    mutation CreateUser($data: UserCreateInput!) {
+  createUser(data: $data) {
+    id
+    name
+    email
+  }
+}
+    `;
+export const UpdateUserDocument = gql`
+    mutation UpdateUser($where: UserWhereUniqueInput!, $data: UserUpdateInput!) {
+  updateUser(where: $where, data: $data) {
+    id
+    name
+    email
+  }
+}
+    `;
+export const DeleteUserDocument = gql`
+    mutation DeleteUser($id: ID!) {
+  deleteUser(where: {id: $id}) {
+    id
+  }
+}
+    `;
 
 export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string, operationType?: string, variables?: any) => Promise<T>;
 
@@ -762,6 +866,11 @@ const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationTy
 const GetUsersDocumentString = print(GetUsersDocument);
 const GetPostsDocumentString = print(GetPostsDocument);
 const AuthenticateUserWithPasswordDocumentString = print(AuthenticateUserWithPasswordDocument);
+const SearchUsersDocumentString = print(SearchUsersDocument);
+const GetUserDocumentString = print(GetUserDocument);
+const CreateUserDocumentString = print(CreateUserDocument);
+const UpdateUserDocumentString = print(UpdateUserDocument);
+const DeleteUserDocumentString = print(DeleteUserDocument);
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
     GetUsers(variables?: GetUsersQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GetUsersQuery; errors?: GraphQLError[]; extensions?: unknown; headers: Headers; status: number; }> {
@@ -772,6 +881,21 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     AuthenticateUserWithPassword(variables: AuthenticateUserWithPasswordMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: AuthenticateUserWithPasswordMutation; errors?: GraphQLError[]; extensions?: unknown; headers: Headers; status: number; }> {
         return withWrapper((wrappedRequestHeaders) => client.rawRequest<AuthenticateUserWithPasswordMutation>(AuthenticateUserWithPasswordDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'AuthenticateUserWithPassword', 'mutation', variables);
+    },
+    SearchUsers(variables: SearchUsersQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: SearchUsersQuery; errors?: GraphQLError[]; extensions?: unknown; headers: Headers; status: number; }> {
+        return withWrapper((wrappedRequestHeaders) => client.rawRequest<SearchUsersQuery>(SearchUsersDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'SearchUsers', 'query', variables);
+    },
+    GetUser(variables: GetUserQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GetUserQuery; errors?: GraphQLError[]; extensions?: unknown; headers: Headers; status: number; }> {
+        return withWrapper((wrappedRequestHeaders) => client.rawRequest<GetUserQuery>(GetUserDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetUser', 'query', variables);
+    },
+    CreateUser(variables: CreateUserMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: CreateUserMutation; errors?: GraphQLError[]; extensions?: unknown; headers: Headers; status: number; }> {
+        return withWrapper((wrappedRequestHeaders) => client.rawRequest<CreateUserMutation>(CreateUserDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'CreateUser', 'mutation', variables);
+    },
+    UpdateUser(variables: UpdateUserMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: UpdateUserMutation; errors?: GraphQLError[]; extensions?: unknown; headers: Headers; status: number; }> {
+        return withWrapper((wrappedRequestHeaders) => client.rawRequest<UpdateUserMutation>(UpdateUserDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpdateUser', 'mutation', variables);
+    },
+    DeleteUser(variables: DeleteUserMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: DeleteUserMutation; errors?: GraphQLError[]; extensions?: unknown; headers: Headers; status: number; }> {
+        return withWrapper((wrappedRequestHeaders) => client.rawRequest<DeleteUserMutation>(DeleteUserDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'DeleteUser', 'mutation', variables);
     }
   };
 }

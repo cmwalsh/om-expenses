@@ -25,62 +25,10 @@ import { document } from '@keystone-6/fields-document'
 // the generated types from '.keystone/types'
 import { type Lists } from '.keystone/types'
 
-interface Session {
-  id: string;
-  name: string;
-  email: string;
-}
-
-const IsNotNull = {
-  read: true,
-  update: true,
-  create: true,
-};
-
-// TODO: MustBeUser, MustBeAdmin etc.
-const MustBeLoggedIn = (args: { session?: Session }) => !!args.session;
+import { User } from './user'
 
 export const lists = {
-  User: list({
-    // WARNING
-    //   for this starter project, anyone can create, query, update and delete anything
-    //   if you want to prevent random people on the internet from accessing your data,
-    //   you can find out more at https://keystonejs.com/docs/guides/auth-and-access-control
-    access: {
-      operation: {
-        query: MustBeLoggedIn,
-        create: MustBeLoggedIn,
-        update: MustBeLoggedIn,
-        delete: MustBeLoggedIn,
-      }
-    },
-
-    // this is the fields for our User list
-    fields: {
-      // by adding isRequired, we enforce that every User should have a name
-      //   if no name is provided, an error will be displayed
-      name: text({ validation: { isRequired: true }, graphql: { isNonNull: IsNotNull } }),
-
-      email: text({
-        validation: { isRequired: true },
-        // by adding isIndexed: 'unique', we're saying that no user can have the same
-        // email as another user - this may or may not be a good idea for your project
-        isIndexed: 'unique',
-        graphql: { isNonNull: IsNotNull },
-      }),
-
-      password: password({ validation: { isRequired: true } }),
-
-      // we can use this field to see what Posts this User has authored
-      //   more on that in the Post list below
-      posts: relationship({ ref: 'Post.author', many: true }),
-
-      createdAt: timestamp({
-        // this sets the timestamp to Date.now() when the user is first created
-        defaultValue: { kind: 'now' },
-      }),
-    },
-  }),
+  User,
 
   Post: list({
     // WARNING
