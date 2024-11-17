@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { assertError, camelToPascal } from "common";
 import { JSXElement, createEffect, createSignal } from "solid-js";
-import * as v from 'valibot';
-import { FetchParameters, QuerySort, assertError, camelToPascal, normaliseError } from "~/lib";
+import * as v from "valibot";
+import { Colour, FetchParameters, QuerySort, normaliseError } from "~/lib";
 import { DataTable, DataTableColumn } from "../DataTable";
 import { Pagination } from "../Pagination";
 
@@ -11,11 +13,12 @@ interface Props<TSchema extends v.ObjectSchema<any, any>, TRow extends v.InferIn
   rowActions?: readonly RowAction<TRow>[];
   tableActions?: readonly TableAction[];
   initialData?: readonly TRow[];
-  onFetch: (params: FetchParameters) => Promise<readonly [readonly TRow[], number]>;
+  onFetch: (params: FetchParameters) => Promise<{ rows: readonly TRow[]; total: number }>;
 }
 
 interface RowAction<TRow> {
   name: string;
+  colour: Colour;
   onClick: (row: TRow) => void | Promise<void>;
 }
 
@@ -30,13 +33,18 @@ type Overrides<TRow> = {
 
 const PageSize = 10;
 
-export function MagicBrowser<TSchema extends v.ObjectSchema<any, any>, TRow extends v.InferInput<TSchema>>(props: Props<TSchema, TRow> & Overrides<TRow>) {
-  const propSchemas = Object.entries(props.schema.entries) as readonly (readonly [string, v.SchemaWithPipe<Array<any> & [any]>])[];
+export function MagicBrowser<TSchema extends v.ObjectSchema<any, any>, TRow extends v.InferInput<TSchema>>(
+  props: Props<TSchema, TRow> & Overrides<TRow>,
+) {
+  const propSchemas = Object.entries(props.schema.entries) as readonly (readonly [
+    string,
+    v.SchemaWithPipe<Array<any> & [any]>,
+  ])[];
 
-  const [rows, setRows] = createSignal<readonly [readonly TRow[], number]>([
-    props.initialData ?? [],
-    props.initialData?.length ?? 0,
-  ]);
+  const [rows, setRows] = createSignal<{ rows: readonly TRow[]; total: number }>({
+    rows: props.initialData ?? [],
+    total: props.initialData?.length ?? 0,
+  });
   const [search, setSearch] = createSignal("");
   const [page, setPage] = createSignal(1);
   const [sort, setSort] = createSignal<QuerySort | undefined>();
@@ -47,7 +55,7 @@ export function MagicBrowser<TSchema extends v.ObjectSchema<any, any>, TRow exte
         skip: (page - 1) * PageSize,
         take: PageSize,
         search,
-        orderBy: sort ? [{ [sort.sort]: sort.dir }] : [],
+        orderBy: sort ? [[sort.sort, sort.dir]] : [],
       });
 
       setRows(rows);
@@ -84,13 +92,12 @@ export function MagicBrowser<TSchema extends v.ObjectSchema<any, any>, TRow exte
   const getColumns = (): readonly DataTableColumn<TRow>[] => {
     return propSchemas.map(([propName, propSchema]) => {
       const description = propSchema.pipe.find(
-        (item): item is v.DescriptionAction<string, string> =>
-          item.type === 'description',
+        (item): item is v.DescriptionAction<string, string> => item.type === "description",
       )?.description;
 
       return {
         name: propName,
-        label: description ?? '???',
+        label: description ?? "???",
         render: (row) => {
           const overrideName = `render${camelToPascal(propName)}`;
 
@@ -120,18 +127,14 @@ export function MagicBrowser<TSchema extends v.ObjectSchema<any, any>, TRow exte
 
   const TableHeader = () => (
     <>
-      <div>
-        {props.title}
-      </div>
+      <div>{props.title}</div>
       <TableActions />
     </>
   );
 
-  const TableSubHeader = () => <div />//<InlineSearchField search={search()} onSearch={onSearch} />;
+  const TableSubHeader = () => <div />; //<InlineSearchField search={search()} onSearch={onSearch} />;
 
-  const TableFooter = () => (
-    <Pagination page={page()} pageSize={PageSize} count={rows()[1]} onPage={setPage} />
-  );
+  const TableFooter = () => <Pagination page={page()} pageSize={PageSize} count={rows().total} onPage={setPage} />;
 
   return (
     <div>
@@ -139,7 +142,7 @@ export function MagicBrowser<TSchema extends v.ObjectSchema<any, any>, TRow exte
       <DataTable
         subHeader={TableSubHeader}
         columns={getColumns()}
-        rows={rows()[0]}
+        rows={rows().rows}
         rowActions={props.rowActions}
         sort={sort()}
         onSort={onSort}

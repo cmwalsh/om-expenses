@@ -4,7 +4,7 @@ interface Session {
   sessionUser: SessionUser;
 }
 
-const SessionKey = 'om-session';
+const SessionKey = "om-session";
 
 export class SessionService {
   public static newSession(sessionUser: SessionUser) {

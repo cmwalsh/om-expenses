@@ -1,4 +1,4 @@
-import { assert } from "ts-essentials";
+import { ElementOf } from "ts-essentials";
 
 export interface SessionUser {
   id: string;
@@ -16,7 +16,7 @@ export interface FetchParameters {
   skip: number;
   take: number;
   search: string;
-  orderBy: Record<string, 'asc' | 'desc'>[];
+  orderBy: (readonly [string, "asc" | "desc"])[];
 }
 
 export function normaliseError(err: Error) {
@@ -30,36 +30,6 @@ export function normaliseError(err: Error) {
   return err;
 }
 
-export type PropsOf<TComponent> = TComponent extends (props: infer T) => void ? T : never;
+export const Colours = ["primary", "secondary", "success", "danger", "warning", "info"] as const;
 
-export function titleCase(str: string) {
-  str = str.toLowerCase();
-
-  const str2 = str.split(" ");
-
-  for (var i = 0; i < str2.length; i++) {
-    str2[i] = str2[i].charAt(0).toUpperCase() + str2[i].slice(1);
-  }
-
-  return str2.join(" ");
-}
-
-export function humanise(inputString: string) {
-  const formattedString = inputString.replace(/[-_]/g, " ");
-
-  const finalFormattedString = formattedString.replace(/([a-z])([A-Z])/g, "$1 $2");
-
-  return finalFormattedString.replace(/\b\w/g, (match) => match.toUpperCase());
-}
-
-export function camelToPascal(camelCaseString: string) {
-  return camelCaseString.charAt(0).toUpperCase() + camelCaseString.slice(1);
-}
-
-export function assertError(err: unknown): asserts err is Error {
-  assert(err instanceof Error, "Error is not an instance of `Error`");
-}
-
-export function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
+export type Colour = ElementOf<typeof Colours>;

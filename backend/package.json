@@ -1,19 +1,36 @@
 {
-  "name": "keystone-app",
-  "version": "1.0.3",
-  "private": true,
+  "name": "backend",
+  "version": "0.0.0",
+  "types": "src/index.ts",
   "scripts": {
-    "dev": "keystone dev",
-    "start": "keystone start",
-    "build": "keystone build"
+    "dev": "tsx --watch src/index.ts",
+    "push": "drizzle-kit push"
   },
   "dependencies": {
-    "@keystone-6/auth": "^8.0.0",
-    "@keystone-6/core": "^6.0.0",
-    "@keystone-6/fields-document": "^9.0.0",
-    "common": "*"
+    "@libsql/client": "^0.14.0",
+    "@trpc/server": "11.0.0-rc.638",
+    "@types/jsonwebtoken": "^9.0.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "drizzle-graphql": "^0.8.5",
+    "drizzle-orm": "^0.36.3",
+    "graphql": "^16.9.0",
+    "graphql-yoga": "^5.10.2",
+    "jsonwebtoken": "^9.0.2",
+    "ts-essentials": "^10.0.3",
+    "uuid": "^11.0.3",
+    "valibot": "^1.0.0-beta.6"
   },
   "devDependencies": {
-    "typescript": "^5.6.3"
+    "@eslint/js": "9.14.0",
+    "@types/cors": "^2.8.17",
+    "@types/eslint__js": "^8.42.3",
+    "drizzle-kit": "^0.28.1",
+    "eslint": "9.14.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3",
+    "typescript-eslint": "^8.14.0"
   }
 }

@@ -1,5 +1,2 @@
 node_modules
-.keystone/
-keystone.db
-*.log
-.direnv/
+local.db

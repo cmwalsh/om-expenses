@@ -1,5 +1,6 @@
 import { For, JSXElement } from "solid-js";
-import { QuerySort } from "~/lib";
+import { Colour, QuerySort } from "~/lib";
+import { Button } from "../Button";
 
 interface Props<TRow> {
   columns: readonly DataTableColumn<TRow>[];
@@ -18,6 +19,7 @@ export interface DataTableColumn<TRow> {
 
 interface RowAction<TRow> {
   name: string;
+  colour: Colour;
   onClick: (row: TRow) => void | Promise<void>;
 }
 
@@ -30,12 +32,12 @@ export function DataTable<TRow>(props: Props<TRow>) {
       label: "Actions",
       render: (row) => {
         return (
-          <div>
+          <div class="d-md-flex gap-2 justify-content-md-end align-items-center text-nowrap">
             <For each={props.rowActions}>
               {(action) => (
-                <button class="btn btn-default" onClick={(e) => action.onClick(row)}>
+                <Button colour={action.colour} on:click={(e) => action.onClick(row)}>
                   {action.name}
-                </button>
+                </Button>
               )}
             </For>
           </div>
@@ -46,11 +48,7 @@ export function DataTable<TRow>(props: Props<TRow>) {
 
   return (
     <div>
-      {props.subHeader && (
-        <div>
-          {props.subHeader()}
-        </div>
-      )}
+      {props.subHeader && <div>{props.subHeader()}</div>}
       <table class="table">
         <thead>
           <tr>
@@ -60,7 +58,10 @@ export function DataTable<TRow>(props: Props<TRow>) {
                   style={{ cursor: props.onSort ? "pointer" : undefined }}
                   onclick={() => props.onSort?.(column.name)}
                 >
-                  <div style={{ display: "flex" }}>
+                  <div
+                    class="d-md-flex gap-2 align-items-center text-nowrap"
+                    classList={{ "justify-content-md-end": column.name === "actions" }}
+                  >
                     {column.label ?? column.name}
                     {props.sort?.sort === column.name &&
                       (props.sort?.dir === "asc" ? (

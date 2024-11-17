@@ -1,3 +1,5 @@
+import { Button } from "../Button";
+
 interface Props {
   class?: string;
   page: number;
@@ -14,26 +16,22 @@ export function Pagination(props: Props) {
   const pageCount = () => Math.ceil(props.count / props.pageSize);
 
   return (
-    <div style={{ display: 'flex' }}>
+    <div class="d-md-flex gap-2 justify-content-md-end align-items-center text-nowrap">
       <div>
         Showing {first()} to {last()}
       </div>
 
-      <button color="info" disabled={props.page <= 1} onClick={() => props.onPage(props.page - 1)}>
+      <Button colour="secondary" disabled={props.page <= 1} on:click={() => props.onPage(props.page - 1)}>
         &lt; Back
-      </button>
+      </Button>
 
       <div>
         Page {props.page} of {pageCount()}
       </div>
 
-      <button
-        color="info"
-        disabled={props.page >= pageCount()}
-        onClick={() => props.onPage(props.page + 1)}
-      >
+      <Button colour="secondary" disabled={props.page >= pageCount()} on:click={() => props.onPage(props.page + 1)}>
         Next &gt;
-      </button>
+      </Button>
     </div>
   );
 }

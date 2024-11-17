@@ -10,9 +10,14 @@
     "build": "tsc -p tsconfig.cjs.json"
   },
   "devDependencies": {
-    "typescript": "^5.6.3"
+    "typescript": "^5.6.3",
+    "eslint": "9.14.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "@eslint/js": "9.14.0"
   },
   "dependencies": {
+    "ts-essentials": "^10.0.3",
     "valibot": "^1.0.0-beta.3"
   }
 }
