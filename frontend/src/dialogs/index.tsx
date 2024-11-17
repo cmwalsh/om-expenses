@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { JSX } from "solid-js";
 
+export * from "./AlertDialog";
+
 // Helper for opening dialog components
 export async function openDialog<TProps extends { onClose: (ret: TRet) => void }, TRet>(
   Dialog: (props: TProps) => JSX.Element,

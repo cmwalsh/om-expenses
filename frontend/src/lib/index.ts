@@ -6,7 +6,7 @@ import { SessionUser } from "./common";
 import { SessionService } from "./session";
 
 export * from "./common";
-export * from "./ui";
+export * from "./toast";
 
 interface CustomLinkOpts {
   onError: (err: Error) => void;

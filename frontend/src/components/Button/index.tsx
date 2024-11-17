@@ -3,8 +3,8 @@ import { assertError } from "common";
 import { createSignal, JSX } from "solid-js";
 import * as v from "valibot";
 import { z } from "zod";
-import { AlertDialog } from "~/dialogs";
-import { Colour, normaliseError, openDialog } from "~/lib";
+import { AlertDialog, openDialog } from "~/dialogs";
+import { Colour, normaliseError } from "~/lib";
 
 type LinkOrActionProps =
   | { "on:click": Exclude<JSX.HTMLElementTags["button"]["on:click"], undefined> }

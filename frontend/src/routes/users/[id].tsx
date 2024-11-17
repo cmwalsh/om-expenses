@@ -3,7 +3,7 @@ import { UserCreateSchema } from "common";
 import { createResource, createSignal, Show, Suspense } from "solid-js";
 import * as v from "valibot";
 import { Button, Card, MagicFields } from "~/components";
-import { AppService } from "~/lib";
+import { addToast, AppService } from "~/lib";
 
 const UserFormSchema = UserCreateSchema;
 
@@ -49,6 +49,8 @@ export default function UserEdit(props: RouteSectionProps) {
     } else {
       await AppService.get().tRPC.User.Update.mutate([props.params.id, res]);
     }
+
+    addToast({ title: "Save", message: "Save successful", life: 5000 });
   };
 
   return (
