@@ -45,3 +45,12 @@ header {
 .table td {
   vertical-align: middle;
 }
+
+.modal {
+  backdrop-filter: blur(3px);
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.modal-content {
+  box-shadow: 0 0 10px $gray-700;
+}

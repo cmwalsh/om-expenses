@@ -3,7 +3,8 @@ import { assertError } from "common";
 import { createSignal, JSX } from "solid-js";
 import * as v from "valibot";
 import { z } from "zod";
-import { Colour, normaliseError } from "~/lib";
+import { AlertDialog } from "~/dialogs";
+import { Colour, normaliseError, openDialog } from "~/lib";
 
 type LinkOrActionProps =
   | { "on:click": Exclude<JSX.HTMLElementTags["button"]["on:click"], undefined> }
@@ -40,12 +41,12 @@ export function Button({ classList, colour, ...props }: Props) {
           message = err.issues.map((i, idx) => `[${idx}] ${i.message}`).join("\n");
         }
 
-        // await UI.openDialog(AlertDialog, {
-        //   title: "An error occurred",
-        //   message,
-        // });
+        await openDialog(AlertDialog, {
+          title: "An error occurred",
+          message,
+        });
 
-        alert(message);
+        // alert(message);
       } finally {
         setWorking(false);
       }
