@@ -1,6 +1,6 @@
 import { assertError, includes, keys } from "common";
 import { asc, desc, getTableColumns } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/libsql";
+import { drizzle } from "drizzle-orm/node-postgres";
 import jwt, { TokenExpiredError } from "jsonwebtoken";
 import * as v from "valibot";
 import * as dbSchema from "../db/schema";
@@ -35,7 +35,7 @@ export function verifyToken(token: string | undefined): TokenResponse {
   }
 }
 
-export const db = drizzle(process.env.DB_FILE_NAME!, { schema: dbSchema });
+export const db = drizzle(process.env.DATABASE_URL!, { schema: dbSchema });
 
 export const PaginationSchema = v.object({
   take: v.pipe(v.number(), v.minValue(0)),
