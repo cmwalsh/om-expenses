@@ -1,15 +1,14 @@
 import { RouteSectionProps, useNavigate } from "@solidjs/router";
-import { UserCreateSchema } from "common";
+import { UserCreateSchema, UserUpdate, UserUpdateSchema } from "common";
 import { createResource, createSignal, Show, Suspense } from "solid-js";
 import * as v from "valibot";
 import { Button, Card, MagicFields } from "~/components";
+import { getIdModeAndSchema } from "~/helper";
 import { addToast, AppService } from "~/lib";
 
-const UserFormSchema = UserCreateSchema;
-
-type UserForm = v.InferInput<typeof UserFormSchema>;
-
 export default function UserEdit(props: RouteSectionProps) {
+  const [id, mode, schema] = getIdModeAndSchema(props, UserCreateSchema, UserUpdateSchema);
+
   const navigate = useNavigate();
 
   if (!AppService.get().getCurrentUser()) {
@@ -18,16 +17,10 @@ export default function UserEdit(props: RouteSectionProps) {
   }
 
   const [user, { mutate }] = createResource(async () => {
-    let user: UserForm = {
-      email: "",
-      name: "",
-      password: "",
-    };
+    let user: UserUpdate = {};
 
     if (props.params.id !== "new") {
-      const existingUser = await AppService.get().tRPC.User.One.query(props.params.id);
-
-      user = { ...user, ...existingUser };
+      user = await AppService.get().tRPC.User.One.query(props.params.id);
     }
 
     return user;
@@ -35,19 +28,21 @@ export default function UserEdit(props: RouteSectionProps) {
 
   const [submittedCount, setSubmittedCount] = createSignal(0);
 
-  const onChange = (data: UserForm) => {
-    mutate({ ...user()!, ...data });
+  const onChange = (data: UserUpdate) => {
+    mutate({ ...user(), ...data });
   };
 
   const onSave = async () => {
     setSubmittedCount(submittedCount() + 1);
 
-    const res = v.parse(UserFormSchema, user());
+    if (mode === "create") {
+      const res = v.parse(schema, user());
 
-    if (props.params.id === "new") {
       await AppService.get().tRPC.User.Create.mutate(res);
     } else {
-      await AppService.get().tRPC.User.Update.mutate([props.params.id, res]);
+      const res = v.parse(schema, user());
+
+      await AppService.get().tRPC.User.Update.mutate([id, res]);
     }
 
     addToast({ title: "Save", message: "Save successful", life: 5000 });
@@ -56,17 +51,14 @@ export default function UserEdit(props: RouteSectionProps) {
   return (
     <main>
       <Card>
-        <Card.Header text="User" />
+        <Card.Header text={mode === "create" ? "Create User" : "Update User"} />
         <Card.Body>
           <form>
             <Suspense fallback="Loading...">
               <Show when={user()}>
-                <MagicFields
-                  schema={UserFormSchema}
-                  data={user()!}
-                  validation={submittedCount() > 0}
-                  onChange={onChange}
-                />
+                {(user) => (
+                  <MagicFields schema={schema} data={user()} validation={submittedCount() > 0} onChange={onChange} />
+                )}
               </Show>
             </Suspense>
           </form>

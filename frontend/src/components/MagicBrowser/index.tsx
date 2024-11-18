@@ -132,7 +132,20 @@ export function MagicBrowser<TSchema extends v.ObjectSchema<any, any>, TRow exte
     </>
   );
 
-  const TableSubHeader = () => <div />; //<InlineSearchField search={search()} onSearch={onSearch} />;
+  const TableSubHeader = () => (
+    <>
+      <div class="input-group">
+        <span class="input-group-text">🔍</span>
+        <input
+          type="text"
+          class="form-control"
+          value={search()}
+          placeholder="Quick Search..."
+          on:keyup={(e) => onSearch(e.currentTarget.value)}
+        />
+      </div>
+    </>
+  );
 
   const TableFooter = () => <Pagination page={page()} pageSize={PageSize} count={rows().total} onPage={setPage} />;
 

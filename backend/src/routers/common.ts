@@ -41,6 +41,7 @@ export const PaginationSchema = v.object({
   take: v.pipe(v.number(), v.minValue(0)),
   skip: v.pipe(v.number(), v.minValue(0)),
   orderBy: v.array(v.pipe(v.tuple([v.string(), v.picklist(["asc", "desc"])]), v.readonly())),
+  search: v.optional(v.string()),
 });
 
 export type Pagination = v.InferOutput<typeof PaginationSchema>;
