@@ -43,7 +43,7 @@ export function Button({ classList, colour, ...props }: Props) {
 
         await openDialog(AlertDialog, {
           title: "An error occurred",
-          message,
+          message: "<p>" + message.replaceAll("\n", "</p><p>") + "</p>",
         });
 
         // alert(message);

@@ -2,6 +2,7 @@ import { useNavigate, type RouteSectionProps } from "@solidjs/router";
 import { LoginData, LoginDataSchema } from "common";
 import { createSignal } from "solid-js";
 import { Card, MagicFields } from "~/components";
+import { AlertDialog, openDialog } from "~/dialogs";
 import { AppService } from "~/lib";
 
 export default function Login(props: RouteSectionProps) {
@@ -17,16 +18,15 @@ export default function Login(props: RouteSectionProps) {
     try {
       setSubmittedCount(submittedCount() + 1);
 
-      const user = await AppService.get().login(login().email, login().password);
+      await AppService.get().login(login().email, login().password);
 
-      if (user) {
-        navigate("/");
-      } else {
-        alert("User not found");
-      }
+      navigate("/");
     } catch (err) {
       if (err instanceof Error) {
-        alert(err.message);
+        await openDialog(AlertDialog, {
+          title: "An error occurred",
+          message: err.message,
+        });
       }
     }
   };

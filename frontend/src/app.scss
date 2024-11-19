@@ -54,3 +54,7 @@ header {
 .modal-content {
   box-shadow: 0 0 10px $gray-700;
 }
+
+.value-undefined {
+  background: repeating-linear-gradient(45deg, #f7f7f7, #f7f7f7 10px, #fbfbfb 10px, #fbfbfb 20px);
+}

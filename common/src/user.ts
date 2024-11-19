@@ -1,17 +1,18 @@
 import * as v from "valibot";
+import { EmailAddress, Password } from "./common";
 
 export const LoginDataSchema = v.object({
-  email: v.pipe(v.string(), v.email("Not a valid email address"), v.title("Email Address")),
-  password: v.pipe(v.string(), v.minLength(8), v.title("Password")),
+  email: EmailAddress,
+  password: Password("Password"),
 });
 
 export type LoginData = v.InferInput<typeof LoginDataSchema>;
 
 export const UserCreateSchema = v.object({
-  email: v.pipe(v.string(), v.email(), v.title("Email Address")),
-  name: v.pipe(v.string(), v.minLength(2), v.title("Name")),
-  new_password: v.pipe(v.string(), v.minLength(8), v.title("Password")),
-  confirm_password: v.pipe(v.string(), v.minLength(8), v.title("Confirm Password")),
+  email: EmailAddress,
+  name: v.pipe(v.string(), v.minLength(2), v.title("Name"), v.metadata({ icon: "🧑" })),
+  new_password: Password("New Password", "Leave blank to keep existing password"),
+  confirm_password: Password("Confirm Password"),
 });
 
 export type UserCreate = v.InferInput<typeof UserCreateSchema>;
