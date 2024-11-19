@@ -9,3 +9,9 @@ export function getIdModeAndSchema<TCreateSchema, TUpdateSchema>(
     ? ([undefined, "create", createSchema] as const)
     : ([props.params.id, "update", updateSchema] as const);
 }
+
+export function getLogoutReason() {
+  const url = new URL(window.location.href);
+
+  return url.searchParams.get("reason");
+}

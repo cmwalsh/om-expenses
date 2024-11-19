@@ -1,12 +1,23 @@
 import { useNavigate, type RouteSectionProps } from "@solidjs/router";
 import { LoginData, LoginDataSchema } from "common";
-import { createSignal } from "solid-js";
+import { createEffect, createSignal } from "solid-js";
 import { Card, MagicFields } from "~/components";
 import { AlertDialog, openDialog } from "~/dialogs";
-import { AppService } from "~/lib";
+import { getLogoutReason } from "~/helper";
+import { addToast, AppService } from "~/lib";
 
 export default function Login(props: RouteSectionProps) {
   const navigate = useNavigate();
+
+  createEffect(() => {
+    if (getLogoutReason() === "expired") {
+      addToast({
+        life: 3600000,
+        title: "Logged out",
+        message: "You have been logged out because your session has expired.",
+      });
+    }
+  });
 
   const [login, setLogin] = createSignal<LoginData>({ email: "", password: "" });
 

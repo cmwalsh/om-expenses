@@ -1,11 +1,13 @@
 import { formatDistanceToNow } from "date-fns";
 import { createSignal, For } from "solid-js";
-import { setToastListener, ToastInfo } from "~/lib";
+import { removeToast, setToastListener, ToastInfo } from "~/lib";
 
 interface Props {
+  id: number;
   title: string;
   time: number;
   message: string;
+  onClose: (id: number) => void;
 }
 
 export function Toast(props: Props) {
@@ -19,12 +21,16 @@ export function Toast(props: Props) {
     setTime(formatDistanceToNow(new Date(props.time), { addSuffix: true }));
   }, 1000);
 
+  const onClose = () => {
+    props.onClose(props.id);
+  };
+
   return (
     <div classList={{ toast: true, fade: true, show: show() }} role="alert" aria-live="assertive" aria-atomic="true">
       <div class="toast-header">
         <strong class="me-auto">{props.title}</strong>
         <small>{time()}</small>
-        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close" on:click={onClose}></button>
       </div>
       <div class="toast-body">{props.message}</div>
     </div>
@@ -36,10 +42,22 @@ export function ToastContainer() {
 
   setToastListener(setToast);
 
+  const onClose = (id: number) => {
+    removeToast(id);
+  };
+
   return (
     <div class="toast-container position-fixed bottom-0 end-0 p-3">
       <For each={toasts()}>
-        {(toastInfo) => <Toast title={toastInfo.title} time={toastInfo.time} message={toastInfo.message} />}
+        {(toastInfo) => (
+          <Toast
+            id={toastInfo.id}
+            title={toastInfo.title}
+            time={toastInfo.time}
+            message={toastInfo.message}
+            onClose={onClose}
+          />
+        )}
       </For>
     </div>
   );

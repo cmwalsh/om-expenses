@@ -57,7 +57,7 @@ export class AppService {
           if (err instanceof TRPCClientError) {
             if (err.data && 'code' in err.data && err.data.code === 'UNAUTHORIZED') {
               SessionService.clearSession();
-              window.location.href = '/login';
+              window.location.href = '/login?reason=expired';
             }
           }
         }

@@ -17,6 +17,11 @@ export function addToast(toast: Omit<ToastInfo, "id" | "time">) {
   if (Listener) Listener(Toasts);
 }
 
+export function removeToast(id: number) {
+  Toasts = Toasts.filter((t) => t.id !== id);
+  if (Listener) Listener(Toasts);
+}
+
 export function setToastListener(listener: Listener) {
   Listener = listener;
 }
