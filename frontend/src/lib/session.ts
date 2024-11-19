@@ -1,3 +1,4 @@
+import { createSignal } from "solid-js";
 import { SessionUser } from "./common";
 
 interface Session {
@@ -7,19 +8,32 @@ interface Session {
 const SessionKey = "om-session";
 
 export class SessionService {
-  public static newSession(sessionUser: SessionUser) {
-    const session: Session = { sessionUser };
-    localStorage.setItem(SessionKey, JSON.stringify(session));
+  public session;
+  private _setSession;
+
+  constructor() {
+    const [session, setSession] = createSignal(this.readSession());
+
+    this.session = session;
+    this._setSession = setSession;
   }
 
-  public static getSession() {
+  public newSession(sessionUser: SessionUser) {
+    this.writeSession({ sessionUser });
+  }
+
+  public clearSession() {
+    this.writeSession(null);
+  }
+
+  private readSession() {
     const json = localStorage.getItem(SessionKey);
     if (!json) return null;
-
     return JSON.parse(json) as Session;
   }
 
-  public static clearSession() {
-    localStorage.removeItem(SessionKey);
+  private writeSession(session: Session | null) {
+    localStorage.setItem(SessionKey, JSON.stringify(session));
+    this._setSession(session);
   }
 }

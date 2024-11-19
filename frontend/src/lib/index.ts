@@ -56,7 +56,7 @@ export class AppService {
         onError: (err) => {
           if (err instanceof TRPCClientError) {
             if (err.data && 'code' in err.data && err.data.code === 'UNAUTHORIZED') {
-              SessionService.clearSession();
+              this.sessionService.clearSession();
               window.location.href = '/login?reason=expired';
             }
           }
@@ -65,7 +65,7 @@ export class AppService {
       httpBatchLink({
         url: "http://localhost:3000",
         headers: () => {
-          const session = SessionService.getSession();
+          const session = this.sessionService.session();
           const headers: Record<string, string> = {};
 
           if (session) {
@@ -78,12 +78,14 @@ export class AppService {
     ],
   });
 
+  private sessionService = new SessionService();
+
   constructor() {
     console.log("AppService init");
   }
 
   public getCurrentUser(): SessionUser | null {
-    const session = SessionService.getSession();
+    const session = this.sessionService.session();
 
     return session?.sessionUser ?? null;
   }
@@ -91,8 +93,9 @@ export class AppService {
   public async login(email: string, password: string) {
     const result = await this.tRPC.Auth.Login.mutate({ email, password });
 
-    SessionService.newSession({
+    this.sessionService.newSession({
       id: result.user.id,
+      role: result.user.role,
       email: result.user.email,
       name: result.user.name,
       sessionToken: result.token,
@@ -102,6 +105,6 @@ export class AppService {
   }
 
   public logout() {
-    SessionService.clearSession();
+    this.sessionService.clearSession();
   }
 }

@@ -3,7 +3,7 @@ import { Router } from "@solidjs/router";
 import { FileRoutes } from "@solidjs/start/router";
 import { Suspense } from "solid-js";
 import "./app.scss";
-import { ToastContainer } from "./components";
+import { NavBar, ToastContainer } from "./components";
 
 export default function App() {
   return (
@@ -14,29 +14,7 @@ export default function App() {
             <h1>OM Expenses</h1>
           </header>
 
-          <nav class="navbar navbar-expand-lg mb-3">
-            <div class="container-fluid">
-              <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                  <a class="nav-link active" href="/">
-                    Index
-                  </a>
-                </li>
-
-                <li class="nav-item">
-                  <a class="nav-link active" href="/users">
-                    Users
-                  </a>
-                </li>
-
-                <li class="nav-item">
-                  <a class="nav-link active" href="/about">
-                    About
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </nav>
+          <NavBar />
 
           <Suspense>{props.children}</Suspense>
 

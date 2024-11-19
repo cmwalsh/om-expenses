@@ -9,6 +9,7 @@ export const LoginDataSchema = v.object({
 export type LoginData = v.InferInput<typeof LoginDataSchema>;
 
 export const UserCreateSchema = v.object({
+  role: v.pipe(v.picklist(["admin", "user"]), v.title("Role"), v.metadata({ icon: "Role" })),
   email: EmailAddress,
   name: v.pipe(v.string(), v.minLength(2), v.title("Name"), v.metadata({ icon: "🧑" })),
   new_password: Password("New Password", "Leave blank to keep existing password"),

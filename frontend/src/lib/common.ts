@@ -2,6 +2,7 @@ import { ElementOf } from "ts-essentials";
 
 export interface SessionUser {
   id: string;
+  role: "admin" | "user";
   name: string;
   email: string;
   sessionToken: string;

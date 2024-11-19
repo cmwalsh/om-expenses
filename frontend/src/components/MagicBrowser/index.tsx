@@ -91,13 +91,11 @@ export function MagicBrowser<TSchema extends v.ObjectSchema<any, any>, TRow exte
 
   const getColumns = (): readonly DataTableColumn<TRow>[] => {
     return propSchemas.map(([propName, propSchema]) => {
-      const description = propSchema.pipe.find(
-        (item): item is v.DescriptionAction<string, string> => item.type === "description",
-      )?.description;
+      const title = propSchema.pipe.find((item): item is v.TitleAction<string, string> => item.type === "title")?.title;
 
       return {
         name: propName,
-        label: description ?? "???",
+        label: title ?? "???",
         render: (row) => {
           const overrideName = `render${camelToPascal(propName)}`;
 

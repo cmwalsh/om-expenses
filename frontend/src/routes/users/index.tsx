@@ -4,8 +4,9 @@ import { Button, Card, MagicBrowser } from "~/components";
 import { AppService, FetchParameters } from "~/lib";
 
 const UserTableSchema = v.object({
-  email: v.pipe(v.string(), v.description("Email Address")),
-  name: v.pipe(v.string(), v.minLength(2), v.description("Name")),
+  role: v.pipe(v.string(), v.title("Role")),
+  email: v.pipe(v.string(), v.title("Email Address")),
+  name: v.pipe(v.string(), v.title("Name")),
 });
 
 export default function Users(props: RouteSectionProps) {

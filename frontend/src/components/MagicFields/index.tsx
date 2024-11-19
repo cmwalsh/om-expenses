@@ -86,7 +86,7 @@ export function MagicFields<TSchema extends v.ObjectSchema<any, any>, TData exte
             <div class="form-group mb-0">
               {!metadata?.icon && <label for={fieldName}>{title}</label>}
 
-              <div class="input-group">
+              <div class="input-group has-validation">
                 {metadata?.icon && <span class="input-group-text">{metadata.icon}</span>}
 
                 <input
