@@ -3,9 +3,8 @@ import { asc, desc, getTableColumns } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
 import jwt, { TokenExpiredError } from "jsonwebtoken";
 import * as v from "valibot";
+import { Config } from "../config";
 import * as dbSchema from "../db/schema";
-
-export const SECRET_KEY = v.parse(v.pipe(v.string(), v.minLength(16), v.title("SECRET_KEY")), process.env.SECRET_KEY);
 
 export interface TokenPayload {
   id: string;
@@ -22,7 +21,7 @@ export function verifyToken(token: string | undefined): TokenResponse {
   if (!token) return ["anon", undefined];
 
   try {
-    const payload = jwt.verify(token, SECRET_KEY) as TokenPayload;
+    const payload = jwt.verify(token, Config.SECRET_KEY) as TokenPayload;
     return ["valid", payload];
   } catch (err) {
     assertError(err);
@@ -35,7 +34,7 @@ export function verifyToken(token: string | undefined): TokenResponse {
   }
 }
 
-export const db = drizzle(process.env.DATABASE_URL!, { schema: dbSchema });
+export const db = drizzle(Config.DATABASE_URL, { schema: dbSchema });
 
 export const PaginationSchema = v.object({
   take: v.pipe(v.number(), v.minValue(0)),

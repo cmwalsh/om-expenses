@@ -4,8 +4,9 @@ import { eq } from "drizzle-orm";
 import jwt from "jsonwebtoken";
 import { assert } from "ts-essentials";
 import * as v from "valibot";
+import { Config } from "../config";
 import { UserTable } from "../db/schema";
-import { assertOneRecord, db, SECRET_KEY, TokenPayload } from "./common";
+import { assertOneRecord, db, TokenPayload } from "./common";
 import { tRPC } from "./trpc";
 
 export const AuthRouter = tRPC.router({
@@ -19,7 +20,7 @@ export const AuthRouter = tRPC.router({
 
     const payload: TokenPayload = { id: user.id };
 
-    const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "1h" }); // Expires in 1 hour
+    const token = jwt.sign(payload, Config.SECRET_KEY, { expiresIn: "1h" }); // Expires in 1 hour
 
     return { user, token };
   }),
