@@ -12,7 +12,6 @@ export default function Home() {
 
   const user = AppService.get().getCurrentUser();
   if (!user) {
-    console.log("Not logged in");
     return navigate("/login");
   }
 

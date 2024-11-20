@@ -1,20 +1,15 @@
-import { RouteSectionProps, useNavigate } from "@solidjs/router";
+import { RouteSectionProps } from "@solidjs/router";
 import { UserCreateSchema, UserUpdate, UserUpdateSchema } from "common";
 import { createResource, createSignal, Show, Suspense } from "solid-js";
 import * as v from "valibot";
 import { Button, Card, MagicFields } from "~/components";
-import { getIdModeAndSchema } from "~/helper";
+import { ensureLogin, getIdModeAndSchema } from "~/helper";
 import { addToast, AppService } from "~/lib";
 
 export default function UserEdit(props: RouteSectionProps) {
   const [id, mode, schema] = getIdModeAndSchema(props, UserCreateSchema, UserUpdateSchema);
 
-  const navigate = useNavigate();
-
-  if (!AppService.get().getCurrentUser()) {
-    console.log("Not logged in");
-    return navigate("/login");
-  }
+  ensureLogin();
 
   const [user, { mutate }] = createResource(async () => {
     let user: UserUpdate = {};

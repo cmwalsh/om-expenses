@@ -1,5 +1,6 @@
 import { assert } from "ts-essentials";
 
+export * from "./trip";
 export * from "./user";
 
 export function assertError(err: unknown): asserts err is Error {

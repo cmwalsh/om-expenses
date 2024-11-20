@@ -20,6 +20,11 @@ export interface FetchParameters {
   orderBy: (readonly [string, "asc" | "desc"])[];
 }
 
+export interface FetchResult<TRow> {
+  rows: readonly TRow[];
+  total: number;
+}
+
 export function normaliseError(err: Error) {
   // if (err instanceof AxiosError) {
   //   if (err.response?.data.message) {

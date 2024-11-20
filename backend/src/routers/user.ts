@@ -1,21 +1,36 @@
 import bcrypt from "bcrypt";
 import { UserCreateSchema, UserUpdateSchema } from "common";
-import { eq, ilike, or } from "drizzle-orm";
+import { and, eq, ilike, inArray, or } from "drizzle-orm";
 import { assert } from "ts-essentials";
 import * as uuid from "uuid";
 import * as v from "valibot";
-import { UserTable } from "../db/schema";
+import { UserTable, UserToTripTable } from "../db/schema";
 import { assertOneRecord, db, PaginationSchema, toDrizzleOrderBy, UUID, withId } from "./common";
 import { tRPC } from "./trpc";
 
-const saltRounds = 10;
+const SaltRounds = 10;
+
+const UserSearchSchema = v.intersect([PaginationSchema, v.object({ trip_id: v.optional(UUID) })]);
 
 export const UserRouter = tRPC.router({
-  Search: tRPC.ProtectedProcedure.input(v.parser(PaginationSchema)).query(
-    async ({ input: { take, skip, orderBy, search } }) => {
-      const condition = search
+  Search: tRPC.ProtectedProcedure.input(v.parser(UserSearchSchema)).query(
+    async ({ input: { take, skip, orderBy, search, trip_id } }) => {
+      const quickSearchCondition = search
         ? or(ilike(UserTable.email, `%${search}%`), ilike(UserTable.name, `%${search}%`))
-        : undefined;
+        : and();
+
+      let tripFilterCondition = and();
+
+      if (trip_id) {
+        const subQuery = db
+          .select({ id: UserToTripTable.user_id })
+          .from(UserToTripTable)
+          .where(eq(UserToTripTable.trip_id, trip_id));
+
+        tripFilterCondition = inArray(UserTable.id, subQuery);
+      }
+
+      const condition = and(quickSearchCondition, tripFilterCondition);
 
       const query = db
         .select()
@@ -40,7 +55,7 @@ export const UserRouter = tRPC.router({
     const { new_password, confirm_password, ...rest } = input;
 
     assert(new_password === confirm_password, "Passwords do not match");
-    const password_hash = await bcrypt.hash(new_password, saltRounds);
+    const password_hash = await bcrypt.hash(new_password, SaltRounds);
 
     rest.email = rest.email.toLowerCase();
 
@@ -63,7 +78,7 @@ export const UserRouter = tRPC.router({
 
         if (new_password) {
           assert(new_password === confirm_password, "Passwords do not match");
-          const password_hash = await bcrypt.hash(new_password, saltRounds);
+          const password_hash = await bcrypt.hash(new_password, SaltRounds);
 
           await tx.update(UserTable).set({ password_hash }).where(eq(UserTable.id, id));
         }

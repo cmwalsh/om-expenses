@@ -1,13 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { JSX } from "solid-js";
+import * as v from "valibot";
+import { FetchParameters, FetchResult } from "~/lib";
+import { BrowserDialog } from "./BrowserDialog";
 
 export * from "./AlertDialog";
+export * from "./BrowserDialog";
 
 // Helper for opening dialog components
-export async function openDialog<TProps extends { onClose: (ret: TRet) => void }, TRet>(
-  Dialog: (props: TProps) => JSX.Element,
-  props: Omit<TProps, "onClose">,
-): Promise<TRet> {
+export async function openDialog<
+  TProps extends { onClose?: (ret: any) => void },
+  TRet extends TProps extends { onClose?: (ret: infer T) => void } ? T : unknown,
+>(Dialog: (props: TProps) => JSX.Element, props: TProps): Promise<TRet> {
   const { render } = await import("solid-js/web");
 
   return new Promise<TRet>((resolve) => {
@@ -50,4 +54,18 @@ export async function openDialog<TProps extends { onClose: (ret: TRet) => void }
       });
     });
   });
+}
+
+export async function openBrowser<TRow>(
+  title: string,
+  schema: v.ObjectSchema<any, any>,
+  onFetch: (params: FetchParameters) => Promise<FetchResult<TRow>>,
+) {
+  const row = await openDialog(BrowserDialog, {
+    title: "Add User",
+    schema,
+    onFetch,
+  });
+
+  return row as TRow | undefined;
 }

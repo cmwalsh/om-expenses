@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { assertError, camelToPascal } from "common";
-import { JSXElement, createEffect, createSignal } from "solid-js";
+import { JSXElement, createEffect, createSignal, onCleanup, onMount } from "solid-js";
 import * as v from "valibot";
 import { Colour, FetchParameters, QuerySort, normaliseError } from "~/lib";
 import { DataTable, DataTableColumn } from "../DataTable";
@@ -33,9 +33,32 @@ type Overrides<TRow> = {
 
 const PageSize = 10;
 
+interface MagicBrowserInstance {
+  refresh(): void;
+}
+
+const Instances: MagicBrowserInstance[] = [];
+
+export function refreshAllBrowsers() {
+  Instances.forEach((i) => i.refresh());
+}
+
 export function MagicBrowser<TSchema extends v.ObjectSchema<any, any>, TRow extends v.InferInput<TSchema>>(
   props: Props<TSchema, TRow> & Overrides<TRow>,
 ) {
+  const instance: MagicBrowserInstance = {
+    refresh: () => {
+      fetch(page(), search(), sort(), props.refresh);
+    },
+  };
+
+  onMount(() => {
+    Instances.push(instance);
+  });
+  onCleanup(() => {
+    Instances.splice(Instances.indexOf(instance), 1);
+  });
+
   const propSchemas = Object.entries(props.schema.entries) as readonly (readonly [
     string,
     v.SchemaWithPipe<Array<any> & [any]>,
@@ -71,7 +94,7 @@ export function MagicBrowser<TSchema extends v.ObjectSchema<any, any>, TRow exte
   };
 
   createEffect(() => {
-    void fetch(page(), search(), sort(), props.refresh);
+    fetch(page(), search(), sort(), props.refresh);
   });
 
   const onSearch = (search: string) => {

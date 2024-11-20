@@ -1,4 +1,13 @@
-import { RouteSectionProps } from "@solidjs/router";
+import { RouteSectionProps, useNavigate } from "@solidjs/router";
+import { AppService } from "~/lib";
+
+export function ensureLogin() {
+  const navigate = useNavigate();
+
+  if (!AppService.get().getCurrentUser()) {
+    return navigate("/login");
+  }
+}
 
 export function getIdModeAndSchema<TCreateSchema, TUpdateSchema>(
   props: RouteSectionProps,

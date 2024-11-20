@@ -1,4 +1,3 @@
-import { useNavigate } from "@solidjs/router";
 import { assertError } from "common";
 import { createSignal, JSX } from "solid-js";
 import * as v from "valibot";
@@ -6,9 +5,7 @@ import { z } from "zod";
 import { AlertDialog, openDialog } from "~/dialogs";
 import { Colour, normaliseError } from "~/lib";
 
-type LinkOrActionProps =
-  | { "on:click": Exclude<JSX.HTMLElementTags["button"]["on:click"], undefined> }
-  | { href: string };
+type LinkOrActionProps = { "on:click": Exclude<JSX.HTMLElementTags["button"]["on:click"], undefined> };
 
 type Props = JSX.HTMLElementTags["button"] &
   LinkOrActionProps & {
@@ -16,42 +13,40 @@ type Props = JSX.HTMLElementTags["button"] &
   };
 
 export function Button({ classList, colour, ...props }: Props) {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [working, setWorking] = createSignal(false);
 
   const onClick = async (e: MouseEvent) => {
-    if ("on:click" in props) {
-      try {
-        setWorking(true);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        await (props["on:click"] as any)(e);
-      } catch (_err) {
-        assertError(_err);
-        const err = normaliseError(_err);
+    try {
+      setWorking(true);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await (props["on:click"] as any)(e);
+    } catch (_err) {
+      assertError(_err);
 
-        console.log("Error", err.constructor.name);
+      console.log("Error", _err.constructor.name);
+      console.error(_err);
 
-        let message = err.message;
+      const err = normaliseError(_err);
 
-        if (err instanceof z.ZodError) {
-          message = err.issues.map((i, idx) => `[${idx}] ${i.message}`).join("\n");
-        }
+      let message = err.message;
 
-        if (err instanceof v.ValiError) {
-          message = err.issues.map((i, idx) => `[${idx}] ${i.message}`).join("\n");
-        }
-
-        await openDialog(AlertDialog, {
-          title: "An error occurred",
-          message: "<p>" + message.replaceAll("\n", "</p><p>") + "</p>",
-        });
-
-        // alert(message);
-      } finally {
-        setWorking(false);
+      if (err instanceof z.ZodError) {
+        message = err.issues.map((i, idx) => `[${idx}] ${i.message}`).join("\n");
       }
-    } else {
-      navigate(props.href);
+
+      if (err instanceof v.ValiError) {
+        message = err.issues.map((i, idx) => `[${idx}] ${i.message}`).join("\n");
+      }
+
+      await openDialog(AlertDialog, {
+        title: "An error occurred",
+        message: "<p>" + message.replaceAll("\n", "</p><p>") + "</p>",
+      });
+
+      // alert(message);
+    } finally {
+      setWorking(false);
     }
   };
 

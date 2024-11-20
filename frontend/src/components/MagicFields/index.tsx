@@ -10,9 +10,10 @@ interface Props<TSchema extends v.ObjectSchema<any, any>, TData extends v.InferI
   onChange: (data: TData) => void;
 }
 
-export function MagicFields<TSchema extends v.ObjectSchema<any, any>, TData extends v.InferInput<TSchema>>(
-  props: Props<TSchema, TData>,
-) {
+export function MagicFields<
+  TSchema extends v.ObjectSchema<any, any>,
+  TData extends v.InferInput<v.SchemaWithPartial<TSchema, undefined>>,
+>(props: Props<TSchema, TData>) {
   const _schema = props.schema;
 
   const fieldsNames = Object.keys(_schema.entries) as unknown as readonly Extract<keyof TData, string>[];

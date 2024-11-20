@@ -4,34 +4,32 @@ import { Card, LinkButton, MagicBrowser } from "~/components";
 import { ensureLogin } from "~/helper";
 import { AppService, FetchParameters } from "~/lib";
 
-const UserTableSchema = v.object({
-  role: v.pipe(v.string(), v.title("Role")),
-  email: v.pipe(v.string(), v.title("Email Address")),
+const TripTableSchema = v.object({
   name: v.pipe(v.string(), v.title("Name")),
 });
 
-export default function Users(props: RouteSectionProps) {
+export default function Trips(props: RouteSectionProps) {
   const navigate = useNavigate();
 
   ensureLogin();
 
   const onFetch = async (params: FetchParameters) => {
-    return AppService.get().tRPC.User.Search.query(params);
+    return AppService.get().tRPC.Trip.Search.query(params);
   };
 
   return (
     <main>
       <Card>
-        <Card.Header text="Users" />
+        <Card.Header text="Trips" />
         <Card.Body>
           <MagicBrowser
-            schema={UserTableSchema}
-            rowActions={[{ name: "Edit", colour: "info", onClick: (e) => navigate(`/users/${e.id}`) }]}
+            schema={TripTableSchema}
+            rowActions={[{ name: "Edit", colour: "info", onClick: (e) => navigate(`/trips/${e.id}`) }]}
             onFetch={onFetch}
           />
         </Card.Body>
         <Card.Footer>
-          <LinkButton colour="info" href="/users/new">
+          <LinkButton colour="info" href="/trips/new">
             New
           </LinkButton>
         </Card.Footer>

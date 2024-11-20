@@ -37,7 +37,7 @@ export function Card(props: Props) {
       <div class="card-header bg-primary text-white">{evalComponents()[0].text}</div>
       <div class="card-body">{evalComponents()[1].children}</div>
       <div class="card-footer">
-        <div class="d-grid gap-2 justify-content-md-end">{evalComponents()[2].children}</div>
+        <div class="d-flex gap-2 justify-content-md-end">{evalComponents()[2].children}</div>
       </div>
     </div>
   );
