@@ -7,7 +7,8 @@ import { ensureLogin } from "~/helper";
 import { addToast, AppService } from "~/lib";
 
 export default function UserEdit(props: RouteSectionProps) {
-  ensureLogin();
+  ensureLogin("admin");
+
   const id = () => props.params.id;
 
   const [user, { mutate }] = createResource(() => AppService.get().tRPC.User.One.query(props.params.id));

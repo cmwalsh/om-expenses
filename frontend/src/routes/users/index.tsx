@@ -1,4 +1,5 @@
 import { useNavigate, type RouteSectionProps } from "@solidjs/router";
+import { humanise } from "common";
 import * as v from "valibot";
 import { Card, LinkButton, MagicBrowser } from "~/components";
 import { ensureLogin } from "~/helper";
@@ -13,9 +14,9 @@ const UserTableSchema = v.object({
 });
 
 export default function Users(props: RouteSectionProps) {
-  const navigate = useNavigate();
+  ensureLogin("admin");
 
-  ensureLogin();
+  const navigate = useNavigate();
 
   const onFetch = async (params: FetchParameters) => {
     return AppService.get().tRPC.User.Search.query(params);
@@ -30,6 +31,7 @@ export default function Users(props: RouteSectionProps) {
             schema={UserTableSchema}
             rowActions={[{ name: "Edit", colour: "info", onClick: (e) => navigate(`/users/${e.id}`) }]}
             onFetch={onFetch}
+            renderRole={(row) => humanise(row.role)}
           />
         </Card.Body>
         <Card.Footer>

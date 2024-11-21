@@ -14,7 +14,8 @@ const UserPickSchema = v.object({
 });
 
 export default function TripEdit(props: RouteSectionProps) {
-  ensureLogin();
+  ensureLogin("admin");
+
   const id = () => props.params.id;
 
   const [trip, { mutate }] = createResource(() => AppService.get().tRPC.Trip.One.query(props.params.id));

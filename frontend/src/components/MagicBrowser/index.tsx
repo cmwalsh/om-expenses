@@ -5,6 +5,7 @@ import { enGB } from "date-fns/locale";
 import { JSXElement, createEffect, createSignal, onCleanup, onMount } from "solid-js";
 import { assert } from "ts-essentials";
 import * as v from "valibot";
+import { AlertDialog, openDialog } from "~/dialogs";
 import { Colour, FetchParameters, QuerySort, normaliseError } from "~/lib";
 import { DataTable, DataTableColumn } from "../DataTable";
 import { Pagination } from "../Pagination";
@@ -34,7 +35,7 @@ type Overrides<TRow> = {
   [TProp in Extract<keyof TRow, string> as `render${Capitalize<TProp>}`]?: (row: TRow) => JSXElement;
 };
 
-const PageSize = 10;
+const PageSize = 5;
 
 interface MagicBrowserInstance {
   refresh(): void;
@@ -89,10 +90,10 @@ export function MagicBrowser<TSchema extends v.ObjectSchema<any, any>, TRow exte
       assertError(_err);
       const err = normaliseError(_err);
 
-      // await UI.openDialog(AlertDialog, {
-      //   title: `Fetch Error: ${err.name}`,
-      //   message: err.message,
-      // });
+      await openDialog(AlertDialog, {
+        title: `Fetch Error: ${err.name}`,
+        message: err.message,
+      });
     }
   };
 

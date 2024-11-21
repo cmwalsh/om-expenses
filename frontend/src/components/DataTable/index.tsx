@@ -47,7 +47,7 @@ export function DataTable<TRow>(props: Props<TRow>) {
   }
 
   return (
-    <div>
+    <div class="overflow-x-auto">
       {props.subHeader && <div>{props.subHeader()}</div>}
       <table class="table">
         <thead>

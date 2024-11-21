@@ -11,9 +11,9 @@ const TripTableSchema = v.object({
 });
 
 export default function Trips(props: RouteSectionProps) {
-  const navigate = useNavigate();
+  ensureLogin("admin");
 
-  ensureLogin();
+  const navigate = useNavigate();
 
   const onFetch = async (params: FetchParameters) => {
     return AppService.get().tRPC.Trip.Search.query(params);

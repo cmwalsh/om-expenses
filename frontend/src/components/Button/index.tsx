@@ -12,7 +12,7 @@ type Props = JSX.HTMLElementTags["button"] &
     colour: Colour;
   };
 
-export function Button({ classList, colour, ...props }: Props) {
+export function Button(props: Props) {
   // const navigate = useNavigate();
   const [working, setWorking] = createSignal(false);
 
@@ -53,7 +53,7 @@ export function Button({ classList, colour, ...props }: Props) {
   return (
     <button
       {...props}
-      classList={{ ...classList, btn: true, ["btn-" + colour]: true }}
+      classList={{ ...props.classList, btn: true, ["btn-" + props.colour]: true }}
       disabled={props.disabled || working()}
       on:click={onClick}
     />

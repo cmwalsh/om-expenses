@@ -1,6 +1,6 @@
 import { useNavigate, type RouteSectionProps } from "@solidjs/router";
-import { LoginData, LoginDataSchema } from "common";
-import { createEffect, createSignal } from "solid-js";
+import { assertUnreachable, LoginData, LoginDataSchema } from "common";
+import { createSignal, onMount } from "solid-js";
 import { Card, MagicFields } from "~/components";
 import { AlertDialog, openDialog } from "~/dialogs";
 import { getLogoutReason } from "~/helper";
@@ -9,14 +9,28 @@ import { addToast, AppService } from "~/lib";
 export default function Login(props: RouteSectionProps) {
   const navigate = useNavigate();
 
-  createEffect(() => {
-    if (getLogoutReason() === "expired") {
-      addToast({
-        life: 3600000,
-        title: "Logged out",
-        message: "You have been logged out because your session has expired.",
-      });
-    }
+  onMount(() => {
+    requestAnimationFrame(() => {
+      const reason = getLogoutReason();
+
+      if (reason === "expired") {
+        addToast({
+          life: 3_600_000,
+          title: "Logged out",
+          message: "You have been logged out because your session has expired.",
+        });
+      } else if (reason === "permissions") {
+        addToast({
+          life: 10_000,
+          title: "Invalid permissions",
+          message: "You do not have access to this area.",
+        });
+      } else if (reason === null) {
+        // Do nothing
+      } else {
+        assertUnreachable(reason);
+      }
+    });
   });
 
   const [login, setLogin] = createSignal<LoginData>({ email: "", password: "" });
@@ -44,27 +58,25 @@ export default function Login(props: RouteSectionProps) {
 
   return (
     <main>
-      <div class="d-flex justify-content-center align-items-center">
-        <div class="col-12 col-md-6 col-lg-4">
-          <form on:submit={onLogin}>
-            <Card>
-              <Card.Header text="Login" />
-              <Card.Body>
-                <MagicFields
-                  schema={LoginDataSchema}
-                  data={login()}
-                  validation={submittedCount() > 0}
-                  onChange={setLogin}
-                />
-              </Card.Body>
-              <Card.Footer>
-                <button class="btn btn-primary" type="submit">
-                  Login
-                </button>
-              </Card.Footer>
-            </Card>
-          </form>
-        </div>
+      <div class="grid">
+        <form on:submit={onLogin} class="g-col-12 g-col-md-6 g-start-md-4">
+          <Card>
+            <Card.Header text="Login" />
+            <Card.Body>
+              <MagicFields
+                schema={LoginDataSchema}
+                data={login()}
+                validation={submittedCount() > 0}
+                onChange={setLogin}
+              />
+            </Card.Body>
+            <Card.Footer>
+              <button class="btn btn-primary" type="submit">
+                Login
+              </button>
+            </Card.Footer>
+          </Card>
+        </form>
       </div>
     </main>
   );
