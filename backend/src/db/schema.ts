@@ -1,5 +1,5 @@
 import { relations, sql } from "drizzle-orm";
-import { pgEnum, pgTable, unique, uuid, varchar } from "drizzle-orm/pg-core";
+import { pgEnum, pgTable, timestamp, unique, uuid, varchar } from "drizzle-orm/pg-core";
 
 export type TableType = typeof UserTable | typeof TripTable;
 
@@ -17,6 +17,8 @@ export const UserTable = pgTable("user", {
   name: varchar({ length: 100 }).notNull(),
   email: varchar({ length: 100 }).notNull().unique(),
   password_hash: varchar({ length: BcryptHashLength }).notNull(),
+  created: timestamp({ withTimezone: false, mode: "date" }).notNull().defaultNow(),
+  updated: timestamp({ withTimezone: false, mode: "date" }).notNull().defaultNow(),
 });
 
 export const UsersRelations = relations(UserTable, ({ many }) => ({
@@ -26,6 +28,8 @@ export const UsersRelations = relations(UserTable, ({ many }) => ({
 export const TripTable = pgTable("trip", {
   id: uuid().primaryKey(),
   name: varchar({ length: 100 }).notNull(),
+  created: timestamp({ withTimezone: false, mode: "date" }).notNull().defaultNow(),
+  updated: timestamp({ withTimezone: false, mode: "date" }).notNull().defaultNow(),
 });
 
 export const GroupRelations = relations(TripTable, ({ many }) => ({
@@ -44,6 +48,8 @@ export const UserToTripTable = pgTable(
     trip_id: uuid("trip_id")
       .notNull()
       .references(() => TripTable.id),
+    created: timestamp({ withTimezone: false, mode: "date" }).notNull().defaultNow(),
+    updated: timestamp({ withTimezone: false, mode: "date" }).notNull().defaultNow(),
   },
   (t) => {
     return {

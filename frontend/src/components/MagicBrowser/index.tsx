@@ -1,6 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { assertError, camelToPascal } from "common";
+import { assertError, camelToPascal, includes, keys } from "common";
+import { format } from "date-fns";
+import { enGB } from "date-fns/locale";
 import { JSXElement, createEffect, createSignal, onCleanup, onMount } from "solid-js";
+import { assert } from "ts-essentials";
 import * as v from "valibot";
 import { Colour, FetchParameters, QuerySort, normaliseError } from "~/lib";
 import { DataTable, DataTableColumn } from "../DataTable";
@@ -119,14 +122,16 @@ export function MagicBrowser<TSchema extends v.ObjectSchema<any, any>, TRow exte
       return {
         name: propName,
         label: title ?? "???",
-        render: (row) => {
+        render: (row): JSXElement => {
           const overrideName = `render${camelToPascal(propName)}`;
 
-          if (overrideName in props) {
-            return (props as any)[overrideName](row);
+          if (includes(overrideName, keys(props)) && typeof props[overrideName] === "function") {
+            return props[overrideName](row);
           }
 
-          return (row as any)[propName];
+          assert(includes(propName, keys(row)), `Property "${propName}" not in row!`);
+
+          return renderValue(row[propName]);
         },
       };
     });
@@ -184,4 +189,28 @@ export function MagicBrowser<TSchema extends v.ObjectSchema<any, any>, TRow exte
       <TableFooter />
     </div>
   );
+}
+
+function renderValue(value: unknown): JSXElement {
+  if (value === undefined) {
+    return "[undefined]";
+  }
+
+  if (value === null) {
+    return "[null]";
+  }
+
+  if (typeof value === "string" || typeof value === "number") {
+    return value;
+  }
+
+  if (typeof value === "boolean") {
+    return value ? "Yes" : "No";
+  }
+
+  if (typeof value === "object" && value instanceof Date) {
+    return format(value, "PPp", { locale: enGB });
+  }
+
+  return "!! Cannot format !!";
 }

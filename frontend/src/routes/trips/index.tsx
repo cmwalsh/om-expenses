@@ -6,6 +6,8 @@ import { AppService, FetchParameters } from "~/lib";
 
 const TripTableSchema = v.object({
   name: v.pipe(v.string(), v.title("Name")),
+  created: v.pipe(v.date(), v.title("Created")),
+  updated: v.pipe(v.date(), v.title("Updated")),
 });
 
 export default function Trips(props: RouteSectionProps) {

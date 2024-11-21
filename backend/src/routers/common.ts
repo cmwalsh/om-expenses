@@ -54,7 +54,7 @@ export function assertOneRecord<T>(records: readonly T[]): T {
 }
 
 export function toDrizzleOrderBy(table: dbSchema.TableType, orderBy: Pagination["orderBy"]) {
-  let orderByClause = asc(table.id);
+  let orderByClause = asc(table.created);
 
   if (orderBy.length > 0) {
     const [col, dir] = orderBy[0];

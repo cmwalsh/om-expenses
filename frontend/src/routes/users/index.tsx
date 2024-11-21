@@ -8,6 +8,8 @@ const UserTableSchema = v.object({
   role: v.pipe(v.string(), v.title("Role")),
   email: v.pipe(v.string(), v.title("Email Address")),
   name: v.pipe(v.string(), v.title("Name")),
+  created: v.pipe(v.date(), v.title("Created")),
+  updated: v.pipe(v.date(), v.title("Updated")),
 });
 
 export default function Users(props: RouteSectionProps) {

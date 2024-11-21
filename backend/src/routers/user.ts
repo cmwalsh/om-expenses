@@ -73,7 +73,7 @@ export const UserRouter = tRPC.router({
       return db.transaction(async (tx) => {
         await tx
           .update(UserTable)
-          .set({ ...rest })
+          .set({ ...rest, updated: new Date() })
           .where(eq(UserTable.id, id));
 
         if (new_password) {

@@ -2,6 +2,7 @@
 import { createTRPCClient, httpBatchLink, TRPCClientError, TRPCLink } from "@trpc/client";
 import { observable } from '@trpc/server/observable';
 import type { AppRouter } from "backend";
+import superjson from 'superjson';
 import { SessionUser } from "./common";
 import { SessionService } from "./session";
 
@@ -74,6 +75,7 @@ export class AppService {
 
           return headers;
         },
+        transformer: superjson,
       }),
     ],
   });

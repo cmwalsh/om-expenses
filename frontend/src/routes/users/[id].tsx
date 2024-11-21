@@ -1,44 +1,25 @@
 import { RouteSectionProps } from "@solidjs/router";
-import { UserCreateSchema, UserUpdate, UserUpdateSchema } from "common";
+import { UserUpdate, UserUpdateSchema } from "common";
 import { createResource, createSignal, Show, Suspense } from "solid-js";
 import * as v from "valibot";
-import { Button, Card, MagicFields } from "~/components";
-import { ensureLogin, getIdModeAndSchema } from "~/helper";
+import { Button, Card, DateInfo, MagicFields } from "~/components";
+import { ensureLogin } from "~/helper";
 import { addToast, AppService } from "~/lib";
 
 export default function UserEdit(props: RouteSectionProps) {
-  const [id, mode, schema] = getIdModeAndSchema(props, UserCreateSchema, UserUpdateSchema);
-
   ensureLogin();
+  const id = () => props.params.id;
 
-  const [user, { mutate }] = createResource(async () => {
-    let user: UserUpdate = {};
-
-    if (props.params.id !== "new") {
-      user = await AppService.get().tRPC.User.One.query(props.params.id);
-    }
-
-    return user;
-  });
-
+  const [user, { mutate }] = createResource(() => AppService.get().tRPC.User.One.query(props.params.id));
   const [submittedCount, setSubmittedCount] = createSignal(0);
 
-  const onChange = (data: UserUpdate) => {
-    mutate({ ...user(), ...data });
-  };
+  const onChange = (data: UserUpdate) => mutate({ ...user()!, ...data });
 
   const onSave = async () => {
     setSubmittedCount(submittedCount() + 1);
+    const res = v.parse(UserUpdateSchema, user());
 
-    if (mode === "create") {
-      const res = v.parse(schema, user());
-
-      await AppService.get().tRPC.User.Create.mutate(res);
-    } else {
-      const res = v.parse(schema, user());
-
-      await AppService.get().tRPC.User.Update.mutate([id, res]);
-    }
+    await AppService.get().tRPC.User.Update.mutate([id(), res]);
 
     addToast({ title: "Save", message: "Save successful", life: 5000 });
   };
@@ -46,13 +27,21 @@ export default function UserEdit(props: RouteSectionProps) {
   return (
     <main>
       <Card>
-        <Card.Header text={mode === "create" ? "Create User" : "Update User"} />
+        <Card.Header text="Update User" />
         <Card.Body>
           <form>
             <Suspense fallback="Loading...">
               <Show when={user()}>
                 {(user) => (
-                  <MagicFields schema={schema} data={user()} validation={submittedCount() > 0} onChange={onChange} />
+                  <div class="d-flex flex-column gap-3">
+                    <MagicFields
+                      schema={UserUpdateSchema}
+                      data={user()}
+                      validation={submittedCount() > 0}
+                      onChange={onChange}
+                    />
+                    <DateInfo record={user()} />
+                  </div>
                 )}
               </Show>
             </Suspense>

@@ -44,7 +44,7 @@ export const TripRouter = tRPC.router({
 
       await db
         .update(TripTable)
-        .set({ ...rest })
+        .set({ ...rest, updated: new Date() })
         .where(eq(TripTable.id, id));
     },
   ),

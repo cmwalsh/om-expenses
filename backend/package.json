@@ -20,6 +20,7 @@
     "graphql-yoga": "^5.10.2",
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.13.1",
+    "superjson": "^2.2.1",
     "ts-essentials": "^10.0.3",
     "uuid": "^11.0.3",
     "valibot": "^1.0.0-beta.6"

@@ -1,4 +1,4 @@
-import { assert } from "ts-essentials";
+import { assert, ElementOf } from "ts-essentials";
 
 export * from "./trip";
 export * from "./user";
@@ -13,12 +13,16 @@ export function assertUnreachable(x: never): never {
   throw new Error(`An unreachable event has occurred: ${String(x)} / ${typeof x}`);
 }
 
-export function includes<T, L extends T>(t: T, list: readonly L[]): t is L {
-  return list.includes(t as L);
+export function includes<L extends readonly unknown[]>(t: unknown, list: L): t is ElementOf<L> {
+  return list.includes(t);
 }
 
 export function keys<T extends object>(obj: T) {
   return Object.keys(obj) as unknown as readonly (keyof T)[];
+}
+
+export function stringKeys<T extends object>(obj: T) {
+  return Object.keys(obj).filter((k) => typeof k === "string") as unknown as readonly Extract<keyof T, string>[];
 }
 
 export type PropsOf<TComponent> = TComponent extends (props: infer T) => void ? T : never;

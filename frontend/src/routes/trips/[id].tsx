@@ -3,7 +3,7 @@ import { TripUpdate, TripUpdateSchema } from "common";
 import { createResource, createSignal, Show, Suspense } from "solid-js";
 import { assert } from "ts-essentials";
 import * as v from "valibot";
-import { Button, Card, MagicBrowser, MagicFields, refreshAllBrowsers } from "~/components";
+import { Button, Card, DateInfo, MagicBrowser, MagicFields, refreshAllBrowsers } from "~/components";
 import { openBrowser } from "~/dialogs";
 import { ensureLogin } from "~/helper";
 import { addToast, AppService, FetchParameters } from "~/lib";
@@ -60,12 +60,15 @@ export default function TripEdit(props: RouteSectionProps) {
             <Suspense fallback="Loading...">
               <Show when={trip()}>
                 {(trip) => (
-                  <MagicFields
-                    schema={TripUpdateSchema}
-                    data={trip()}
-                    validation={submittedCount() > 0}
-                    onChange={onChange}
-                  />
+                  <div class="d-flex flex-column gap-3">
+                    <MagicFields
+                      schema={TripUpdateSchema}
+                      data={trip()}
+                      validation={submittedCount() > 0}
+                      onChange={onChange}
+                    />
+                    <DateInfo record={trip()} />
+                  </div>
                 )}
               </Show>
             </Suspense>

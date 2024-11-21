@@ -2,10 +2,13 @@ import { initTRPC, TRPCError } from "@trpc/server";
 import { CreateHTTPContextOptions } from "@trpc/server/adapters/standalone";
 import { assertUnreachable } from "common";
 import { IncomingMessage } from "node:http";
+import superjson from "superjson";
 import { verifyToken } from "./common";
 
 export namespace tRPC {
-  const tRPC = initTRPC.context<Context>().create();
+  const tRPC = initTRPC.context<Context>().create({
+    transformer: superjson,
+  });
 
   export const createContext = async (opts: CreateHTTPContextOptions) => {
     const session = await getSession(opts.req);
