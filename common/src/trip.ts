@@ -1,7 +1,8 @@
 import * as v from "valibot";
+import { FieldMetadata } from "./common";
 
 export const TripCreateSchema = v.object({
-  name: v.pipe(v.string(), v.minLength(2), v.title("Name"), v.metadata({ icon: "✈" })),
+  name: v.pipe(v.string(), v.minLength(2), v.title("Name"), v.metadata(FieldMetadata({ icon: "✈" }))),
 });
 
 export type TripCreate = v.InferInput<typeof TripCreateSchema>;

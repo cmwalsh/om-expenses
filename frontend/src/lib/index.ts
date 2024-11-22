@@ -1,9 +1,11 @@
 /* eslint-disable prettier/prettier */
-import { createTRPCClient, httpBatchLink, TRPCClientError, TRPCLink } from "@trpc/client";
+import { CreateTRPCClient, createTRPCClient, httpBatchLink, TRPCClientError, TRPCLink } from "@trpc/client";
 import { observable } from '@trpc/server/observable';
 import type { AppRouter } from "backend";
+import { assertUnreachable, EntityType } from "common";
 import superjson from 'superjson';
-import { SessionUser } from "./common";
+import * as v from "valibot";
+import { FetchParameters, SessionUser } from "./common";
 import { SessionService } from "./session";
 
 export * from "./common";
@@ -80,6 +82,8 @@ export class AppService {
     ],
   });
 
+  public lookupService = new LookupService(this.tRPC);
+
   private sessionService = new SessionService();
 
   constructor() {
@@ -108,5 +112,48 @@ export class AppService {
 
   public logout() {
     this.sessionService.clearSession();
+  }
+}
+
+export type TripRecord = (ReturnType<AppRouter["Trip"]["One"]> extends PromiseLike<infer T> ? T : never);
+
+
+class LookupService {
+  constructor(private api: CreateTRPCClient<AppRouter>) { }
+
+  public async getOne(type: EntityType, id: string): Promise<unknown> {
+    if (type === 'Trip') {
+      const record = await this.api.Trip.One.query(id)
+      return record;
+    } else {
+      assertUnreachable(type)
+    }
+  }
+
+  public async getMany(type: EntityType, fetch: FetchParameters): Promise<{ rows: readonly { id: string }[], total: number }> {
+    if (type === 'Trip') {
+      return this.api.Trip.Search.query(fetch)
+    } else {
+      assertUnreachable(type)
+    }
+  }
+
+  public getName(type: EntityType, record: unknown) {
+    if (type === 'Trip') {
+      const trip = record as TripRecord;
+      return trip.name;
+    } else {
+      assertUnreachable(type)
+    }
+  }
+
+  public getLookupSchema(type: EntityType) {
+    if (type === 'Trip') {
+      return v.object({
+        name: v.pipe(v.string(), v.title('Name')),
+      })
+    } else {
+      assertUnreachable(type)
+    }
   }
 }

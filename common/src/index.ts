@@ -1,5 +1,6 @@
 import { assert, ElementOf } from "ts-essentials";
 
+export * from "./common";
 export * from "./expense";
 export * from "./trip";
 export * from "./user";

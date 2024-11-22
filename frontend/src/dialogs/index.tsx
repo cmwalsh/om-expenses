@@ -62,7 +62,7 @@ export async function openBrowser<TRow>(
   onFetch: (params: FetchParameters) => Promise<FetchResult<TRow>>,
 ) {
   const row = await openDialog(BrowserDialog, {
-    title: "Add User",
+    title,
     schema,
     onFetch,
   });

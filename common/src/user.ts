@@ -1,5 +1,5 @@
 import * as v from "valibot";
-import { EmailAddress, Password } from "./common";
+import { EmailAddress, FieldMetadata, Password } from "./common";
 
 export const LoginDataSchema = v.object({
   email: EmailAddress,
@@ -9,9 +9,9 @@ export const LoginDataSchema = v.object({
 export type LoginData = v.InferInput<typeof LoginDataSchema>;
 
 export const UserCreateSchema = v.object({
-  role: v.pipe(v.picklist(["admin", "user"]), v.title("Role"), v.metadata({ icon: "Role" })),
+  role: v.pipe(v.picklist(["admin", "user"]), v.title("Role"), v.metadata(FieldMetadata({ icon: "Role" }))),
   email: EmailAddress,
-  name: v.pipe(v.string(), v.minLength(2), v.title("Name"), v.metadata({ icon: "🧑" })),
+  name: v.pipe(v.string(), v.minLength(2), v.title("Name"), v.metadata(FieldMetadata({ icon: "🧑" }))),
   new_password: Password("New Password", "Leave blank to keep existing password"),
   confirm_password: Password("Confirm Password"),
 });

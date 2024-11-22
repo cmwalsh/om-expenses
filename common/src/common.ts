@@ -1,11 +1,21 @@
 import * as v from "valibot";
 
+export type EntityType = "Trip";
+
+export interface FieldMetadata {
+  [key: string]: unknown;
+  icon: string;
+  lookup?: EntityType;
+}
+
+export const FieldMetadata = (m: FieldMetadata) => m;
+
 export const EmailAddress = v.pipe(
   v.string(),
   v.email("Not a valid email address"),
   v.title("Email Address"),
-  v.metadata({ icon: "@" }),
+  v.metadata(FieldMetadata({ icon: "@" })),
 );
 
 export const Password = (title: string, desc = "") =>
-  v.pipe(v.string(), v.minLength(8), v.title(title), v.metadata({ icon: "⋯" }), v.description(desc));
+  v.pipe(v.string(), v.minLength(8), v.title(title), v.description(desc), v.metadata(FieldMetadata({ icon: "⋯" })));

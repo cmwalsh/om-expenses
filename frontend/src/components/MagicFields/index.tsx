@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { humanise } from "common";
+import { EntityType, FieldMetadata, humanise } from "common";
 import { For } from "solid-js";
 import * as v from "valibot";
 import { FormFields } from "../FormFields";
+import { LookupInput } from "../LookupInput";
 import { Select, SelectOption } from "../Select";
 import { TextInput } from "../TextInput";
 
@@ -42,7 +43,7 @@ export function MagicFields<
     <FormFields>
       <For each={fieldsNames}>
         {(fieldName) => {
-          const { metadata, title, inputType, options, description } = getFieldInfo(_schema, fieldName);
+          const { metadata, title, inputType, options, description, entityType } = getFieldInfo(_schema, fieldName);
 
           const value = () => props.data[fieldName];
 
@@ -70,6 +71,15 @@ export function MagicFields<
                   placeholder={title}
                   value={typeof value() === "string" ? value() : undefined}
                   options={options}
+                  onChange={(v) => onFieldChange(fieldName, v)}
+                />
+              ) : inputType === "lookup" ? (
+                <LookupInput
+                  id={fieldName}
+                  isInvalid={getValidationMessages(fieldName).length > 0}
+                  placeholder={title}
+                  entityType={entityType!}
+                  value={typeof value() === "string" ? value() : undefined}
                   onChange={(v) => onFieldChange(fieldName, v)}
                 />
               ) : (
@@ -107,14 +117,19 @@ function getFieldInfo(formSchema: v.ObjectSchema<any, any>, fieldName: string) {
   )?.description;
 
   const metadata = propSchema.pipe.find(
-    (item): item is v.MetadataAction<string, { icon: string }> => item.type === "metadata",
+    (item): item is v.MetadataAction<string, FieldMetadata> => item.type === "metadata",
   )?.metadata;
 
-  let inputType = "text";
+  let inputType: "text" | "select" | "email" | "password" | "lookup" = "text";
 
   let options: SelectOption[] = [];
 
-  if (type === "picklist") {
+  let entityType: EntityType | undefined;
+
+  if (metadata?.lookup) {
+    inputType = "lookup";
+    entityType = metadata.lookup;
+  } else if (type === "picklist") {
     inputType = "select";
 
     options = (vSchema as v.PicklistSchema<any, any>).options.map((o: string) => ({
@@ -130,5 +145,5 @@ function getFieldInfo(formSchema: v.ObjectSchema<any, any>, fieldName: string) {
     }
   }
 
-  return { metadata, title, inputType, options, description };
+  return { metadata, title, inputType, options, description, entityType };
 }
