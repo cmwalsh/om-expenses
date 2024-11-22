@@ -8,7 +8,6 @@ interface Props<TRow> {
   rows: readonly TRow[];
   sort?: QuerySort;
   onSort?: (colName: string) => void;
-  subHeader?: () => JSXElement;
 }
 
 export interface DataTableColumn<TRow> {
@@ -48,9 +47,8 @@ export function DataTable<TRow>(props: Props<TRow>) {
 
   return (
     <div class="overflow-x-auto">
-      {props.subHeader && <div>{props.subHeader()}</div>}
-      <table class="table">
-        <thead>
+      <table class="table table-striped table-bordered mb-0">
+        <thead class="table-dark">
           <tr>
             <For each={columns}>
               {(column) => (

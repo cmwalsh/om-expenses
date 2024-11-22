@@ -10,10 +10,6 @@ export default function App() {
     <Router
       root={(props) => (
         <div class="container">
-          <header>
-            <h1>OM Expenses</h1>
-          </header>
-
           <NavBar />
 
           <Suspense>{props.children}</Suspense>

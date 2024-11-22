@@ -18,7 +18,7 @@ export function Pagination(props: Props) {
   return (
     <div class="d-md-flex gap-2 justify-content-md-end align-items-center text-nowrap">
       <div>
-        Showing {first()} to {last()}
+        Records {first()} to {last()}
       </div>
 
       <Button colour="secondary" disabled={props.page <= 1} on:click={() => props.onPage(props.page - 1)}>

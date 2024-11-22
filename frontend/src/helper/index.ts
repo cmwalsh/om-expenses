@@ -17,6 +17,8 @@ export function ensureLogin(role?: Role) {
   if (role && user.role !== role) {
     return navigate("/login?reason=permissions");
   }
+
+  return () => user;
 }
 
 export function getLogoutReason() {

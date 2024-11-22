@@ -1,5 +1,5 @@
 import { RouteSectionProps, useNavigate } from "@solidjs/router";
-import { TripCreate, TripCreateSchema, TripUpdate } from "common";
+import { TripCreate, TripCreateSchema } from "common";
 import { createSignal } from "solid-js";
 import * as v from "valibot";
 import { Button, Card, MagicFields } from "~/components";
@@ -13,7 +13,7 @@ export default function TripEdit(props: RouteSectionProps) {
   const [trip, setTrip] = createSignal<Partial<TripCreate>>({});
   const [submittedCount, setSubmittedCount] = createSignal(0);
 
-  const onChange = (data: TripUpdate) => {
+  const onChange = (data: Partial<TripCreate>) => {
     setTrip({ ...trip(), ...data });
   };
 

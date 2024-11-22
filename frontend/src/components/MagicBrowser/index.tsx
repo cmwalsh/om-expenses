@@ -154,7 +154,7 @@ export function MagicBrowser<TSchema extends v.ObjectSchema<any, any>, TRow exte
 
   const TableHeader = () => (
     <>
-      <div>{props.title}</div>
+      {props.title && <div>{props.title}</div>}
       <TableActions />
     </>
   );
@@ -177,10 +177,10 @@ export function MagicBrowser<TSchema extends v.ObjectSchema<any, any>, TRow exte
   const TableFooter = () => <Pagination page={page()} pageSize={PageSize} count={rows().total} onPage={setPage} />;
 
   return (
-    <div>
+    <div class="d-flex flex-column gap-3">
       <TableHeader />
+      <TableSubHeader />
       <DataTable
-        subHeader={TableSubHeader}
         columns={getColumns()}
         rows={rows().rows}
         rowActions={props.rowActions}

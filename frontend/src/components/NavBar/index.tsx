@@ -22,6 +22,10 @@ export function NavBar() {
   return (
     <nav class="navbar navbar-expand-lg mb-3">
       <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+          OM Expenses
+        </a>
+
         <button class="navbar-toggler" type="button" aria-label="Toggle navigation" on:click={onToggle}>
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -43,6 +47,12 @@ export function NavBar() {
             <li class="nav-item">
               <a class="nav-link active" href="/trips">
                 Trips
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link active" href="/expenses">
+                Expenses
               </a>
             </li>
 

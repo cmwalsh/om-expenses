@@ -1,6 +1,7 @@
 import { assertError, includes, keys } from "common";
 import { asc, desc, getTableColumns } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
+import { PgColumn } from "drizzle-orm/pg-core";
 import jwt, { TokenExpiredError } from "jsonwebtoken";
 import * as v from "valibot";
 import { Config } from "../config";
@@ -53,15 +54,31 @@ export function assertOneRecord<T>(records: readonly T[]): T {
   throw new Error(`Expect 1, found ${records.length}`);
 }
 
-export function toDrizzleOrderBy(table: dbSchema.TableType, orderBy: Pagination["orderBy"]) {
+export function toDrizzleOrderBy(
+  table: dbSchema.TableType,
+  orderBy: Pagination["orderBy"],
+  joinColumns: Record<string, PgColumn> = {},
+) {
   let orderByClause = asc(table.created);
 
   if (orderBy.length > 0) {
-    const [col, dir] = orderBy[0];
+    const [colName, dir] = orderBy[0];
 
-    if (includes(col, keys(getTableColumns(table)))) {
-      if (dir === "asc") orderByClause = asc(table[col]);
-      if (dir === "desc") orderByClause = desc(table[col]);
+    let column: PgColumn | undefined;
+
+    if (includes(colName, keys(getTableColumns(table)))) {
+      column = table[colName];
+    }
+
+    if (colName in joinColumns) {
+      column = joinColumns[colName];
+    }
+
+    if (column) {
+      if (dir === "asc") orderByClause = asc(column);
+      if (dir === "desc") orderByClause = desc(column);
+    } else {
+      console.warn("toDrizzleOrderBy: Could not resolve column:", colName);
     }
   }
 

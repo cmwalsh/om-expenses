@@ -1,5 +1,5 @@
 import { RouteSectionProps, useNavigate } from "@solidjs/router";
-import { UserCreate, UserCreateSchema, UserUpdate } from "common";
+import { UserCreate, UserCreateSchema } from "common";
 import { createSignal } from "solid-js";
 import * as v from "valibot";
 import { Button, Card, MagicFields } from "~/components";
@@ -13,7 +13,7 @@ export default function UserEdit(props: RouteSectionProps) {
   const [user, setUser] = createSignal<Partial<UserCreate>>({});
   const [submittedCount, setSubmittedCount] = createSignal(0);
 
-  const onChange = (data: UserUpdate) => {
+  const onChange = (data: Partial<UserCreate>) => {
     setUser({ ...user(), ...data });
   };
 
