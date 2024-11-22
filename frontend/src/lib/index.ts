@@ -115,23 +115,26 @@ export class AppService {
   }
 }
 
+export type UserRecord = (ReturnType<AppRouter["User"]["One"]> extends PromiseLike<infer T> ? T : never);
 export type TripRecord = (ReturnType<AppRouter["Trip"]["One"]> extends PromiseLike<infer T> ? T : never);
-
 
 class LookupService {
   constructor(private api: CreateTRPCClient<AppRouter>) { }
 
   public async getOne(type: EntityType, id: string): Promise<unknown> {
-    if (type === 'Trip') {
-      const record = await this.api.Trip.One.query(id)
-      return record;
+    if (type === 'User') {
+      return this.api.User.One.query(id)
+    } else if (type === 'Trip') {
+      return this.api.Trip.One.query(id)
     } else {
       assertUnreachable(type)
     }
   }
 
   public async getMany(type: EntityType, fetch: FetchParameters): Promise<{ rows: readonly { id: string }[], total: number }> {
-    if (type === 'Trip') {
+    if (type === 'User') {
+      return this.api.User.Search.query(fetch)
+    } else if (type === 'Trip') {
       return this.api.Trip.Search.query(fetch)
     } else {
       assertUnreachable(type)
@@ -139,7 +142,10 @@ class LookupService {
   }
 
   public getName(type: EntityType, record: unknown) {
-    if (type === 'Trip') {
+    if (type === 'User') {
+      const user = record as UserRecord;
+      return user.name
+    } else if (type === 'Trip') {
       const trip = record as TripRecord;
       return trip.name;
     } else {
@@ -147,8 +153,12 @@ class LookupService {
     }
   }
 
-  public getLookupSchema(type: EntityType) {
-    if (type === 'Trip') {
+  public getLookupTableSchema(type: EntityType) {
+    if (type === 'User') {
+      return v.object({
+        name: v.pipe(v.string(), v.title('Name')),
+      })
+    } else if (type === 'Trip') {
       return v.object({
         name: v.pipe(v.string(), v.title('Name')),
       })

@@ -1,6 +1,6 @@
 import * as v from "valibot";
 
-export type EntityType = "Trip";
+export type EntityType = "User" | "Trip";
 
 export interface FieldMetadata {
   [key: string]: unknown;

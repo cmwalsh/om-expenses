@@ -25,7 +25,7 @@ export function LookupInput(props: Props) {
   const onOpenLookup = async () => {
     const row = await openBrowser(
       `Select ${props.entityType}`,
-      lookupService.getLookupSchema(props.entityType),
+      lookupService.getLookupTableSchema(props.entityType),
       (fetchParameters) => lookupService.getMany(props.entityType, fetchParameters),
     );
 
@@ -47,7 +47,7 @@ export function LookupInput(props: Props) {
       }}
       style={{ cursor: "pointer" }}
       placeholder={props.placeholder}
-      value={typeof name() === "string" ? name() : "[Not Set]"}
+      value={typeof name() === "string" ? name() : ""}
       on:change={(e) => props.onChange(e.currentTarget.value)}
       on:click={onOpenLookup}
     />

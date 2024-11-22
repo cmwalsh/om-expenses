@@ -1,7 +1,8 @@
 import { useNavigate, type RouteSectionProps } from "@solidjs/router";
-import { humanise } from "common";
+import { ExpenseStatus, ExpenseType, FieldMetadata, humanise } from "common";
+import { createSignal } from "solid-js";
 import * as v from "valibot";
-import { Card, LinkButton, MagicBrowser } from "~/components";
+import { Card, LinkButton, MagicBrowser, MagicFields } from "~/components";
 import { ensureLogin } from "~/helper";
 import { AppService, FetchParameters } from "~/lib";
 
@@ -15,19 +16,41 @@ const ExpenseTableSchema = v.object({
   updated: v.pipe(v.date(), v.title("Updated")),
 });
 
+const ExpenseFilterSchema = v.partial(
+  v.object({
+    user_id: v.pipe(v.string(), v.uuid(), v.title("User"), v.metadata(FieldMetadata({ icon: "🧑", lookup: "User" }))),
+    trip_id: v.pipe(v.string(), v.uuid(), v.title("Trip"), v.metadata(FieldMetadata({ icon: "✈", lookup: "Trip" }))),
+    type: v.pipe(v.picklist(ExpenseType), v.title("Type"), v.metadata(FieldMetadata({ icon: "❓" }))),
+    status: v.pipe(v.picklist(ExpenseStatus), v.title("Status"), v.metadata(FieldMetadata({ icon: "⏼" }))),
+  }),
+);
+
+type ExpenseFilter = v.InferInput<typeof ExpenseFilterSchema>;
+
 export default function Expenses(props: RouteSectionProps) {
   ensureLogin("admin");
 
   const navigate = useNavigate();
 
+  const [filter, setFilter] = createSignal<ExpenseFilter>({
+    status: "unapproved",
+  });
+
   const onFetch = async (params: FetchParameters) => {
-    return AppService.get().tRPC.Expense.Search.query(params);
+    return AppService.get().tRPC.Expense.Search.query({ ...params, ...filter() });
   };
 
   return (
-    <main>
+    <main class="d-flex flex-column gap-3">
       <Card>
-        <Card.Header text="Expenses" />
+        <Card.Header text="Filter Expenses" />
+        <Card.Body>
+          <MagicFields schema={ExpenseFilterSchema} validation={true} data={filter()} onChange={setFilter} />
+        </Card.Body>
+      </Card>
+
+      <Card>
+        <Card.Header text="Results" />
         <Card.Body>
           <MagicBrowser
             schema={ExpenseTableSchema}

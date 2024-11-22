@@ -1,5 +1,5 @@
-import { ExpenseCreateSchema, ExpenseUpdateSchema } from "common";
-import { count, eq, getTableColumns, ilike, or } from "drizzle-orm";
+import { ExpenseCreateSchema, ExpenseStatus, ExpenseType, ExpenseUpdateSchema } from "common";
+import { and, count, eq, getTableColumns, ilike, or } from "drizzle-orm";
 import { assert } from "ts-essentials";
 import * as uuid from "uuid";
 import * as v from "valibot";
@@ -7,12 +7,27 @@ import { ExpenseTable, TripTable, UserTable } from "../db/schema";
 import { assertOneRecord, db, PaginationSchema, toDrizzleOrderBy, UUID, withId } from "./common";
 import { tRPC } from "./trpc";
 
+const ExpenseSearchSchema = v.intersect([
+  PaginationSchema,
+  v.partial(
+    v.object({ user_id: UUID, trip_id: UUID, type: v.picklist(ExpenseType), status: v.picklist(ExpenseStatus) }),
+  ),
+]);
+
 export const ExpenseRouter = tRPC.router({
-  Search: tRPC.ProtectedProcedure.input(v.parser(PaginationSchema)).query(
-    async ({ input: { take, skip, orderBy, search } }) => {
-      const condition = search
+  Search: tRPC.ProtectedProcedure.input(v.parser(ExpenseSearchSchema)).query(
+    async ({ input: { take, skip, orderBy, search, user_id, trip_id, type, status } }) => {
+      const quickSearchCondition = search
         ? or(ilike(ExpenseTable.merchant, `%${search}%`), ilike(TripTable.name, `%${search}%`))
         : undefined;
+
+      const condition = and(
+        quickSearchCondition,
+        user_id ? eq(ExpenseTable.user_id, user_id) : undefined,
+        trip_id ? eq(ExpenseTable.trip_id, trip_id) : undefined,
+        type ? eq(ExpenseTable.type, type) : undefined,
+        status ? eq(ExpenseTable.status, status) : undefined,
+      );
 
       const query = db
         .select({ ...getTableColumns(ExpenseTable), trip_name: TripTable.name, user_name: UserTable.name })

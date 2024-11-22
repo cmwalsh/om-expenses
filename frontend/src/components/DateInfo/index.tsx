@@ -14,7 +14,7 @@ export function DateInfo(props: Props) {
           <div class="badge text-bg-secondary">{formatDistanceToNow(props.record.created, { addSuffix: true })}</div>
         </div>
         <div class="g-col-12 g-col-md-6">
-          <div>Modified: {format(props.record.updated, "PPp", { locale: enGB })}</div>
+          <div>Updated: {format(props.record.updated, "PPp", { locale: enGB })}</div>
           <div class="badge text-bg-secondary">{formatDistanceToNow(props.record.updated, { addSuffix: true })}</div>
         </div>
       </div>
