@@ -1,5 +1,5 @@
-import { createResource, Match, Show, Switch } from "solid-js";
-import { Card, Tile } from "~/components";
+import { createResource, For, Match, Show, Switch } from "solid-js";
+import { Card, Tile, TripSummary } from "~/components";
 import { ensureLogin } from "~/helper";
 import { AppService } from "~/lib";
 
@@ -24,37 +24,45 @@ export default function Home() {
 function AdminDashboard() {
   const [stats] = createResource(() => AppService.get().tRPC.Stats.Stats.query({}));
 
+  const [tripSummaries] = createResource(() => AppService.get().tRPC.Stats.TripSummaries.query({}));
+
   return (
     <Card colour="secondary">
       <Card.Header text="Admin Dashboard" />
       <Card.Body>
-        <Show when={stats()}>
-          {(stats) => (
-            <div class="grid">
-              <Tile
-                href="/users"
-                number={stats().userCount}
-                text="Users registered"
-                colour="green"
-                class="g-col-6 g-col-md-3"
-              />
-              <Tile
-                href="/trips"
-                number={stats().tripCount}
-                text="Trips listed"
-                colour="blue"
-                class="g-col-6 g-col-md-3"
-              />
-              <Tile
-                href="/expenses"
-                number={stats().expenseCount}
-                text="Expenses awaiting approval"
-                colour="red"
-                class="g-col-6 g-col-md-3"
-              />
-            </div>
-          )}
-        </Show>
+        <div class="d-flex gap-3 flex-column">
+          <Show when={stats()}>
+            {(stats) => (
+              <div class="grid">
+                <Tile
+                  href="/users"
+                  number={stats().userCount}
+                  text="Users registered"
+                  colour="green"
+                  class="g-col-6 g-col-md-3"
+                />
+                <Tile
+                  href="/trips"
+                  number={stats().tripCount}
+                  text="Trips listed"
+                  colour="blue"
+                  class="g-col-6 g-col-md-3"
+                />
+                <Tile
+                  href="/expenses"
+                  number={stats().expenseCount}
+                  text="Expenses awaiting approval"
+                  colour="red"
+                  class="g-col-6 g-col-md-3"
+                />
+              </div>
+            )}
+          </Show>
+
+          <div class="d-flex gap-3 flex-column">
+            <For each={tripSummaries()}>{(tripSummary) => <TripSummary tripSummary={tripSummary} />}</For>
+          </div>
+        </div>
       </Card.Body>
     </Card>
   );

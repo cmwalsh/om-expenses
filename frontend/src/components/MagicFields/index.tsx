@@ -32,7 +32,7 @@ export function MagicFields<
     return issues?.filter((i) => i.path?.length === 1 && i.path[0].key === fieldName).map((i) => i.message) ?? [];
   };
 
-  const onFieldChange = (fieldName: Extract<keyof TData, string>, value: string) => {
+  const onFieldChange = (fieldName: Extract<keyof TData, string>, value: string | undefined | null) => {
     props.onChange({
       ...props.data,
       [fieldName]: value,
@@ -69,8 +69,9 @@ export function MagicFields<
                   id={fieldName}
                   isInvalid={getValidationMessages(fieldName).length > 0}
                   placeholder={title}
-                  value={typeof value() === "string" ? value() : undefined}
+                  value={value()}
                   options={options}
+                  allowNull={true}
                   onChange={(v) => onFieldChange(fieldName, v)}
                 />
               ) : inputType === "lookup" ? (

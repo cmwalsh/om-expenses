@@ -27,6 +27,12 @@ export type UserRecord = ReturnType<AppRouter["User"]["One"]> extends PromiseLik
 export type TripRecord = ReturnType<AppRouter["Trip"]["One"]> extends PromiseLike<infer T> ? T : never;
 export type ExpenseRecord = ReturnType<AppRouter["Expense"]["One"]> extends PromiseLike<infer T> ? T : never;
 
+export type TripSummaryInfo = (
+  ReturnType<AppRouter["Stats"]["TripSummaries"]> extends PromiseLike<infer T> ? T : never
+) extends readonly (infer T)[]
+  ? T
+  : never;
+
 interface CustomLinkOpts {
   onError: (err: Error) => void;
 }

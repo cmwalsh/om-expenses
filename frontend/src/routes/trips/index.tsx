@@ -7,6 +7,7 @@ import { AppService, FetchParameters, TripSearchRecord } from "~/lib";
 
 const TripTableSchema = v.object({
   name: v.pipe(v.string(), v.title("Name")),
+  location: v.pipe(v.string(), v.title("Location")),
   created: v.pipe(v.date(), v.title("Created")),
   updated: v.pipe(v.date(), v.title("Updated")),
 });

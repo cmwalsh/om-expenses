@@ -15,7 +15,6 @@ export default function ExpenseEdit(props: RouteSectionProps) {
   const [submittedCount, setSubmittedCount] = createSignal(0);
 
   const onChange = (data: ExpenseUpdate) => mutate({ ...expense()!, ...data });
-
   const onSave = async () => {
     setSubmittedCount(submittedCount() + 1);
     const res = v.parse(ExpenseUpdateSchema, expense());

@@ -3,6 +3,7 @@ import { FieldMetadata } from "./common";
 
 export const TripCreateSchema = v.object({
   name: v.pipe(v.string(), v.minLength(2), v.title("Name"), v.metadata(FieldMetadata({ icon: "✈" }))),
+  location: v.pipe(v.string(), v.minLength(2), v.title("Location"), v.metadata(FieldMetadata({ icon: "🌍" }))),
 });
 
 export type TripCreate = v.InferInput<typeof TripCreateSchema>;

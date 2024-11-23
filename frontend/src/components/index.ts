@@ -12,3 +12,4 @@ export * from "./Select";
 export * from "./TextInput";
 export * from "./Tile";
 export * from "./Toast";
+export * from "./TripSummary";

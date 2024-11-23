@@ -29,6 +29,7 @@ export const UsersRelations = relations(UserTable, ({ many }) => ({
 export const TripTable = pgTable("trip", {
   id: uuid().primaryKey(),
   name: varchar({ length: 100 }).notNull(),
+  location: varchar({ length: 100 }).notNull(),
   created: timestamp({ withTimezone: false, mode: "date" }).notNull().defaultNow(),
   updated: timestamp({ withTimezone: false, mode: "date" }).notNull().defaultNow(),
 });
@@ -87,7 +88,7 @@ export const ExpenseTable = pgTable("expense", {
   type: ExpenseTypeEnum().notNull(),
   status: ExpenseStatusEnum().notNull(),
   merchant: varchar({ length: 100 }).notNull(),
-  amount: decimal({ precision: 2 }).notNull(),
+  amount: decimal({ precision: 12, scale: 2 }).notNull(),
   created: timestamp({ withTimezone: false, mode: "date" }).notNull().defaultNow(),
   updated: timestamp({ withTimezone: false, mode: "date" }).notNull().defaultNow(),
 });
