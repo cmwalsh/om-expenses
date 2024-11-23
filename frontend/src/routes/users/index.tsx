@@ -1,9 +1,10 @@
 import { useNavigate, type RouteSectionProps } from "@solidjs/router";
 import { humanise } from "common";
 import * as v from "valibot";
-import { Card, LinkButton, MagicBrowser } from "~/components";
+import { Card, LinkButton, MagicBrowser, refreshAllBrowsers } from "~/components";
+import { openConfirm } from "~/dialogs";
 import { ensureLogin } from "~/helper";
-import { AppService, FetchParameters } from "~/lib";
+import { AppService, FetchParameters, UserSearchRecord } from "~/lib";
 
 const UserTableSchema = v.object({
   role: v.pipe(v.string(), v.title("Role")),
@@ -22,14 +23,26 @@ export default function Users(props: RouteSectionProps) {
     return AppService.get().tRPC.User.Search.query(params);
   };
 
+  const onDelete = async (row: UserSearchRecord) => {
+    const res = await openConfirm("Delete user", `Are you sure you wish to delete "${row.name}"`);
+
+    if (res === "yes") {
+      await AppService.get().tRPC.User.Delete.mutate(row.id);
+      refreshAllBrowsers();
+    }
+  };
+
   return (
     <main>
-      <Card>
+      <Card colour="success">
         <Card.Header text="Users" />
         <Card.Body>
           <MagicBrowser
             schema={UserTableSchema}
-            rowActions={[{ name: "Edit", colour: "info", onClick: (e) => navigate(`/users/${e.id}`) }]}
+            rowActions={[
+              { name: "Edit", colour: "info", onClick: (row) => navigate(`/users/${row.id}`) },
+              { name: "Delete", colour: "danger", onClick: onDelete },
+            ]}
             onFetch={onFetch}
             renderRole={(row) => humanise(row.role)}
           />

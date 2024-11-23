@@ -27,7 +27,7 @@ export default function UserEdit(props: RouteSectionProps) {
 
   return (
     <main>
-      <Card>
+      <Card colour="success">
         <Card.Header text="Update User" />
         <Card.Body>
           <form>

@@ -11,5 +11,8 @@
     "source.fixAll.eslint": "always",
     "source.fixAll.ts": "always",
     "source.organizeImports": "always"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   }
 }

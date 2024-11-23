@@ -2,9 +2,10 @@ import { useNavigate, type RouteSectionProps } from "@solidjs/router";
 import { ExpenseStatus, ExpenseType, FieldMetadata, humanise } from "common";
 import { createSignal } from "solid-js";
 import * as v from "valibot";
-import { Card, LinkButton, MagicBrowser, MagicFields } from "~/components";
+import { Card, LinkButton, MagicBrowser, MagicFields, refreshAllBrowsers } from "~/components";
+import { openConfirm } from "~/dialogs";
 import { ensureLogin } from "~/helper";
-import { AppService, FetchParameters } from "~/lib";
+import { AppService, ExpenseSearchRecord, FetchParameters } from "~/lib";
 
 const ExpenseTableSchema = v.object({
   trip_name: v.pipe(v.string(), v.title("Trip")),
@@ -40,6 +41,18 @@ export default function Expenses(props: RouteSectionProps) {
     return AppService.get().tRPC.Expense.Search.query({ ...params, ...filter() });
   };
 
+  const onDelete = async (row: ExpenseSearchRecord) => {
+    const res = await openConfirm(
+      "Delete user",
+      `Are you sure you wish to delete expense for "${row.merchant}" of value "${parseFloat(row.amount).toFixed(2)}"`,
+    );
+
+    if (res === "yes") {
+      await AppService.get().tRPC.Trip.Delete.mutate(row.id);
+      refreshAllBrowsers();
+    }
+  };
+
   return (
     <main class="d-flex flex-column gap-3">
       <Card>
@@ -49,12 +62,15 @@ export default function Expenses(props: RouteSectionProps) {
         </Card.Body>
       </Card>
 
-      <Card>
+      <Card colour="danger">
         <Card.Header text="Results" />
         <Card.Body>
           <MagicBrowser
             schema={ExpenseTableSchema}
-            rowActions={[{ name: "Edit", colour: "info", onClick: (e) => navigate(`/expenses/${e.id}`) }]}
+            rowActions={[
+              { name: "Edit", colour: "info", onClick: (e) => navigate(`/expenses/${e.id}`) },
+              { name: "Delete", colour: "danger", onClick: onDelete },
+            ]}
             onFetch={onFetch}
             renderStatus={(row) => humanise(row.status)}
             renderAmount={(row) => parseFloat(row.amount).toFixed(2)}

@@ -22,7 +22,7 @@ export function BrowserDialog(props: Props) {
   return (
     <div class="modal-dialog">
       <div class="modal-content">
-        <div class="modal-header">
+        <div class="modal-header bg-primary text-white">
           <h1 class="modal-title fs-5">{props.title}</h1>
           <button type="button" class="btn-close" aria-label="Close" on:click={onClose}></button>
         </div>

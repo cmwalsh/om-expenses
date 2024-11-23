@@ -3,6 +3,7 @@ import { JSX } from "solid-js";
 import * as v from "valibot";
 import { FetchParameters, FetchResult } from "~/lib";
 import { BrowserDialog } from "./BrowserDialog";
+import { ConfirmDialog } from "./ConfirmDialog";
 
 export * from "./AlertDialog";
 export * from "./BrowserDialog";
@@ -68,4 +69,11 @@ export async function openBrowser<TRow>(
   });
 
   return row as TRow | undefined;
+}
+
+export async function openConfirm(title: string, message: string) {
+  return openDialog(ConfirmDialog, {
+    title,
+    message,
+  });
 }

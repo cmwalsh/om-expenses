@@ -1,4 +1,4 @@
-import { ExpenseStatus, ExpenseType } from "common";
+import { ExpenseStatus, ExpenseType, UserRole } from "common";
 import { relations, sql } from "drizzle-orm";
 import { decimal, pgEnum, pgTable, timestamp, unique, uuid, varchar } from "drizzle-orm/pg-core";
 
@@ -8,13 +8,13 @@ export type TableType = typeof UserTable | typeof TripTable | typeof ExpenseTabl
 
 const BcryptHashLength = 60;
 
-export const UserRole = pgEnum("user_role", ["admin", "user"]);
+export const UserRoleEnum = pgEnum("user_role", UserRole);
 
 export const UserTable = pgTable("user", {
   id: uuid()
     .primaryKey()
     .default(sql`gen_random_uuid()`),
-  role: UserRole().notNull(),
+  role: UserRoleEnum().notNull(),
   name: varchar({ length: 100 }).notNull(),
   email: varchar({ length: 100 }).notNull().unique(),
   password_hash: varchar({ length: BcryptHashLength }).notNull(),

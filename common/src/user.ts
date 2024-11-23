@@ -1,5 +1,10 @@
+import { ElementOf } from "ts-essentials";
 import * as v from "valibot";
 import { EmailAddress, FieldMetadata, Password } from "./common";
+
+export const UserRole = ["admin", "user"] as const;
+
+export type UserRole = ElementOf<typeof UserRole>;
 
 export const LoginDataSchema = v.object({
   email: EmailAddress,

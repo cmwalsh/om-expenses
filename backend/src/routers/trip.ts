@@ -3,7 +3,7 @@ import { and, eq, ilike, or } from "drizzle-orm";
 import * as uuid from "uuid";
 import * as v from "valibot";
 import { TripTable, UserToTripTable } from "../db/schema";
-import { assertOneRecord, db, PaginationSchema, toDrizzleOrderBy, UUID, withId } from "./common";
+import { assertOneRecord, assertRole, db, PaginationSchema, toDrizzleOrderBy, UUID, withId } from "./common";
 import { tRPC } from "./trpc";
 
 export const TripRouter = tRPC.router({
@@ -30,7 +30,9 @@ export const TripRouter = tRPC.router({
     return assertOneRecord(await db.select().from(TripTable).where(eq(TripTable.id, input)));
   }),
 
-  Create: tRPC.ProtectedProcedure.input(v.parser(TripCreateSchema)).mutation(async ({ input }) => {
+  Create: tRPC.ProtectedProcedure.input(v.parser(TripCreateSchema)).mutation(async ({ ctx, input }) => {
+    assertRole(ctx, "admin");
+
     const { ...rest } = input;
 
     const id = uuid.v4();
@@ -39,7 +41,9 @@ export const TripRouter = tRPC.router({
   }),
 
   Update: tRPC.ProtectedProcedure.input(v.parser(withId(TripUpdateSchema))).mutation(
-    async ({ input: [id, fields] }) => {
+    async ({ ctx, input: [id, fields] }) => {
+      assertRole(ctx, "admin");
+
       const { ...rest } = fields;
 
       await db
@@ -49,7 +53,15 @@ export const TripRouter = tRPC.router({
     },
   ),
 
-  AddUser: tRPC.ProtectedProcedure.input(v.parser(TripAddUserSchema)).mutation(async ({ input }) => {
+  Delete: tRPC.ProtectedProcedure.input(v.parser(UUID)).mutation(async ({ ctx, input }) => {
+    assertRole(ctx, "admin");
+
+    await db.delete(TripTable).where(eq(TripTable.id, input));
+  }),
+
+  AddUser: tRPC.ProtectedProcedure.input(v.parser(TripAddUserSchema)).mutation(async ({ ctx, input }) => {
+    assertRole(ctx, "admin");
+
     const { user_id, trip_id } = input;
 
     const id = uuid.v4();
@@ -57,7 +69,9 @@ export const TripRouter = tRPC.router({
     return id;
   }),
 
-  RemoveUser: tRPC.ProtectedProcedure.input(v.parser(TripAddUserSchema)).mutation(async ({ input }) => {
+  RemoveUser: tRPC.ProtectedProcedure.input(v.parser(TripAddUserSchema)).mutation(async ({ ctx, input }) => {
+    assertRole(ctx, "admin");
+
     const { user_id, trip_id } = input;
 
     await db

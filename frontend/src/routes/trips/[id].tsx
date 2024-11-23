@@ -4,9 +4,9 @@ import { createResource, createSignal, Show, Suspense } from "solid-js";
 import { assert } from "ts-essentials";
 import * as v from "valibot";
 import { Button, Card, DateInfo, MagicBrowser, MagicFields, refreshAllBrowsers } from "~/components";
-import { openBrowser } from "~/dialogs";
+import { openBrowser, openConfirm } from "~/dialogs";
 import { ensureLogin } from "~/helper";
-import { addToast, AppService, FetchParameters } from "~/lib";
+import { addToast, AppService, FetchParameters, UserSearchRecord } from "~/lib";
 
 const UserPickSchema = v.object({
   email: v.pipe(v.string(), v.title("Email Address")),
@@ -47,14 +47,18 @@ export default function TripEdit(props: RouteSectionProps) {
     }
   };
 
-  const onRemoveUser = async (user_id: string) => {
-    await AppService.get().tRPC.Trip.RemoveUser.mutate({ trip_id: id(), user_id });
-    refreshAllBrowsers();
+  const onRemoveUser = async (row: UserSearchRecord) => {
+    const res = await openConfirm("Remove user from trip", `Are you sure you wish to remove "${row.name}"`);
+
+    if (res === "yes") {
+      await AppService.get().tRPC.Trip.RemoveUser.mutate({ trip_id: id(), user_id: row.id });
+      refreshAllBrowsers();
+    }
   };
 
   return (
     <main class="d-flex flex-column gap-3">
-      <Card>
+      <Card colour="primary">
         <Card.Header text="Update Trip" />
         <Card.Body>
           <form>
@@ -82,12 +86,12 @@ export default function TripEdit(props: RouteSectionProps) {
         </Card.Footer>
       </Card>
 
-      <Card>
+      <Card colour="success">
         <Card.Header text="Users on this trip" />
         <Card.Body>
           <MagicBrowser
             schema={UserPickSchema}
-            rowActions={[{ name: "Remove", colour: "danger", onClick: (e) => onRemoveUser(e.id) }]}
+            rowActions={[{ name: "Remove", colour: "danger", onClick: (row) => onRemoveUser(row) }]}
             onFetch={onFetchUsers}
           />
         </Card.Body>

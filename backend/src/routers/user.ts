@@ -5,7 +5,7 @@ import { assert } from "ts-essentials";
 import * as uuid from "uuid";
 import * as v from "valibot";
 import { UserTable, UserToTripTable } from "../db/schema";
-import { assertOneRecord, db, PaginationSchema, toDrizzleOrderBy, UUID, withId } from "./common";
+import { assertOneRecord, assertRole, db, PaginationSchema, toDrizzleOrderBy, UUID, withId } from "./common";
 import { tRPC } from "./trpc";
 
 const SaltRounds = 10;
@@ -51,7 +51,9 @@ export const UserRouter = tRPC.router({
     return assertOneRecord(await db.select().from(UserTable).where(eq(UserTable.id, input)));
   }),
 
-  Create: tRPC.ProtectedProcedure.input(v.parser(UserCreateSchema)).mutation(async ({ input }) => {
+  Create: tRPC.ProtectedProcedure.input(v.parser(UserCreateSchema)).mutation(async ({ ctx, input }) => {
+    assertRole(ctx, "admin");
+
     const { new_password, confirm_password, ...rest } = input;
 
     assert(new_password === confirm_password, "Passwords do not match");
@@ -65,7 +67,9 @@ export const UserRouter = tRPC.router({
   }),
 
   Update: tRPC.ProtectedProcedure.input(v.parser(withId(UserUpdateSchema))).mutation(
-    async ({ input: [id, fields] }) => {
+    async ({ ctx, input: [id, fields] }) => {
+      assertRole(ctx, "admin");
+
       const { new_password, confirm_password, ...rest } = fields;
 
       if (rest.email) rest.email = rest.email.toLowerCase();
@@ -85,4 +89,10 @@ export const UserRouter = tRPC.router({
       });
     },
   ),
+
+  Delete: tRPC.ProtectedProcedure.input(v.parser(UUID)).mutation(async ({ ctx, input }) => {
+    assertRole(ctx, "admin");
+
+    await db.delete(UserTable).where(eq(UserTable.id, input));
+  }),
 });

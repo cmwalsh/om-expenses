@@ -1,11 +1,13 @@
-import { assertError, includes, keys } from "common";
+import { assertError, includes, keys, UserRole } from "common";
 import { asc, desc, getTableColumns } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { PgColumn } from "drizzle-orm/pg-core";
 import jwt, { TokenExpiredError } from "jsonwebtoken";
+import { assert } from "ts-essentials";
 import * as v from "valibot";
 import { Config } from "../config";
 import * as dbSchema from "../db/schema";
+import { tRPC } from "./trpc";
 
 export interface TokenPayload {
   id: string;
@@ -47,6 +49,10 @@ export const PaginationSchema = v.object({
 export type Pagination = v.InferOutput<typeof PaginationSchema>;
 
 export const UUID = v.pipe(v.string(), v.uuid());
+
+export function assertRole(ctx: tRPC.Context, role: UserRole) {
+  assert(ctx.session?.user.role === role, `Must be role of "${role}". You are "${ctx.session?.user.role ?? "Anon"}."`);
+}
 
 /** Fail if anything other than a single record is returned in a query */
 export function assertOneRecord<T>(records: readonly T[]): T {

@@ -1,6 +1,7 @@
 import { For, JSXElement } from "solid-js";
 import { Colour, QuerySort } from "~/lib";
 import { Button } from "../Button";
+import "./style.scss";
 
 interface Props<TRow> {
   columns: readonly DataTableColumn<TRow>[];
@@ -28,7 +29,7 @@ export function DataTable<TRow>(props: Props<TRow>) {
   if (props.rowActions?.length ?? 0 > 0) {
     columns.push({
       name: "actions",
-      label: "Actions",
+      label: "",
       render: (row) => {
         return (
           <div class="d-md-flex gap-2 justify-content-md-end align-items-center text-nowrap">
@@ -53,13 +54,11 @@ export function DataTable<TRow>(props: Props<TRow>) {
             <For each={columns}>
               {(column) => (
                 <th
+                  classList={{ ["column-" + column.name]: true }}
                   style={{ cursor: props.onSort ? "pointer" : undefined }}
                   onclick={() => props.onSort?.(column.name)}
                 >
-                  <div
-                    class="d-md-flex gap-2 align-items-center text-nowrap"
-                    classList={{ "justify-content-md-end": column.name === "actions" }}
-                  >
+                  <div class="d-md-flex gap-2 align-items-center text-nowrap">
                     {column.label ?? column.name}
                     {props.sort?.sort === column.name &&
                       (props.sort?.dir === "asc" ? (

@@ -107,6 +107,8 @@ export function MagicBrowser<TSchema extends v.ObjectSchema<any, any>, TRow exte
   };
 
   const onSort = (colName: string) => {
+    if (colName === "actions") return;
+
     const _sort = sort();
 
     if (_sort?.sort === colName && _sort.dir === "asc") {
@@ -132,7 +134,7 @@ export function MagicBrowser<TSchema extends v.ObjectSchema<any, any>, TRow exte
 
           assert(includes(propName, keys(row)), `Property "${propName}" not in row!`);
 
-          return renderValue(row[propName]);
+          return renderValue(row[propName], propName);
         },
       };
     });
@@ -192,7 +194,7 @@ export function MagicBrowser<TSchema extends v.ObjectSchema<any, any>, TRow exte
   );
 }
 
-function renderValue(value: unknown): JSXElement {
+function renderValue(value: unknown, propName: string): JSXElement {
   if (value === undefined) {
     return "[undefined]";
   }
@@ -210,7 +212,7 @@ function renderValue(value: unknown): JSXElement {
   }
 
   if (typeof value === "object" && value instanceof Date) {
-    return format(value, "PPp", { locale: enGB });
+    return <span class="badge text-bg-secondary">{format(value, "PPp", { locale: enGB })}</span>;
   }
 
   return "!! Cannot format !!";

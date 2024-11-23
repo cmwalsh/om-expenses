@@ -16,10 +16,15 @@ const ExpenseSearchSchema = v.intersect([
 
 export const ExpenseRouter = tRPC.router({
   Search: tRPC.ProtectedProcedure.input(v.parser(ExpenseSearchSchema)).query(
-    async ({ input: { take, skip, orderBy, search, user_id, trip_id, type, status } }) => {
+    async ({ ctx, input: { take, skip, orderBy, search, user_id, trip_id, type, status } }) => {
       const quickSearchCondition = search
         ? or(ilike(ExpenseTable.merchant, `%${search}%`), ilike(TripTable.name, `%${search}%`))
         : undefined;
+
+      // Users can only see expenses belonging to them
+      if (ctx.session.user.role === "user") {
+        user_id = ctx.session.user.id;
+      }
 
       const condition = and(
         quickSearchCondition,
@@ -50,14 +55,16 @@ export const ExpenseRouter = tRPC.router({
     },
   ),
 
-  One: tRPC.ProtectedProcedure.input(v.parser(UUID)).query(async ({ input }) => {
-    return assertOneRecord(await db.select().from(ExpenseTable).where(eq(ExpenseTable.id, input)));
+  One: tRPC.ProtectedProcedure.input(v.parser(UUID)).query(async ({ ctx, input }) => {
+    const condition = and(eq(ExpenseTable.user_id, ctx.session.user.id), eq(ExpenseTable.id, input));
+
+    return assertOneRecord(await db.select().from(ExpenseTable).where(condition));
   }),
 
   Create: tRPC.ProtectedProcedure.input(v.parser(ExpenseCreateSchema)).mutation(async ({ ctx, input }) => {
     const { ...rest } = input;
 
-    const user_id = ctx.session.userId;
+    const user_id = ctx.session.user.id;
 
     const status = "unapproved";
 
@@ -67,10 +74,11 @@ export const ExpenseRouter = tRPC.router({
   }),
 
   Update: tRPC.ProtectedProcedure.input(v.parser(withId(ExpenseUpdateSchema))).mutation(
-    async ({ input: [id, fields] }) => {
+    async ({ ctx, input: [id, fields] }) => {
       const { ...rest } = fields;
 
       const expense = assertOneRecord(await db.select().from(ExpenseTable).where(eq(ExpenseTable.id, id)));
+      assert(ctx.session.user.role === "admin" || expense.user_id === ctx.session.user.id, "No permission");
       assert(expense.status === "unapproved", "Only unapproved expenses can be updated");
 
       await db
@@ -79,4 +87,11 @@ export const ExpenseRouter = tRPC.router({
         .where(eq(ExpenseTable.id, id));
     },
   ),
+
+  Delete: tRPC.ProtectedProcedure.input(v.parser(UUID)).mutation(async ({ ctx, input }) => {
+    const expense = assertOneRecord(await db.select().from(ExpenseTable).where(eq(ExpenseTable.id, input)));
+    assert(ctx.session.user.role === "admin" || expense.user_id === ctx.session.user.id, "No permission");
+
+    await db.delete(ExpenseTable).where(eq(ExpenseTable.id, input));
+  }),
 });

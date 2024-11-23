@@ -1,9 +1,11 @@
 import { initTRPC, TRPCError } from "@trpc/server";
 import { CreateHTTPContextOptions } from "@trpc/server/adapters/standalone";
 import { assertUnreachable } from "common";
+import { eq } from "drizzle-orm";
 import { IncomingMessage } from "node:http";
 import superjson from "superjson";
-import { verifyToken } from "./common";
+import { UserTable } from "../db/schema";
+import { assertOneRecord, db, verifyToken } from "./common";
 
 export namespace tRPC {
   const tRPC = initTRPC.context<Context>().create({
@@ -38,8 +40,12 @@ export namespace tRPC {
     }
 
     if (verifyResponse[0] === "valid") {
+      const userId = verifyResponse[1].id;
+
+      const user = assertOneRecord(await db.select().from(UserTable).where(eq(UserTable.id, userId)));
+
       return {
-        userId: verifyResponse[1].id,
+        user,
       };
     }
 

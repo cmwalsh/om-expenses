@@ -25,7 +25,7 @@ function AdminDashboard() {
   const [stats] = createResource(() => AppService.get().tRPC.Stats.Stats.query({}));
 
   return (
-    <Card>
+    <Card colour="secondary">
       <Card.Header text="Admin Dashboard" />
       <Card.Body>
         <Show when={stats()}>
@@ -62,7 +62,7 @@ function AdminDashboard() {
 
 function UserDashboard() {
   return (
-    <Card>
+    <Card colour="secondary">
       <Card.Header text="Admin Dashboard" />
       <Card.Body>====</Card.Body>
     </Card>

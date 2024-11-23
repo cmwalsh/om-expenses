@@ -27,7 +27,7 @@ export default function ExpenseEdit(props: RouteSectionProps) {
 
   return (
     <main class="d-flex flex-column gap-3">
-      <Card>
+      <Card colour="danger">
         <Card.Header text="Update Expense" />
         <Card.Body>
           <form>

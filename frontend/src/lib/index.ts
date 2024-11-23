@@ -1,9 +1,8 @@
-/* eslint-disable prettier/prettier */
 import { CreateTRPCClient, createTRPCClient, httpBatchLink, TRPCClientError, TRPCLink } from "@trpc/client";
-import { observable } from '@trpc/server/observable';
+import { observable } from "@trpc/server/observable";
 import type { AppRouter } from "backend";
-import { assertUnreachable, EntityType } from "common";
-import superjson from 'superjson';
+import { assertUnreachable, EntityType, SearchResult } from "common";
+import superjson from "superjson";
 import * as v from "valibot";
 import { FetchParameters, SessionUser } from "./common";
 import { SessionService } from "./session";
@@ -11,12 +10,30 @@ import { SessionService } from "./session";
 export * from "./common";
 export * from "./toast";
 
+export type UserSearchRecord =
+  (ReturnType<AppRouter["User"]["Search"]> extends PromiseLike<infer T> ? T : never) extends SearchResult<infer T>
+    ? T
+    : never;
+export type TripSearchRecord =
+  (ReturnType<AppRouter["Trip"]["Search"]> extends PromiseLike<infer T> ? T : never) extends SearchResult<infer T>
+    ? T
+    : never;
+export type ExpenseSearchRecord =
+  (ReturnType<AppRouter["Expense"]["Search"]> extends PromiseLike<infer T> ? T : never) extends SearchResult<infer T>
+    ? T
+    : never;
+
+export type UserRecord = ReturnType<AppRouter["User"]["One"]> extends PromiseLike<infer T> ? T : never;
+export type TripRecord = ReturnType<AppRouter["Trip"]["One"]> extends PromiseLike<infer T> ? T : never;
+export type ExpenseRecord = ReturnType<AppRouter["Expense"]["One"]> extends PromiseLike<infer T> ? T : never;
+
 interface CustomLinkOpts {
   onError: (err: Error) => void;
 }
 
 export const errorLink =
-  (opts: CustomLinkOpts): TRPCLink<AppRouter> => () => {
+  (opts: CustomLinkOpts): TRPCLink<AppRouter> =>
+  () => {
     // here we just got initialized in the app - this happens once per app
     // useful for storing cache for instance
     return ({ next, op }) => {
@@ -58,12 +75,12 @@ export class AppService {
       errorLink({
         onError: (err) => {
           if (err instanceof TRPCClientError) {
-            if (err.data && 'code' in err.data && err.data.code === 'UNAUTHORIZED') {
+            if (err.data && "code" in err.data && err.data.code === "UNAUTHORIZED") {
               this.sessionService.clearSession();
-              window.location.href = '/login?reason=expired';
+              window.location.href = "/login?reason=expired";
             }
           }
-        }
+        },
       }),
       httpBatchLink({
         url: "http://localhost:3000",
@@ -115,55 +132,55 @@ export class AppService {
   }
 }
 
-export type UserRecord = (ReturnType<AppRouter["User"]["One"]> extends PromiseLike<infer T> ? T : never);
-export type TripRecord = (ReturnType<AppRouter["Trip"]["One"]> extends PromiseLike<infer T> ? T : never);
-
 class LookupService {
-  constructor(private api: CreateTRPCClient<AppRouter>) { }
+  constructor(private api: CreateTRPCClient<AppRouter>) {}
 
   public async getOne(type: EntityType, id: string): Promise<unknown> {
-    if (type === 'User') {
-      return this.api.User.One.query(id)
-    } else if (type === 'Trip') {
-      return this.api.Trip.One.query(id)
+    if (type === "User") {
+      return this.api.User.One.query(id);
+    } else if (type === "Trip") {
+      return this.api.Trip.One.query(id);
     } else {
-      assertUnreachable(type)
+      assertUnreachable(type);
     }
   }
 
-  public async getMany(type: EntityType, fetch: FetchParameters): Promise<{ rows: readonly { id: string }[], total: number }> {
-    if (type === 'User') {
-      return this.api.User.Search.query(fetch)
-    } else if (type === 'Trip') {
-      return this.api.Trip.Search.query(fetch)
+  public async getMany(
+    type: EntityType,
+    fetch: FetchParameters,
+  ): Promise<{ rows: readonly { id: string }[]; total: number }> {
+    if (type === "User") {
+      return this.api.User.Search.query(fetch);
+    } else if (type === "Trip") {
+      return this.api.Trip.Search.query(fetch);
     } else {
-      assertUnreachable(type)
+      assertUnreachable(type);
     }
   }
 
   public getName(type: EntityType, record: unknown) {
-    if (type === 'User') {
+    if (type === "User") {
       const user = record as UserRecord;
-      return user.name
-    } else if (type === 'Trip') {
+      return user.name;
+    } else if (type === "Trip") {
       const trip = record as TripRecord;
       return trip.name;
     } else {
-      assertUnreachable(type)
+      assertUnreachable(type);
     }
   }
 
   public getLookupTableSchema(type: EntityType) {
-    if (type === 'User') {
+    if (type === "User") {
       return v.object({
-        name: v.pipe(v.string(), v.title('Name')),
-      })
-    } else if (type === 'Trip') {
+        name: v.pipe(v.string(), v.title("Name")),
+      });
+    } else if (type === "Trip") {
       return v.object({
-        name: v.pipe(v.string(), v.title('Name')),
-      })
+        name: v.pipe(v.string(), v.title("Name")),
+      });
     } else {
-      assertUnreachable(type)
+      assertUnreachable(type);
     }
   }
 }
