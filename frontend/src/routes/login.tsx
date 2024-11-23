@@ -60,7 +60,7 @@ export default function Login(props: RouteSectionProps) {
     <main>
       <div class="grid">
         <form on:submit={onLogin} class="g-col-12 g-col-md-6 g-start-md-4">
-          <Card>
+          <Card colour="primary">
             <Card.Header text="Login" />
             <Card.Body>
               <MagicFields

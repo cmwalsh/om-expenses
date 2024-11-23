@@ -29,7 +29,7 @@ export default function UserEdit(props: RouteSectionProps) {
 
   return (
     <main>
-      <Card>
+      <Card colour="success">
         <Card.Header text="Create User" />
         <Card.Body>
           <form>

@@ -29,7 +29,7 @@ export default function TripEdit(props: RouteSectionProps) {
 
   return (
     <main>
-      <Card>
+      <Card colour="primary">
         <Card.Header text="Create Trip" />
         <Card.Body>
           <form>

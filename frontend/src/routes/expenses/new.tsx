@@ -29,7 +29,7 @@ export default function ExpenseEdit(props: RouteSectionProps) {
 
   return (
     <main>
-      <Card>
+      <Card colour="danger">
         <Card.Header text="Create Expense" />
         <Card.Body>
           <form class="d-flex flex-column gap-3">

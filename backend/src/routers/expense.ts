@@ -49,7 +49,8 @@ export const ExpenseRouter = tRPC.router({
       const [{ count: total }] = await db
         .select({ count: count() })
         .from(ExpenseTable)
-        .innerJoin(TripTable, eq(ExpenseTable.trip_id, TripTable.id));
+        .innerJoin(TripTable, eq(ExpenseTable.trip_id, TripTable.id))
+        .where(condition);
 
       return { rows, total } as const;
     },
@@ -78,6 +79,7 @@ export const ExpenseRouter = tRPC.router({
       const { ...rest } = fields;
 
       const expense = assertOneRecord(await db.select().from(ExpenseTable).where(eq(ExpenseTable.id, id)));
+      // Admins can edit all, users can only edit own
       assert(ctx.session.user.role === "admin" || expense.user_id === ctx.session.user.id, "No permission");
       assert(expense.status === "unapproved", "Only unapproved expenses can be updated");
 
@@ -90,6 +92,7 @@ export const ExpenseRouter = tRPC.router({
 
   Delete: tRPC.ProtectedProcedure.input(v.parser(UUID)).mutation(async ({ ctx, input }) => {
     const expense = assertOneRecord(await db.select().from(ExpenseTable).where(eq(ExpenseTable.id, input)));
+    // Admins can delete all, users can only delete own
     assert(ctx.session.user.role === "admin" || expense.user_id === ctx.session.user.id, "No permission");
 
     await db.delete(ExpenseTable).where(eq(ExpenseTable.id, input));
