@@ -1,7 +1,6 @@
 import { assertError } from "common";
 import { createSignal, JSX } from "solid-js";
 import * as v from "valibot";
-import { z } from "zod";
 import { AlertDialog, openDialog } from "~/dialogs";
 import { Colour, normaliseError } from "~/lib";
 
@@ -30,10 +29,6 @@ export function Button(props: Props) {
       const err = normaliseError(_err);
 
       let message = err.message;
-
-      if (err instanceof z.ZodError) {
-        message = err.issues.map((i, idx) => `[${idx}] ${i.message}`).join("\n");
-      }
 
       if (err instanceof v.ValiError) {
         message = err.issues.map((i, idx) => `[${idx}] ${i.message}`).join("\n");

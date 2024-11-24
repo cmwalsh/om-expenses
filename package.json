@@ -1,10 +1,5 @@
 {
   "name": "om-expense",
-  "workspaces": [
-    "./backend",
-    "./common",
-    "./frontend"
-  ],
   "scripts": {
     "backend:dev": "cd backend && npm run dev",
     "frontend:dev": "cd frontend && npm run dev",
