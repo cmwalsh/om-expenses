@@ -6,7 +6,8 @@ import { AppService } from "~/lib";
 
 export type Role = (ReturnType<AppRouter["User"]["One"]> extends PromiseLike<infer T> ? T : never)["role"];
 
-export function ensureLogin(role?: Role) {
+export function ensureLogin(_role?: Role | Role[]) {
+  const role = _role instanceof Array ? _role : _role === undefined ? [] : [_role];
   const navigate = useNavigate();
 
   const user = AppService.get().getCurrentUser();
@@ -14,7 +15,7 @@ export function ensureLogin(role?: Role) {
   if (!user) {
     return navigate("/login");
   }
-  if (role && user.role !== role) {
+  if (role.length > 0 && !role.includes(user.role)) {
     return navigate("/login?reason=permissions");
   }
 

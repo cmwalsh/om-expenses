@@ -1,3 +1,4 @@
+import { useNavigate } from "@solidjs/router";
 import { createResource, For, Match, Show, Switch } from "solid-js";
 import { Card, Tile, TripSummary } from "~/components";
 import { ensureLogin } from "~/helper";
@@ -22,9 +23,15 @@ export default function Home() {
 }
 
 function AdminDashboard() {
+  const navigate = useNavigate();
+
   const [stats] = createResource(() => AppService.get().tRPC.Stats.Stats.query({}));
 
   const [tripSummaries] = createResource(() => AppService.get().tRPC.Stats.TripSummaries.query({}));
+
+  const onClickTrip = (id: string) => {
+    navigate(`/expenses?trip_id=${id}`);
+  };
 
   return (
     <Card colour="secondary">
@@ -49,7 +56,7 @@ function AdminDashboard() {
                   class="g-col-6 g-col-md-3"
                 />
                 <Tile
-                  href="/expenses"
+                  href="/expenses?status=unapproved"
                   number={stats().expenseCount}
                   text="Expenses awaiting approval"
                   colour="red"
@@ -60,7 +67,11 @@ function AdminDashboard() {
           </Show>
 
           <div class="d-flex gap-3 flex-column">
-            <For each={tripSummaries()}>{(tripSummary) => <TripSummary tripSummary={tripSummary} />}</For>
+            <For each={tripSummaries()}>
+              {(tripSummary) => (
+                <TripSummary tripSummary={tripSummary} onClickTrip={() => onClickTrip(tripSummary.id)} />
+              )}
+            </For>
           </div>
         </div>
       </Card.Body>
@@ -71,8 +82,8 @@ function AdminDashboard() {
 function UserDashboard() {
   return (
     <Card colour="secondary">
-      <Card.Header text="Admin Dashboard" />
-      <Card.Body>====</Card.Body>
+      <Card.Header text="User Dashboard" />
+      <Card.Body>Welcome...</Card.Body>
     </Card>
   );
 }

@@ -1,8 +1,7 @@
-import { useNavigate, type RouteSectionProps } from "@solidjs/router";
+import { useNavigate, useSearchParams, type RouteSectionProps } from "@solidjs/router";
 import { ExpenseStatus, ExpenseType, FieldMetadata, humanise } from "common";
-import { createSignal } from "solid-js";
 import * as v from "valibot";
-import { Card, LinkButton, MagicBrowser, MagicFields, refreshAllBrowsers } from "~/components";
+import { Button, Card, LinkButton, MagicBrowser, MagicFields, refreshAllBrowsers } from "~/components";
 import { openConfirm } from "~/dialogs";
 import { ensureLogin } from "~/helper";
 import { AppService, ExpenseSearchRecord, FetchParameters } from "~/lib";
@@ -19,7 +18,7 @@ const ExpenseTableSchema = v.object({
 
 const ExpenseFilterSchema = v.partial(
   v.object({
-    user_id: v.pipe(v.string(), v.uuid(), v.title("User"), v.metadata(FieldMetadata({ icon: "🧑", lookup: "User" }))),
+    user_id: v.pipe(v.string(), v.uuid(), v.title("User"), v.metadata(FieldMetadata({ icon: "👤", lookup: "User" }))),
     trip_id: v.pipe(v.string(), v.uuid(), v.title("Trip"), v.metadata(FieldMetadata({ icon: "✈", lookup: "Trip" }))),
     type: v.pipe(v.picklist(ExpenseType), v.title("Type"), v.metadata(FieldMetadata({ icon: "❓" }))),
     status: v.pipe(v.picklist(ExpenseStatus), v.title("Status"), v.metadata(FieldMetadata({ icon: "⏼" }))),
@@ -28,17 +27,21 @@ const ExpenseFilterSchema = v.partial(
 
 type ExpenseFilter = v.InferInput<typeof ExpenseFilterSchema>;
 
+// Needed to clear search params (useSearchParams)
+const ClearFilter: ExpenseFilter = { user_id: undefined, trip_id: undefined, type: undefined, status: undefined };
+
 export default function Expenses(props: RouteSectionProps) {
-  ensureLogin("admin");
+  const user = ensureLogin(["admin", "user"]);
+
+  const schema = user?.().role === "admin" ? ExpenseFilterSchema : v.omit(ExpenseFilterSchema, ["user_id"]);
 
   const navigate = useNavigate();
+  const [filter, setFilter] = useSearchParams();
 
-  const [filter, setFilter] = createSignal<ExpenseFilter>({
-    status: "unapproved",
-  });
+  // const [filter, setFilter] = createSignal<ExpenseFilter>(v.parse(ExpenseFilterSchema, searchParams));
 
   const onFetch = async (params: FetchParameters) => {
-    return AppService.get().tRPC.Expense.Search.query({ ...params, ...filter() });
+    return AppService.get().tRPC.Expense.Search.query({ ...params, ...filter });
   };
 
   const onDelete = async (row: ExpenseSearchRecord) => {
@@ -58,8 +61,13 @@ export default function Expenses(props: RouteSectionProps) {
       <Card>
         <Card.Header text="Filter Expenses" />
         <Card.Body>
-          <MagicFields schema={ExpenseFilterSchema} validation={true} data={filter()} onChange={setFilter} />
+          <MagicFields schema={schema} validation={true} data={filter} onChange={setFilter} />
         </Card.Body>
+        <Card.Footer>
+          <Button colour="secondary" on:click={() => setFilter(ClearFilter)}>
+            Clear Filter
+          </Button>
+        </Card.Footer>
       </Card>
 
       <Card colour="danger">

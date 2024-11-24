@@ -48,7 +48,10 @@ export default function TripEdit(props: RouteSectionProps) {
   };
 
   const onRemoveUser = async (row: UserSearchRecord) => {
-    const res = await openConfirm("Remove user from trip", `Are you sure you wish to remove "${row.name}"`);
+    const res = await openConfirm(
+      "Remove user from trip",
+      `Are you sure you wish to remove "${row.name}" from this trip?`,
+    );
 
     if (res === "yes") {
       await AppService.get().tRPC.Trip.RemoveUser.mutate({ trip_id: id(), user_id: row.id });

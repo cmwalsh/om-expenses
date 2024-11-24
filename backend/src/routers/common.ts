@@ -57,7 +57,7 @@ export function assertRole(ctx: tRPC.Context, role: UserRole) {
 /** Fail if anything other than a single record is returned in a query */
 export function assertOneRecord<T>(records: readonly T[]): T {
   if (records.length === 1) return records[0];
-  throw new Error(`Expect 1, found ${records.length}`);
+  throw new Error(`Expected a single record but found ${records.length}`);
 }
 
 export function toDrizzleOrderBy(

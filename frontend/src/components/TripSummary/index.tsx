@@ -3,13 +3,17 @@ import "./style.scss";
 
 interface Props {
   tripSummary: TripSummaryInfo;
+
+  onClickTrip: () => void;
 }
 
 export function TripSummary(props: Props) {
   return (
     <div class="trip-summary grid align-items-center">
       <div class="trip-summary-left g-col-12 g-col-md-6">
-        <div class="trip-summary-name">{props.tripSummary.name}</div>
+        <div class="trip-summary-name" on:click={props.onClickTrip}>
+          {props.tripSummary.name}
+        </div>
         <div class="trip-summary-location">{props.tripSummary.location}</div>
       </div>
 

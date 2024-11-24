@@ -20,4 +20,4 @@ export const EmailAddress = v.pipe(
 );
 
 export const Password = (title: string, desc = "") =>
-  v.pipe(v.string(), v.minLength(8), v.title(title), v.description(desc), v.metadata(FieldMetadata({ icon: "⋯" })));
+  v.pipe(v.string(), v.minLength(8), v.title(title), v.description(desc), v.metadata(FieldMetadata({ icon: "🔑" })));

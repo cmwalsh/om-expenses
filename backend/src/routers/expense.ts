@@ -22,7 +22,7 @@ export const ExpenseRouter = tRPC.router({
         : undefined;
 
       // Users can only see expenses belonging to them
-      if (ctx.session.user.role === "user") {
+      if (ctx.session.user.role !== "admin") {
         user_id = ctx.session.user.id;
       }
 
@@ -57,7 +57,10 @@ export const ExpenseRouter = tRPC.router({
   ),
 
   One: tRPC.ProtectedProcedure.input(v.parser(UUID)).query(async ({ ctx, input }) => {
-    const condition = and(eq(ExpenseTable.user_id, ctx.session.user.id), eq(ExpenseTable.id, input));
+    const condition = and(
+      eq(ExpenseTable.id, input),
+      ctx.session.user.role !== "admin" ? eq(ExpenseTable.user_id, ctx.session.user.id) : undefined,
+    );
 
     return assertOneRecord(await db.select().from(ExpenseTable).where(condition));
   }),

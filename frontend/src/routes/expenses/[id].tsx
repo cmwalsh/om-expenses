@@ -7,7 +7,7 @@ import { ensureLogin } from "~/helper";
 import { addToast, AppService } from "~/lib";
 
 export default function ExpenseEdit(props: RouteSectionProps) {
-  ensureLogin("admin");
+  ensureLogin(["admin", "user"]);
 
   const id = () => props.params.id;
 

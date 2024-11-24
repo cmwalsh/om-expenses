@@ -1,7 +1,7 @@
 import { useNavigate, type RouteSectionProps } from "@solidjs/router";
 import { assertUnreachable, LoginData, LoginDataSchema } from "common";
 import { createSignal, onMount } from "solid-js";
-import { Card, MagicFields } from "~/components";
+import { Button, Card, MagicFields } from "~/components";
 import { AlertDialog, openDialog } from "~/dialogs";
 import { getLogoutReason } from "~/helper";
 import { addToast, AppService } from "~/lib";
@@ -71,6 +71,12 @@ export default function Login(props: RouteSectionProps) {
               />
             </Card.Body>
             <Card.Footer>
+              <Button colour="info" on:click={() => setLogin({ email: "admin@example.com", password: "password" })}>
+                Admin Demo
+              </Button>
+              <Button colour="info" on:click={() => setLogin({ email: "user@example.com", password: "password" })}>
+                User Demo
+              </Button>
               <button class="btn btn-primary" type="submit">
                 Login
               </button>

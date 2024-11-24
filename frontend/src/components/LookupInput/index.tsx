@@ -1,5 +1,6 @@
 import { EntityType } from "common";
-import { createResource } from "solid-js";
+import { createEffect, createResource } from "solid-js";
+import { assert } from "ts-essentials";
 import { openBrowser } from "~/dialogs";
 import { AppService } from "~/lib";
 
@@ -16,8 +17,14 @@ interface Props {
 export function LookupInput(props: Props) {
   const { lookupService } = AppService.get();
 
+  createEffect(() => {
+    if (props.value === undefined) mutate(undefined);
+  }, [props.value]);
+
   const [name, { mutate }] = createResource(async () => {
-    if (!props.value) return;
+    if (props.value === undefined) return;
+    assert(typeof props.value === "string", "LookupInput value must be a string!");
+
     const record = await lookupService.getOne(props.entityType, props.value);
     return lookupService.getName(props.entityType, record);
   });
