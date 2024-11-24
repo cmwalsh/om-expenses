@@ -1,4 +1,4 @@
-import { useNavigate } from "@solidjs/router";
+import { useNavigate, useSearchParams } from "@solidjs/router";
 import type { AppRouter } from "backend";
 import { includes } from "common";
 import { assert } from "ts-essentials";
@@ -23,8 +23,9 @@ export function ensureLogin(_role?: Role | Role[]) {
 }
 
 export function getLogoutReason() {
-  const url = new URL(window.location.href);
-  const reason = url.searchParams.get("reason");
-  assert(includes(reason, ["expired", "permissions", null] as const), `Invalid reason "${reason}"`);
+  const [searchParams] = useSearchParams();
+
+  const reason = searchParams.reason;
+  assert(includes(reason, ["expired", "permissions", undefined] as const), `Invalid reason "${reason}"`);
   return reason;
 }

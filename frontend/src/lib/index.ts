@@ -1,37 +1,17 @@
 import { CreateTRPCClient, createTRPCClient, httpBatchLink, TRPCClientError, TRPCLink } from "@trpc/client";
 import { observable } from "@trpc/server/observable";
 import type { AppRouter } from "backend";
-import { assertUnreachable, EntityType, SearchResult } from "common";
+import { assertUnreachable, EntityType } from "common";
 import superjson from "superjson";
+import { assert } from "ts-essentials";
 import * as v from "valibot";
 import { FetchParameters, SessionUser } from "./common";
 import { SessionService } from "./session";
+import { TripRecord, UserRecord } from "./types";
 
 export * from "./common";
 export * from "./toast";
-
-export type UserSearchRecord =
-  (ReturnType<AppRouter["User"]["Search"]> extends PromiseLike<infer T> ? T : never) extends SearchResult<infer T>
-    ? T
-    : never;
-export type TripSearchRecord =
-  (ReturnType<AppRouter["Trip"]["Search"]> extends PromiseLike<infer T> ? T : never) extends SearchResult<infer T>
-    ? T
-    : never;
-export type ExpenseSearchRecord =
-  (ReturnType<AppRouter["Expense"]["Search"]> extends PromiseLike<infer T> ? T : never) extends SearchResult<infer T>
-    ? T
-    : never;
-
-export type UserRecord = ReturnType<AppRouter["User"]["One"]> extends PromiseLike<infer T> ? T : never;
-export type TripRecord = ReturnType<AppRouter["Trip"]["One"]> extends PromiseLike<infer T> ? T : never;
-export type ExpenseRecord = ReturnType<AppRouter["Expense"]["One"]> extends PromiseLike<infer T> ? T : never;
-
-export type TripSummaryInfo = (
-  ReturnType<AppRouter["Stats"]["TripSummaries"]> extends PromiseLike<infer T> ? T : never
-) extends readonly (infer T)[]
-  ? T
-  : never;
+export * from "./types";
 
 interface CustomLinkOpts {
   onError: (err: Error) => void;
@@ -117,6 +97,13 @@ export class AppService {
     const session = this.sessionService.session();
 
     return session?.sessionUser ?? null;
+  }
+
+  public mustGetCurrentUser(): SessionUser | null {
+    const session = this.sessionService.session();
+    assert(session, "mustGetCurrentUser: No session!");
+
+    return session.sessionUser ?? null;
   }
 
   public async login(email: string, password: string) {

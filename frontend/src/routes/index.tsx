@@ -1,6 +1,6 @@
 import { useNavigate } from "@solidjs/router";
 import { createResource, For, Match, Show, Switch } from "solid-js";
-import { Card, Tile, TripSummary } from "~/components";
+import { Card, Tile, TripSummary, UserTripSummary } from "~/components";
 import { ensureLogin } from "~/helper";
 import { AppService } from "~/lib";
 
@@ -9,15 +9,14 @@ export default function Home() {
   if (!user) return;
 
   return (
-    <main>
+    <main class="d-flex gap-3 flex-column">
       <Switch>
         <Match when={user().role === "admin"}>
           <AdminDashboard />
         </Match>
-        <Match when={user().role === "user"}>
-          <UserDashboard />
-        </Match>
       </Switch>
+
+      <UserDashboard />
     </main>
   );
 }
@@ -80,10 +79,30 @@ function AdminDashboard() {
 }
 
 function UserDashboard() {
+  const navigate = useNavigate();
+
+  const [userTripSummaries] = createResource(() => AppService.get().tRPC.Stats.UserTripSummaries.query({}));
+
+  const onClickTrip = (id: string) => {
+    const user_id = AppService.get().mustGetCurrentUser()?.id;
+
+    navigate(`/expenses?trip_id=${id}&user_id=${user_id}`);
+  };
+
   return (
-    <Card colour="secondary">
-      <Card.Header text="User Dashboard" />
-      <Card.Body>Welcome...</Card.Body>
+    <Card colour="primary">
+      <Card.Header text="My Trips" />
+      <Card.Body>
+        <div class="d-flex gap-3 flex-column">
+          <Show when={userTripSummaries()?.length ?? 0 > 0} fallback="You aren't on any trips yet">
+            <For each={userTripSummaries()}>
+              {(tripSummary) => (
+                <UserTripSummary tripSummary={tripSummary} onClickTrip={() => onClickTrip(tripSummary.id)} />
+              )}
+            </For>
+          </Show>
+        </div>
+      </Card.Body>
     </Card>
   );
 }

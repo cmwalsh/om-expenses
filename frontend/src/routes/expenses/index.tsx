@@ -1,7 +1,7 @@
 import { useNavigate, useSearchParams, type RouteSectionProps } from "@solidjs/router";
 import { ExpenseStatus, ExpenseType, FieldMetadata, humanise } from "common";
 import * as v from "valibot";
-import { Button, Card, LinkButton, MagicBrowser, MagicFields, refreshAllBrowsers } from "~/components";
+import { Button, Card, MagicBrowser, MagicFields, refreshAllBrowsers } from "~/components";
 import { openConfirm } from "~/dialogs";
 import { ensureLogin } from "~/helper";
 import { AppService, ExpenseSearchRecord, FetchParameters } from "~/lib";
@@ -56,6 +56,16 @@ export default function Expenses(props: RouteSectionProps) {
     }
   };
 
+  const onNewExpense = () => {
+    const searchParams = new URLSearchParams();
+
+    if (filter.trip_id) {
+      searchParams.set("trip_id", String(filter.trip_id));
+    }
+
+    navigate(`/expenses/new?${searchParams}`);
+  };
+
   return (
     <main class="d-flex flex-column gap-3">
       <Card>
@@ -85,9 +95,9 @@ export default function Expenses(props: RouteSectionProps) {
           />
         </Card.Body>
         <Card.Footer>
-          <LinkButton colour="info" href="/expenses/new">
+          <Button colour="info" on:click={onNewExpense}>
             New
-          </LinkButton>
+          </Button>
         </Card.Footer>
       </Card>
     </main>

@@ -1,0 +1,18 @@
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+
+.trip-summary {
+  background: var(--bs-cyan);
+  color: $color-contrast-light;
+  padding: 1rem;
+  text-decoration: none;
+  border-radius: 0.5rem;
+
+  &-name {
+    font-size: 2em;
+    cursor: pointer;
+  }
+  &-location {
+    font-size: 1.5em;
+  }
+}

@@ -10,27 +10,25 @@ export default function Login(props: RouteSectionProps) {
   const navigate = useNavigate();
 
   onMount(() => {
-    requestAnimationFrame(() => {
-      const reason = getLogoutReason();
+    const reason = getLogoutReason();
 
-      if (reason === "expired") {
-        addToast({
-          life: 3_600_000,
-          title: "Logged out",
-          message: "You have been logged out because your session has expired.",
-        });
-      } else if (reason === "permissions") {
-        addToast({
-          life: 10_000,
-          title: "Invalid permissions",
-          message: "You do not have access to this area.",
-        });
-      } else if (reason === null) {
-        // Do nothing
-      } else {
-        assertUnreachable(reason);
-      }
-    });
+    if (reason === "expired") {
+      addToast({
+        life: 3_600_000,
+        title: "Logged out",
+        message: "You have been logged out because your session has expired.",
+      });
+    } else if (reason === "permissions") {
+      addToast({
+        life: 10_000,
+        title: "Invalid permissions",
+        message: "You do not have access to this area.",
+      });
+    } else if (reason === undefined) {
+      // Do nothing
+    } else {
+      assertUnreachable(reason);
+    }
   });
 
   const [login, setLogin] = createSignal<LoginData>({ email: "", password: "" });
