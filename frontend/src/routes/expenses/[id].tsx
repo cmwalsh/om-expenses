@@ -15,6 +15,7 @@ export default function ExpenseEdit(props: RouteSectionProps) {
   const [submittedCount, setSubmittedCount] = createSignal(0);
 
   const onChange = (data: ExpenseUpdate) => mutate({ ...expense()!, ...data });
+
   const onSave = async () => {
     setSubmittedCount(submittedCount() + 1);
     const res = v.parse(ExpenseUpdateSchema, expense());
@@ -22,6 +23,12 @@ export default function ExpenseEdit(props: RouteSectionProps) {
     await AppService.get().tRPC.Expense.Update.mutate([id(), res]);
 
     addToast({ title: "Save", message: "Save successful", life: 5000 });
+  };
+
+  const onApprove = async () => {
+    await AppService.get().tRPC.Expense.Approve.mutate(id());
+
+    addToast({ title: "Approved", message: "Approved successfully", life: 5000 });
   };
 
   return (
@@ -48,6 +55,9 @@ export default function ExpenseEdit(props: RouteSectionProps) {
           </form>
         </Card.Body>
         <Card.Footer>
+          <Button colour="warning" type="button" on:click={onApprove}>
+            Approve
+          </Button>
           <Button colour="primary" type="button" on:click={onSave}>
             Save
           </Button>

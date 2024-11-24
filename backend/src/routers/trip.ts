@@ -1,5 +1,5 @@
 import { TripAddUserSchema, TripCreateSchema, TripUpdateSchema } from "common";
-import { and, eq, ilike, or } from "drizzle-orm";
+import { and, eq, ilike, inArray, or } from "drizzle-orm";
 import * as uuid from "uuid";
 import * as v from "valibot";
 import { TripTable, UserToTripTable } from "../db/schema";
@@ -8,8 +8,21 @@ import { tRPC } from "./trpc";
 
 export const TripRouter = tRPC.router({
   Search: tRPC.ProtectedProcedure.input(v.parser(PaginationSchema)).query(
-    async ({ input: { take, skip, orderBy, search } }) => {
-      const condition = search ? or(ilike(TripTable.name, `%${search}%`)) : undefined;
+    async ({ ctx, input: { take, skip, orderBy, search } }) => {
+      const quickSearchCondition = search ? or(ilike(TripTable.name, `%${search}%`)) : undefined;
+
+      let tripFilterCondition = and();
+
+      if (ctx.session.user.role !== "admin") {
+        const subQuery = db
+          .select({ id: UserToTripTable.trip_id })
+          .from(UserToTripTable)
+          .where(eq(UserToTripTable.user_id, ctx.session.user.id));
+
+        tripFilterCondition = inArray(TripTable.id, subQuery);
+      }
+
+      const condition = and(quickSearchCondition, tripFilterCondition);
 
       const query = db
         .select()

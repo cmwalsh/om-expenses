@@ -38,27 +38,23 @@ export function NavBar() {
               </a>
             </li>
 
-            <li class="nav-item">
-              <a class="nav-link active" href="/users">
-                Users
-              </a>
-            </li>
+            <Show when={user()?.role === "admin"}>
+              <li class="nav-item">
+                <a class="nav-link active" href="/users">
+                  Users
+                </a>
+              </li>
 
-            <li class="nav-item">
-              <a class="nav-link active" href="/trips">
-                Trips
-              </a>
-            </li>
+              <li class="nav-item">
+                <a class="nav-link active" href="/trips">
+                  Trips
+                </a>
+              </li>
+            </Show>
 
             <li class="nav-item">
               <a class="nav-link active" href="/expenses">
                 Expenses
-              </a>
-            </li>
-
-            <li class="nav-item">
-              <a class="nav-link active" href="/about">
-                About
               </a>
             </li>
           </ul>
@@ -66,9 +62,13 @@ export function NavBar() {
           <Show when={user()}>
             {(user) => (
               <div class="d-flex gap-1 align-items-center">
-                <div class="badge text-bg-info">{user().role}</div>
+                <Show when={user().role === "admin"}>
+                  <div class="badge text-bg-warning">{user().role}</div>
+                </Show>
+
                 <div>Welcome {user().name}!</div>
-                <Button colour="warning" on:click={onLogout}>
+
+                <Button colour="secondary" on:click={onLogout}>
                   Logout
                 </Button>
               </div>

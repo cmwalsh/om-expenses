@@ -9,14 +9,18 @@ export default function Home() {
   if (!user) return;
 
   return (
-    <main class="d-flex gap-3 flex-column">
-      <Switch>
-        <Match when={user().role === "admin"}>
-          <AdminDashboard />
-        </Match>
-      </Switch>
+    <main class="grid gap-3">
+      <div class="g-col-12 g-col-xl-6">
+        <Switch>
+          <Match when={user().role === "admin"}>
+            <AdminDashboard />
+          </Match>
+        </Switch>
+      </div>
 
-      <UserDashboard />
+      <div class="g-col-12 g-col-xl-6">
+        <UserDashboard />
+      </div>
     </main>
   );
 }
@@ -33,7 +37,7 @@ function AdminDashboard() {
   };
 
   return (
-    <Card colour="secondary">
+    <Card colour="warning">
       <Card.Header text="Admin Dashboard" />
       <Card.Body>
         <div class="d-flex gap-3 flex-column">
@@ -45,21 +49,21 @@ function AdminDashboard() {
                   number={stats().userCount}
                   text="Users registered"
                   colour="green"
-                  class="g-col-6 g-col-md-3"
+                  class="g-col-6 g-col-md-3 g-col-xl-6"
                 />
                 <Tile
                   href="/trips"
                   number={stats().tripCount}
                   text="Trips listed"
                   colour="blue"
-                  class="g-col-6 g-col-md-3"
+                  class="g-col-6 g-col-md-3 g-col-xl-6"
                 />
                 <Tile
                   href="/expenses?status=unapproved"
                   number={stats().expenseCount}
                   text="Expenses awaiting approval"
                   colour="red"
-                  class="g-col-6 g-col-md-3"
+                  class="g-col-6 g-col-md-3 g-col-xl-6"
                 />
               </div>
             )}
