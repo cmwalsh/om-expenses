@@ -4,17 +4,17 @@ An expenses app
 
 Run both `backend` and `frontend` with:
 
-    npm i
-    npm run dev
+    pnpm i
+    pnpm dev
 
-Run codegen (after schema / query changes) with:
+Apply a schema change to Postgres:
 
-    npm run codegen -w frontend
+    pnpm --filter backend push
 
 Installing a new package:
 
-    npm install --save PACKAGE_NAME_HERE -w frontend
+    pnpm add --filter frontend PACKAGE_NAME_HERE
 
 OR:
 
-    npm install --save PACKAGE_NAME_HERE -w backend
+    pnpm add --filter backend PACKAGE_NAME_HERE

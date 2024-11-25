@@ -1,11 +1,11 @@
-import { AuthRouter } from "./auth";
-import { ExpenseRouter } from "./expense";
-import { StatsRouter } from "./stats";
-import { TripRouter } from "./trip";
-import { tRPC } from "./trpc";
-import { UserRouter } from "./user";
+import { AuthRouter } from "./auth.js";
+import { ExpenseRouter } from "./expense.js";
+import { StatsRouter } from "./stats.js";
+import { TripRouter } from "./trip.js";
+import { tRPC } from "./trpc.js";
+import { UserRouter } from "./user.js";
 
-export * from "./trpc";
+export * from "./trpc.js";
 
 export const AppRouter = tRPC.router({
   Auth: AuthRouter,

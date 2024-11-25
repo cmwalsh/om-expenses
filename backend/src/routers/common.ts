@@ -2,12 +2,13 @@ import { assertError, includes, keys, UserRole } from "common";
 import { asc, desc, getTableColumns } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { PgColumn } from "drizzle-orm/pg-core";
-import jwt, { TokenExpiredError } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
+import { scrypt } from "node:crypto";
 import { assert } from "ts-essentials";
 import * as v from "valibot";
-import { Config } from "../config";
-import * as dbSchema from "../db/schema";
-import { tRPC } from "./trpc";
+import { Config } from "../config/index.js";
+import * as dbSchema from "../db/schema.js";
+import { tRPC } from "./trpc.js";
 
 export interface TokenPayload {
   id: string;
@@ -24,12 +25,12 @@ export function verifyToken(token: string | undefined): TokenResponse {
   if (!token) return ["anon", undefined];
 
   try {
-    const payload = jwt.verify(token, Config.SECRET_KEY) as TokenPayload;
+    const payload = jwt.verify(token, Config.OM_SECRET_KEY) as TokenPayload;
     return ["valid", payload];
   } catch (err) {
     assertError(err);
 
-    if (err instanceof TokenExpiredError) {
+    if (err instanceof jwt.TokenExpiredError) {
       return ["expired", undefined];
     }
 
@@ -37,7 +38,7 @@ export function verifyToken(token: string | undefined): TokenResponse {
   }
 }
 
-export const db = drizzle(Config.DATABASE_URL, { schema: dbSchema });
+export const db = drizzle(Config.OM_DATABASE_URL, { schema: dbSchema });
 
 export const PaginationSchema = v.object({
   take: v.pipe(v.number(), v.minValue(0)),
@@ -94,4 +95,13 @@ export function toDrizzleOrderBy(
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function withId<TSchema extends v.ObjectSchema<any, any>>(schema: TSchema) {
   return v.tuple([UUID, schema] as const);
+}
+
+export function scryptAsync(password: string, salt: string) {
+  return new Promise<string>((resolve, reject) => {
+    scrypt(password, salt, dbSchema.ScryptKeyLength, (err, result) => {
+      if (err) return reject(err);
+      return resolve(result.toString("base64"));
+    });
+  });
 }

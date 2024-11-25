@@ -1,14 +1,20 @@
-import bcrypt from "bcrypt";
 import { UserCreateSchema, UserUpdateSchema } from "common";
 import { and, eq, ilike, inArray, or } from "drizzle-orm";
 import { assert } from "ts-essentials";
 import * as uuid from "uuid";
 import * as v from "valibot";
-import { UserTable, UserToTripTable } from "../db/schema";
-import { assertOneRecord, assertRole, db, PaginationSchema, toDrizzleOrderBy, UUID, withId } from "./common";
-import { tRPC } from "./trpc";
-
-const SaltRounds = 10;
+import { UserTable, UserToTripTable } from "../db/schema.js";
+import {
+  assertOneRecord,
+  assertRole,
+  db,
+  PaginationSchema,
+  scryptAsync,
+  toDrizzleOrderBy,
+  UUID,
+  withId,
+} from "./common.js";
+import { tRPC } from "./trpc.js";
 
 const UserSearchSchema = v.intersect([PaginationSchema, v.object({ trip_id: v.optional(UUID) })]);
 
@@ -56,12 +62,14 @@ export const UserRouter = tRPC.router({
 
     const { new_password, confirm_password, ...rest } = input;
 
+    const id = uuid.v4();
+
     assert(new_password === confirm_password, "Passwords do not match");
-    const password_hash = await bcrypt.hash(new_password, SaltRounds);
+
+    const password_hash = await scryptAsync(new_password, id);
 
     rest.email = rest.email.toLowerCase();
 
-    const id = uuid.v4();
     await db.insert(UserTable).values({ id, ...rest, password_hash });
     return id;
   }),
@@ -82,7 +90,9 @@ export const UserRouter = tRPC.router({
 
         if (new_password) {
           assert(new_password === confirm_password, "Passwords do not match");
-          const password_hash = await bcrypt.hash(new_password, SaltRounds);
+
+          const password_hash = await scryptAsync(new_password, id);
+          console.log("password_hash", password_hash);
 
           await tx.update(UserTable).set({ password_hash }).where(eq(UserTable.id, id));
         }

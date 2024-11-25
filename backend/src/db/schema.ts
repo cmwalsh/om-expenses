@@ -6,7 +6,8 @@ export type TableType = typeof UserTable | typeof TripTable | typeof ExpenseTabl
 
 // insert into "user" (role, name, email, password_hash) values ('admin', 'Admin', 'admin@example.com', '');
 
-const BcryptHashLength = 60;
+export const ScryptKeyLength = 64;
+const ScryptHashLength = 88; // Base64 length of 64 bytes
 
 export const UserRoleEnum = pgEnum("user_role", UserRole);
 
@@ -17,7 +18,7 @@ export const UserTable = pgTable("user", {
   role: UserRoleEnum().notNull(),
   name: varchar({ length: 100 }).notNull(),
   email: varchar({ length: 100 }).notNull().unique(),
-  password_hash: varchar({ length: BcryptHashLength }).notNull(),
+  password_hash: varchar({ length: ScryptHashLength }).notNull(),
   created: timestamp({ withTimezone: false, mode: "date" }).notNull().defaultNow(),
   updated: timestamp({ withTimezone: false, mode: "date" }).notNull().defaultNow(),
 });

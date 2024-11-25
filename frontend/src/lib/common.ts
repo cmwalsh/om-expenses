@@ -39,3 +39,11 @@ export function normaliseError(err: Error) {
 export const Colours = ["primary", "secondary", "success", "danger", "warning", "info"] as const;
 
 export type Colour = ElementOf<typeof Colours>;
+
+export function getApiBaseUrl() {
+  if (window.location.hostname === "localhost") {
+    return `http://localhost:${parseInt(window.location.port, 10) - 1}`;
+  } else {
+    return window.location.origin.replace("://", "://api.");
+  }
+}

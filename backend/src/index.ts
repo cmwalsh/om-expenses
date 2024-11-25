@@ -1,9 +1,9 @@
 import { createHTTPServer } from "@trpc/server/adapters/standalone";
 import cors from "cors";
-import "dotenv/config";
-import { AppRouter, tRPC } from "./routers";
+import { Config } from "./config/index.js";
+import { AppRouter, tRPC } from "./routers/index.js";
 
-const Port = 3000;
+const Port = Config.OM_BACKEND_PORT;
 
 export type AppRouter = typeof AppRouter;
 

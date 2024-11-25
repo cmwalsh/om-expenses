@@ -3,9 +3,9 @@ import { and, count, eq, getTableColumns, ilike, or } from "drizzle-orm";
 import { assert } from "ts-essentials";
 import * as uuid from "uuid";
 import * as v from "valibot";
-import { ExpenseTable, TripTable, UserTable } from "../db/schema";
-import { assertOneRecord, db, PaginationSchema, toDrizzleOrderBy, UUID, withId } from "./common";
-import { tRPC } from "./trpc";
+import { ExpenseTable, TripTable, UserTable } from "../db/schema.js";
+import { assertOneRecord, db, PaginationSchema, toDrizzleOrderBy, UUID, withId } from "./common.js";
+import { tRPC } from "./trpc.js";
 
 const ExpenseSearchSchema = v.intersect([
   PaginationSchema,

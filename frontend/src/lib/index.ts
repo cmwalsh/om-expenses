@@ -5,7 +5,7 @@ import { assertUnreachable, EntityType } from "common";
 import superjson from "superjson";
 import { assert } from "ts-essentials";
 import * as v from "valibot";
-import { FetchParameters, SessionUser } from "./common";
+import { FetchParameters, getApiBaseUrl, SessionUser } from "./common";
 import { SessionService } from "./session";
 import { TripRecord, UserRecord } from "./types";
 
@@ -48,6 +48,8 @@ export const errorLink =
     };
   };
 
+const ApiBaseUrl = getApiBaseUrl();
+
 export class AppService {
   private static appService?: AppService;
 
@@ -69,7 +71,7 @@ export class AppService {
         },
       }),
       httpBatchLink({
-        url: "http://localhost:3000",
+        url: ApiBaseUrl,
         headers: () => {
           const session = this.sessionService.session();
           const headers: Record<string, string> = {};

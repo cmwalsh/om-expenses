@@ -3,9 +3,11 @@
     "target": "esnext",
     "module": "ESNext",
     "strict": true,
-    "noEmit": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "node10"
-  }
+    "moduleResolution": "node10",
+    "rootDir": "./src",
+    "outDir": "./dist"
+  },
+  "exclude": ["drizzle.config.ts"]
 }
