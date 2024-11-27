@@ -60,7 +60,7 @@
 
           cat << EOF > $out/bin/om-expenses-frontend
           #!${pkgs.bash}/bin/bash
-          PORT=$OM_FRONTEND_PORT ${pkgs.nodejs_22}/bin/node ${placeholder "out"}/frontend/.output/server/index.mjs
+          PORT=\$OM_FRONTEND_PORT ${pkgs.nodejs_22}/bin/node ${placeholder "out"}/frontend/.output/server/index.mjs
           EOF
 
           chmod +x $out/bin/om-expenses-backend
