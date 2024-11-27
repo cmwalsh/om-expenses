@@ -55,12 +55,17 @@
           cp -r frontend/node_modules   $out/frontend/
           cp -r frontend/package.json   $out/frontend/
 
-          echo '#!${pkgs.bash}/bin/bash' > $out/bin/om-expenses-backend
-          echo '${pkgs.nodejs_22}/bin/node ${placeholder "out"}/backend/dist/index.js "$@"' >> $out/bin/om-expenses-backend
-          chmod +x $out/bin/om-expenses-backend
+          cat << EOF > $out/bin/om-expenses-backend
+          #!${pkgs.bash}/bin/bash
+          ${pkgs.nodejs_22}/bin/node ${placeholder "out"}/backend/dist/index.js
+          EOF
 
-          echo '#!${pkgs.bash}/bin/bash' > $out/bin/om-expenses-frontend
-          echo 'PORT=$OM_FRONTEND_PORT ${pkgs.nodejs_22}/bin/node ${placeholder "out"}/frontend/.output/server/index.mjs "$@"' >> $out/bin/om-expenses-frontend
+          cat << EOF > $out/bin/om-expenses-frontend
+          #!${pkgs.bash}/bin/bash
+          PORT=$OM_FRONTEND_PORT ${pkgs.nodejs_22}/bin/node ${placeholder "out"}/frontend/.output/server/index.mjs
+          EOF
+
+          chmod +x $out/bin/om-expenses-backend
           chmod +x $out/bin/om-expenses-frontend
         '';
 
