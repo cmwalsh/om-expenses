@@ -1,18 +1,17 @@
 import { useNavigate } from "@solidjs/router";
 import { createResource, For, Match, Show, Switch } from "solid-js";
 import { Card, Tile, TripSummary, UserTripSummary } from "~/components";
-import { ensureLogin } from "~/helper";
+import { beginPage } from "~/helper";
 import { AppService } from "~/lib";
 
 export default function Home() {
-  const user = ensureLogin();
-  if (!user) return;
+  const { user } = beginPage(["admin", "user"]);
 
   return (
     <main class="grid gap-3">
       <div class="g-col-12 g-col-xl-6">
         <Switch>
-          <Match when={user().role === "admin"}>
+          <Match when={user()?.role === "admin"}>
             <AdminDashboard />
           </Match>
         </Switch>

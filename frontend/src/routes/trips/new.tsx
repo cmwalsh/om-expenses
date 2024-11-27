@@ -1,14 +1,13 @@
-import { RouteSectionProps, useNavigate } from "@solidjs/router";
+import { RouteSectionProps } from "@solidjs/router";
 import { TripCreate, TripCreateSchema } from "common";
 import { createSignal } from "solid-js";
 import * as v from "valibot";
 import { Button, Card, MagicFields } from "~/components";
-import { ensureLogin } from "~/helper";
+import { beginPage } from "~/helper";
 import { addToast, AppService } from "~/lib";
 
 export default function TripEdit(props: RouteSectionProps) {
-  ensureLogin();
-  const navigate = useNavigate();
+  const { navigate } = beginPage("admin");
 
   const [trip, setTrip] = createSignal<Partial<TripCreate>>({});
   const [submittedCount, setSubmittedCount] = createSignal(0);

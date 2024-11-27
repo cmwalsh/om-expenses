@@ -1,9 +1,9 @@
-import { useNavigate, useSearchParams, type RouteSectionProps } from "@solidjs/router";
+import { useSearchParams, type RouteSectionProps } from "@solidjs/router";
 import { ExpenseStatus, ExpenseType, FieldMetadata, humanise } from "common";
 import * as v from "valibot";
 import { Button, Card, MagicBrowser, MagicFields, refreshAllBrowsers } from "~/components";
 import { openConfirm } from "~/dialogs";
-import { ensureLogin } from "~/helper";
+import { beginPage } from "~/helper";
 import { AppService, ExpenseSearchRecord, FetchParameters } from "~/lib";
 
 const ExpenseTableSchema = v.object({
@@ -31,11 +31,10 @@ type ExpenseFilter = v.InferInput<typeof ExpenseFilterSchema>;
 const ClearFilter: ExpenseFilter = { user_id: undefined, trip_id: undefined, type: undefined, status: undefined };
 
 export default function Expenses(props: RouteSectionProps) {
-  const user = ensureLogin(["admin", "user"]);
+  const { user, navigate } = beginPage(["admin", "user"]);
 
-  const schema = user?.().role === "admin" ? ExpenseFilterSchema : v.omit(ExpenseFilterSchema, ["user_id"]);
+  const schema = user()?.role === "admin" ? ExpenseFilterSchema : v.omit(ExpenseFilterSchema, ["user_id"]);
 
-  const navigate = useNavigate();
   const [filter, setFilter] = useSearchParams();
 
   // const [filter, setFilter] = createSignal<ExpenseFilter>(v.parse(ExpenseFilterSchema, searchParams));

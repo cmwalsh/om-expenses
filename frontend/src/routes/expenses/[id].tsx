@@ -3,11 +3,11 @@ import { ExpenseUpdate, ExpenseUpdateSchema } from "common";
 import { createResource, createSignal, Show, Suspense } from "solid-js";
 import * as v from "valibot";
 import { Button, Card, DateInfo, MagicFields } from "~/components";
-import { ensureLogin } from "~/helper";
+import { beginPage } from "~/helper";
 import { addToast, AppService } from "~/lib";
 
 export default function ExpenseEdit(props: RouteSectionProps) {
-  ensureLogin(["admin", "user"]);
+  beginPage(["admin", "user"]);
 
   const id = () => props.params.id;
 

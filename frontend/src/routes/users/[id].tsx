@@ -3,11 +3,11 @@ import { UserUpdate, UserUpdateSchema } from "common";
 import { createResource, createSignal, Show, Suspense } from "solid-js";
 import * as v from "valibot";
 import { Button, Card, DateInfo, MagicFields } from "~/components";
-import { ensureLogin } from "~/helper";
+import { beginPage } from "~/helper";
 import { addToast, AppService } from "~/lib";
 
 export default function UserEdit(props: RouteSectionProps) {
-  ensureLogin("admin");
+  beginPage("admin");
 
   const id = () => props.params.id;
 

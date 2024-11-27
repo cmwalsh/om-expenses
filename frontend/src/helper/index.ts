@@ -6,20 +6,26 @@ import { AppService } from "~/lib";
 
 export type Role = (ReturnType<AppRouter["User"]["One"]> extends PromiseLike<infer T> ? T : never)["role"];
 
-export function ensureLogin(_role?: Role | Role[]) {
-  const role = _role instanceof Array ? _role : _role === undefined ? [] : [_role];
+export function beginPage(_role: Role | Role[]) {
+  const role = _role instanceof Array ? _role : [_role];
+  assert(role.length > 0, "beginPage: Must have at least one role!");
+
   const navigate = useNavigate();
 
   const user = AppService.get().getCurrentUser();
 
   if (!user) {
-    return navigate("/login");
+    navigate("/login");
+
+    return { user: () => null, navigate };
   }
-  if (role.length > 0 && !role.includes(user.role)) {
-    return navigate("/login?reason=permissions");
+  if (!role.includes(user.role)) {
+    navigate("/login?reason=permissions");
+
+    return { user: () => null, navigate };
   }
 
-  return () => user;
+  return { user: () => user, navigate };
 }
 
 export function getLogoutReason() {

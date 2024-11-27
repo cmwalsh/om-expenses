@@ -1,8 +1,8 @@
-import { useNavigate, type RouteSectionProps } from "@solidjs/router";
+import { type RouteSectionProps } from "@solidjs/router";
 import * as v from "valibot";
 import { Card, LinkButton, MagicBrowser, refreshAllBrowsers } from "~/components";
 import { openConfirm } from "~/dialogs";
-import { ensureLogin } from "~/helper";
+import { beginPage } from "~/helper";
 import { AppService, FetchParameters, TripSearchRecord } from "~/lib";
 
 const TripTableSchema = v.object({
@@ -13,9 +13,7 @@ const TripTableSchema = v.object({
 });
 
 export default function Trips(props: RouteSectionProps) {
-  ensureLogin("admin");
-
-  const navigate = useNavigate();
+  const { navigate } = beginPage("admin");
 
   const onFetch = async (params: FetchParameters) => {
     return AppService.get().tRPC.Trip.Search.query(params);

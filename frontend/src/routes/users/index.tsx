@@ -1,9 +1,9 @@
-import { useNavigate, type RouteSectionProps } from "@solidjs/router";
+import { type RouteSectionProps } from "@solidjs/router";
 import { humanise } from "common";
 import * as v from "valibot";
 import { Card, LinkButton, MagicBrowser, refreshAllBrowsers } from "~/components";
 import { openConfirm } from "~/dialogs";
-import { ensureLogin } from "~/helper";
+import { beginPage } from "~/helper";
 import { AppService, FetchParameters, UserSearchRecord } from "~/lib";
 
 const UserTableSchema = v.object({
@@ -15,9 +15,7 @@ const UserTableSchema = v.object({
 });
 
 export default function Users(props: RouteSectionProps) {
-  ensureLogin("admin");
-
-  const navigate = useNavigate();
+  const { navigate } = beginPage("admin");
 
   const onFetch = async (params: FetchParameters) => {
     return AppService.get().tRPC.User.Search.query(params);

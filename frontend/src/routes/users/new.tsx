@@ -1,14 +1,13 @@
-import { RouteSectionProps, useNavigate } from "@solidjs/router";
+import { RouteSectionProps } from "@solidjs/router";
 import { UserCreate, UserCreateSchema } from "common";
 import { createSignal } from "solid-js";
 import * as v from "valibot";
 import { Button, Card, MagicFields } from "~/components";
-import { ensureLogin } from "~/helper";
+import { beginPage } from "~/helper";
 import { addToast, AppService } from "~/lib";
 
 export default function UserEdit(props: RouteSectionProps) {
-  ensureLogin();
-  const navigate = useNavigate();
+  const { navigate } = beginPage("admin");
 
   const [user, setUser] = createSignal<Partial<UserCreate>>({});
   const [submittedCount, setSubmittedCount] = createSignal(0);

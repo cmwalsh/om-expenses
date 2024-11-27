@@ -1,14 +1,14 @@
-import { RouteSectionProps, useNavigate, useSearchParams } from "@solidjs/router";
+import { RouteSectionProps, useSearchParams } from "@solidjs/router";
 import { ExpenseCreate, ExpenseCreateSchema } from "common";
 import { createSignal } from "solid-js";
 import * as v from "valibot";
 import { Button, Card, MagicFields } from "~/components";
-import { ensureLogin } from "~/helper";
+import { beginPage } from "~/helper";
 import { addToast, AppService } from "~/lib";
 
 export default function ExpenseEdit(props: RouteSectionProps) {
-  ensureLogin();
-  const navigate = useNavigate();
+  const { navigate } = beginPage(["admin", "user"]);
+
   const [searchParams] = useSearchParams();
 
   const [expense, setExpense] = createSignal<Partial<ExpenseCreate>>({

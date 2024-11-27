@@ -5,7 +5,7 @@ import { assert } from "ts-essentials";
 import * as v from "valibot";
 import { Button, Card, DateInfo, MagicBrowser, MagicFields, refreshAllBrowsers } from "~/components";
 import { openBrowser, openConfirm } from "~/dialogs";
-import { ensureLogin } from "~/helper";
+import { beginPage } from "~/helper";
 import { addToast, AppService, FetchParameters, UserSearchRecord } from "~/lib";
 
 const UserPickSchema = v.object({
@@ -14,7 +14,7 @@ const UserPickSchema = v.object({
 });
 
 export default function TripEdit(props: RouteSectionProps) {
-  ensureLogin("admin");
+  beginPage("admin");
 
   const id = () => props.params.id;
 
