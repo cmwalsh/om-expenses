@@ -34,7 +34,7 @@ export function Pagination(props: Props) {
             aria-label="Previous"
             on:click={() => props.onPage(Math.min(props.page - 1, 1))}
           >
-            <span aria-hidden="true">⬅</span>
+            <span aria-hidden="true">◀</span>
           </a>
         </li>
         <For each={generatePaginationButtons(props.page, props.pageSize, props.count)}>
@@ -54,7 +54,7 @@ export function Pagination(props: Props) {
             aria-label="Next"
             on:click={() => props.onPage(Math.max(props.page + 1, pageCount()))}
           >
-            <span aria-hidden="true">➡</span>
+            <span aria-hidden="true">▶</span>
           </a>
         </li>
       </ul>
