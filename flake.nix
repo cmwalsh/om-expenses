@@ -71,7 +71,7 @@
 
         pnpmDeps = pkgs.pnpm.fetchDeps {
           inherit (self.packages.${system}.default) pname version src pnpmWorkspaces;
-          hash = "sha256-UMMOlFsX5ipQN+lBOp5OVXC/RBsDSz55NnS+EYOKjww=";
+          hash = "sha256-5f6cFwIuaGLLrnkMzyhlcOA/0qy5OuUk9gbnSPG2vAk=";
         };
       };
     });
