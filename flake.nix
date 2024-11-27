@@ -37,9 +37,7 @@
           mkdir -p $out/backend
           mkdir -p $out/frontend
 
-          pnpm run --filter common      build
-          pnpm run --filter backend     build
-          pnpm run --filter frontend    build
+          ${pkgs.faketty}/bin/faketty pnpm exec nx run-many -t build
 
           cp -r node_modules            $out/
 
@@ -73,7 +71,7 @@
 
         pnpmDeps = pkgs.pnpm.fetchDeps {
           inherit (self.packages.${system}.default) pname version src pnpmWorkspaces;
-          hash = "sha256-4gVyYSNrTibLQn/OKCx0+dGxeLn2sIqKiUwAMJkaEag=";
+          hash = "sha256-UMMOlFsX5ipQN+lBOp5OVXC/RBsDSz55NnS+EYOKjww=";
         };
       };
     });
