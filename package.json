@@ -2,7 +2,8 @@
   "name": "om-expense",
   "scripts": {
     "dev": "source ./.env && nx run-many -t dev",
-    "build": "nx run-many -t build"
+    "build": "nx run-many -t build",
+    "push": "source ./.env && pnpm --filter backend push"
   },
   "devDependencies": {
     "nx": "20.1.3"

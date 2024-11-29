@@ -37,7 +37,7 @@
           mkdir -p $out/backend
           mkdir -p $out/frontend
 
-          ${pkgs.faketty}/bin/faketty pnpm exec nx run-many -t build
+          ${pkgs.faketty}/bin/faketty pnpm build
 
           cp -r node_modules            $out/
 
