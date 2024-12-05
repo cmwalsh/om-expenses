@@ -24,7 +24,7 @@
         let
           hashes = {
             aarch64-darwin = "sha256-LApx/dlveFg7zi5co1knQOQIBMeVu4nD6kB7yIeH7F8=";
-            x86_64-linux = "sha256-IswKowneeMPtQvULpFdw90WuwbOn2MmHt5xW+H6YuBs=";
+            x86_64-linux = "sha256-yCQ5nKAKT6c/nCXAz5sU+X3ElEuHRYHaWRNB3VXkzbs=";
           };
 
           # create a fixed-output derivation which captures our dependencies
