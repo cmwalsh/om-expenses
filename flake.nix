@@ -24,7 +24,7 @@
         let
           hashes = {
             aarch64-darwin = "sha256-0pZRku1hZE84vB7K3Z2AM9VsaLrNSQxw7pM57dVGQtE=";
-            x86_64-linux = "sha256-PhqRqUL48d1ZBnD2HBKc9dxFQ6qilGFhvgF1zDe8ONM=";
+            x86_64-linux = "sha256-IswKowneeMPtQvULpFdw90WuwbOn2MmHt5xW+H6YuBs=";
           };
 
           # create a fixed-output derivation which captures our dependencies
@@ -43,7 +43,7 @@
 
             # take the cached dependencies and add them to the output (remove .poll files which are random!)
             installPhase = ''
-              rm -rf              *.poll
+              find node_modules -iname '*.poll' -delete
               mkdir -p            $out/lib/
               cp -r node_modules  $out/lib/
             '';
