@@ -23,13 +23,13 @@
 
         let
           hashes = {
-            aarch64-darwin = "sha256-LApx/dlveFg7zi5co1knQOQIBMeVu4nD6kB7yIeH7F8=";
-            x86_64-linux = "sha256-IswKowneeMPtQvULpFdw90WuwbOn2MmHt5xW+H6YuBs=";
+            aarch64-darwin = "sha256-0pZRku1hZE84vB7K3Z2AM9VsaLrNSQxw7pM57dVGQtE=";
+            x86_64-linux = "sha256-dnCb4Bcfl2qWrh1ef8gkhR0+dQLJjh/QjJn9JKv+1KE=";
           };
 
           # create a fixed-output derivation which captures our dependencies
           deps = pkgs.stdenv.mkDerivation {
-            pname = "om-expenses-deps";
+            pname = "om-expenses-deps-cache";
             version = "0.0.1";
             src = ./.;
 
@@ -43,9 +43,8 @@
 
             # take the cached dependencies and add them to the output (remove .poll files which are random!)
             installPhase = ''
-              find node_modules -iname '*.poll' -delete
-              mkdir -p            $out/lib/
-              cp -r node_modules  $out/lib/
+              mkdir -p                $out/
+              cp -r $HOME/.cache/deno $out/
             '';
 
             dontFixup = true;
@@ -67,7 +66,12 @@
           nativeBuildInputs = with pkgs; [ deno deps ];
 
           installPhase = ''
-            cp -r ${deps}/lib/node_modules .
+            HOME="$(mktemp -d)"
+            mkdir -p $HOME/.cache
+            cp -r ${deps}/deno $HOME/.cache/
+
+            deno install
+            find node_modules -iname '*.poll' -delete
 
             chmod -R u+rw node_modules
 
