@@ -24,7 +24,7 @@
         let
           hashes = {
             aarch64-darwin = "sha256-0pZRku1hZE84vB7K3Z2AM9VsaLrNSQxw7pM57dVGQtE=";
-            x86_64-linux = "sha256-gvi7KXSndhwScejO+77EdB/biRLizouBxTslL2gOUcg=";
+            x86_64-linux = "sha256-PhqRqUL48d1ZBnD2HBKc9dxFQ6qilGFhvgF1zDe8ONM=";
           };
 
           # create a fixed-output derivation which captures our dependencies
@@ -41,8 +41,9 @@
               deno install
             '';
 
-            # take the cached dependencies and add them to the output
+            # take the cached dependencies and add them to the output (remove .poll files which are random!)
             installPhase = ''
+              rm -rf              *.poll
               mkdir -p            $out/lib/
               cp -r node_modules  $out/lib/
             '';
