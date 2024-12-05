@@ -22,6 +22,11 @@
       packages.default =
 
         let
+          hashes = {
+            aarch64-darwin = "sha256-0pZRku1hZE84vB7K3Z2AM9VsaLrNSQxw7pM57dVGQtE=";
+            x86_64-linux = "sha256-gvi7KXSndhwScejO+77EdB/biRLizouBxTslL2gOUcg=";
+          };
+
           # create a fixed-output derivation which captures our dependencies
           deps = pkgs.stdenv.mkDerivation {
             pname = "om-expenses-deps";
@@ -48,7 +53,7 @@
             # specify the content hash of this derivations output
             outputHashAlgo = "sha256";
             outputHashMode = "recursive";
-            outputHash = "sha256-0pZRku1hZE84vB7K3Z2AM9VsaLrNSQxw7pM57dVGQtE=";
+            outputHash = hashes.${system};
           };
         in
 
