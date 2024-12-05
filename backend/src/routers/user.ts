@@ -3,7 +3,7 @@ import { and, eq, ilike, inArray, or } from "drizzle-orm";
 import { assert } from "ts-essentials";
 import * as uuid from "uuid";
 import * as v from "valibot";
-import { UserTable, UserToTripTable } from "../db/schema.js";
+import { UserTable, UserToTripTable } from "../db/schema.ts";
 import {
   assertOneRecord,
   assertRole,
@@ -13,8 +13,8 @@ import {
   toDrizzleOrderBy,
   UUID,
   withId,
-} from "./common.js";
-import { tRPC } from "./trpc.js";
+} from "./common.ts";
+import { tRPC } from "./trpc.ts";
 
 const UserSearchSchema = v.intersect([PaginationSchema, v.object({ trip_id: v.optional(UUID) })]);
 

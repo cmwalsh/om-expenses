@@ -1,5 +1,5 @@
 import * as v from "valibot";
-import { FieldMetadata } from "./common";
+import { FieldMetadata } from "./common.ts";
 
 export const TripCreateSchema = v.object({
   name: v.pipe(v.string(), v.minLength(2), v.title("Name"), v.metadata(FieldMetadata({ icon: "✈" }))),

@@ -2,9 +2,9 @@ import { TripAddUserSchema, TripCreateSchema, TripUpdateSchema } from "common";
 import { and, eq, ilike, inArray, or } from "drizzle-orm";
 import * as uuid from "uuid";
 import * as v from "valibot";
-import { TripTable, UserToTripTable } from "../db/schema.js";
-import { assertOneRecord, assertRole, db, PaginationSchema, toDrizzleOrderBy, UUID, withId } from "./common.js";
-import { tRPC } from "./trpc.js";
+import { TripTable, UserToTripTable } from "../db/schema.ts";
+import { assertOneRecord, assertRole, db, PaginationSchema, toDrizzleOrderBy, UUID, withId } from "./common.ts";
+import { tRPC } from "./trpc.ts";
 
 export const TripRouter = tRPC.router({
   Search: tRPC.ProtectedProcedure.input(v.parser(PaginationSchema)).query(

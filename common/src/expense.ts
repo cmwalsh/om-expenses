@@ -1,5 +1,5 @@
 import * as v from "valibot";
-import { FieldMetadata } from "./common";
+import { FieldMetadata } from "./common.ts";
 
 export const ExpenseType = ["food", "travel", "other"] as const;
 

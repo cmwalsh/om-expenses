@@ -1,14 +1,10 @@
 {
   "name": "common",
   "version": "0.0.0",
-  "main": "./dist/cjs/index.js",
+  "main": "./src/index.ts",
   "module": "./src/index.ts",
   "types": "./src/index.ts",
   "type": "commonjs",
-  "scripts": {
-    "dev": "tsc -p tsconfig.cjs.json -w",
-    "build": "tsc -p tsconfig.cjs.json"
-  },
   "devDependencies": {
     "typescript": "^5.6.3",
     "eslint": "9.14.0",

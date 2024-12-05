@@ -1,9 +1,9 @@
 import { assert, ElementOf } from "ts-essentials";
 
-export * from "./common";
-export * from "./expense";
-export * from "./trip";
-export * from "./user";
+export * from "./common.ts";
+export * from "./expense.ts";
+export * from "./trip.ts";
+export * from "./user.ts";
 
 export function assertError(err: unknown): asserts err is Error {
   assert(err instanceof Error, "Error is not an instance of `Error`");

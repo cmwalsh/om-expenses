@@ -1,18 +1,12 @@
 {
   "name": "frontend",
   "type": "module",
-  "scripts": {
-    "dev": "vinxi dev --port $OM_FRONTEND_PORT",
-    "build": "vinxi build",
-    "start": "vinxi start --port $OM_FRONTEND_PORT"
-  },
   "devDependencies": {
     "@types/node": "^20.12.7",
     "sass": "^1.80.6",
     "typescript": "^5.6.3"
   },
   "dependencies": {
-    "@modular-forms/solid": "^0.24.1",
     "@popperjs/core": "^2.11.8",
     "@solidjs/router": "^0.15.0",
     "@solidjs/start": "^1.0.10",
@@ -27,7 +21,7 @@
     "ts-essentials": "^10.0.3",
     "unstorage": "1.10.2",
     "valibot": "^1.0.0-beta.3",
-    "vinxi": "^0.4.3"
+    "vinxi": "^0.5.1"
   },
   "engines": {
     "node": ">=18"

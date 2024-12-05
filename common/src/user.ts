@@ -1,6 +1,6 @@
 import { ElementOf } from "ts-essentials";
 import * as v from "valibot";
-import { EmailAddress, FieldMetadata, Password } from "./common";
+import { EmailAddress, FieldMetadata, Password } from "./common.ts";
 
 export const UserRole = ["admin", "user"] as const;
 

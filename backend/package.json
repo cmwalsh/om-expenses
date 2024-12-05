@@ -3,12 +3,6 @@
   "version": "0.0.0",
   "type": "module",
   "types": "src/index.ts",
-  "scripts": {
-    "dev": "tsx --env-file=../.env --watch src/index.ts",
-    "build": "tsc --noCheck",
-    "start": "node --env-file=../.env dist/index.js",
-    "push": "drizzle-kit push"
-  },
   "dependencies": {
     "@libsql/client": "^0.14.0",
     "@trpc/server": "11.0.0-rc.648",

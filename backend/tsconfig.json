@@ -7,7 +7,9 @@
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node10",
     "rootDir": "./src",
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "noEmit": true,
+    "allowImportingTsExtensions": true
   },
   "exclude": ["drizzle.config.ts"]
 }

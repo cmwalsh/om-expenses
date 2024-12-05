@@ -1,0 +1,7 @@
+{
+  "tasks": {
+    "dev": "deno --env-file=../.env --watch --allow-env --allow-read --allow-net src/index.ts",
+    "start": "deno --allow-env --allow-read --allow-net src/index.ts",
+    "push": "drizzle-kit push"
+  }
+}

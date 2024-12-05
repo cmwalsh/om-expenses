@@ -12,67 +12,101 @@
     {
       devShell = pkgs.mkShell {
         buildInputs = with pkgs; [
-          nodejs_22
-          pnpm
+          git
+          deno
+          gnused
           nixpkgs-fmt
         ];
       };
 
-      packages.default = pkgs.stdenv.mkDerivation {
-        pname = "om-expenses";
-        version = "0.0.0";
+      packages.default =
 
-        src = ./.;
+        let
+          # create a fixed-output derivation which captures our dependencies
+          deps = pkgs.stdenv.mkDerivation {
+            pname = "om-expenses-deps";
+            version = "0.0.1";
+            src = ./.;
 
-        nativeBuildInputs = with pkgs;
-          [
-            nodejs_22
-            pnpm
-            pnpm.configHook
-          ];
+            nativeBuildInputs = with pkgs; [ deno ];
 
-        installPhase = ''
-          mkdir -p $out/bin
-          mkdir -p $out/common
-          mkdir -p $out/backend
-          mkdir -p $out/frontend
+            # run the same build as our main derivation to ensure we capture the correct set of dependencies
+            buildPhase = ''
+              HOME="$(mktemp -d)"
+              deno install
+            '';
 
-          ${pkgs.faketty}/bin/faketty pnpm build
+            # take the cached dependencies and add them to the output
+            installPhase = ''
+              mkdir -p            $out/lib/
+              cp -r node_modules  $out/lib/
+            '';
 
-          cp -r node_modules            $out/
+            dontFixup = true;
+            dontPatchShebangs = true;
 
-          cp -r common/dist             $out/common/
-          cp -r common/node_modules     $out/common/
-          cp -r common/package.json     $out/common/
+            # specify the content hash of this derivations output
+            outputHashAlgo = "sha256";
+            outputHashMode = "recursive";
+            outputHash = "sha256-0pZRku1hZE84vB7K3Z2AM9VsaLrNSQxw7pM57dVGQtE=";
+          };
+        in
 
-          cp -r backend/dist            $out/backend/
-          cp -r backend/node_modules    $out/backend/
-          cp -r backend/package.json    $out/backend/
+        pkgs.stdenv.mkDerivation {
+          pname = "om-expenses";
+          version = "0.0.1";
 
-          cp -r frontend/.output        $out/frontend/
-          cp -r frontend/node_modules   $out/frontend/
-          cp -r frontend/package.json   $out/frontend/
+          src = ./.;
 
-          cat << EOF > $out/bin/om-expenses-backend
-          #!${pkgs.bash}/bin/bash
-          ${pkgs.nodejs_22}/bin/node ${placeholder "out"}/backend/dist/index.js
-          EOF
+          nativeBuildInputs = with pkgs; [ deno deps ];
 
-          cat << EOF > $out/bin/om-expenses-frontend
-          #!${pkgs.bash}/bin/bash
-          PORT=\$OM_FRONTEND_PORT ${pkgs.nodejs_22}/bin/node ${placeholder "out"}/frontend/.output/server/index.mjs
-          EOF
+          installPhase = ''
+            cp -r ${deps}/lib/node_modules .
 
-          chmod +x $out/bin/om-expenses-backend
-          chmod +x $out/bin/om-expenses-frontend
-        '';
+            chmod -R u+rw node_modules
 
-        pnpmWorkspaces = [ "common" "backend" "frontend" ];
+            ./deno-fix.sh
 
-        pnpmDeps = pkgs.pnpm.fetchDeps {
-          inherit (self.packages.${system}.default) pname version src pnpmWorkspaces;
-          hash = "sha256-5f6cFwIuaGLLrnkMzyhlcOA/0qy5OuUk9gbnSPG2vAk=";
+            ${pkgs.deno}/bin/deno task build
+
+            cd frontend
+            ./deno-fix.sh
+            cd ..
+
+            mkdir -p $out/bin
+            mkdir -p $out/common
+            mkdir -p $out/backend
+            mkdir -p $out/frontend
+
+            cp -r node_modules            $out/
+            cp -r package.json            $out/
+            cp -r deno.json               $out/
+
+            cp -r common/src              $out/common/
+            cp -r common/package.json     $out/common/
+            cp -r common/deno.json        $out/common/
+
+            cp -r backend/src             $out/backend/
+            cp -r backend/package.json    $out/backend/
+            cp -r backend/deno.json       $out/backend/
+
+            cp -r frontend/.output        $out/frontend/
+            cp -r frontend/package.json   $out/frontend/
+            cp -r frontend/deno.json      $out/frontend/
+
+            cat << EOF > $out/bin/om-expenses-backend
+            #!${pkgs.bash}/bin/bash
+            ${pkgs.deno}/bin/deno --allow-env --allow-read --allow-net ${placeholder "out"}/backend/src/index.ts
+            EOF
+
+            cat << EOF > $out/bin/om-expenses-frontend
+            #!${pkgs.bash}/bin/bash
+            PORT=\$OM_FRONTEND_PORT ${pkgs.deno}/bin/deno --allow-env --allow-read --allow-net ${placeholder "out"}/frontend/.output/server/index.mjs
+            EOF
+
+            chmod +x $out/bin/om-expenses-backend
+            chmod +x $out/bin/om-expenses-frontend
+          '';
         };
-      };
     });
 }

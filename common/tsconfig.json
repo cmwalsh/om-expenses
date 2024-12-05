@@ -9,6 +9,8 @@
     "strict": true,
     "isolatedModules": true,
     "moduleResolution": "node10",
-    "rootDir": "./src"
+    "rootDir": "./src",
+    "noEmit": true,
+    "allowImportingTsExtensions": true
   }
 }

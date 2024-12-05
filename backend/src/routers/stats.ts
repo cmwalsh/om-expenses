@@ -1,8 +1,8 @@
 import { and, count, desc, eq, getTableColumns, isNotNull, or, sum } from "drizzle-orm";
 import * as v from "valibot";
-import { ExpenseTable, TripTable, UserTable, UserToTripTable } from "../db/schema.js";
-import { db } from "./common.js";
-import { tRPC } from "./trpc.js";
+import { ExpenseTable, TripTable, UserTable, UserToTripTable } from "../db/schema.ts";
+import { db } from "./common.ts";
+import { tRPC } from "./trpc.ts";
 
 export const StatsRouter = tRPC.router({
   Stats: tRPC.ProtectedProcedure.input(v.parser(v.object({}))).query(async () => {

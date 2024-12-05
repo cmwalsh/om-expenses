@@ -6,9 +6,9 @@ import jwt from "jsonwebtoken";
 import { scrypt } from "node:crypto";
 import { assert } from "ts-essentials";
 import * as v from "valibot";
-import { Config } from "../config/index.js";
-import * as dbSchema from "../db/schema.js";
-import { tRPC } from "./trpc.js";
+import { Config } from "../config/index.ts";
+import * as dbSchema from "../db/schema.ts";
+import { tRPC } from "./trpc.ts";
 
 export interface TokenPayload {
   id: string;

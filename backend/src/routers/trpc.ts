@@ -4,8 +4,8 @@ import { assertUnreachable } from "common";
 import { eq } from "drizzle-orm";
 import { IncomingMessage } from "node:http";
 import superjson from "superjson";
-import { UserTable } from "../db/schema.js";
-import { assertOneRecord, db, verifyToken } from "./common.js";
+import { UserTable } from "../db/schema.ts";
+import { assertOneRecord, db, verifyToken } from "./common.ts";
 
 export namespace tRPC {
   const tRPC = initTRPC.context<Context>().create({

@@ -1,7 +1,7 @@
 import { createHTTPServer } from "@trpc/server/adapters/standalone";
 import cors from "cors";
-import { Config } from "./config/index.js";
-import { AppRouter, tRPC } from "./routers/index.js";
+import { Config } from "./config/index.ts";
+import { AppRouter, tRPC } from "./routers/index.ts";
 
 const Port = Config.OM_BACKEND_PORT;
 
