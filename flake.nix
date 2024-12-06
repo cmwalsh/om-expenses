@@ -23,7 +23,7 @@
 
         let
           hashes = {
-            aarch64-darwin = "sha256-LApx/dlveFg7zi5co1knQOQIBMeVu4nD6kB7yIeH7F8=";
+            aarch64-darwin = "sha256-+bF0PMLshGL02D6s9AQy2dLduXfk7u5B403PQzZYAQ8=";
             x86_64-linux = "sha256-36EXNfBDqWjxGLFypfRigZxKtLoWIaZWy/V1DOj1T4Y=";
           };
 
