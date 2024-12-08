@@ -1,4 +1,4 @@
-import { assert, ElementOf } from "ts-essentials";
+import { assert, type ElementOf } from "ts-essentials";
 
 export * from "./common.ts";
 export * from "./expense.ts";

@@ -1,6 +1,6 @@
-import { useNavigate } from "@solidjs/router";
-import { JSX } from "solid-js";
-import { Colour } from "~/lib";
+import { Colour } from "@frontend/lib";
+import { useNavigate } from "npm:@solidjs/router";
+import { JSX } from "npm:solid-js";
 
 type LinkOrActionProps = { href: string };
 

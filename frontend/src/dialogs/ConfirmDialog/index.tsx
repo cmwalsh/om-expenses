@@ -1,4 +1,4 @@
-import { Button } from "~/components";
+import { Button } from "@frontend/components";
 
 interface Props {
   title: string;

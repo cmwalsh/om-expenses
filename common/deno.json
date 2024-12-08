@@ -1,1 +1,8 @@
-{}
+{
+  "name": "@om-expenses/common",
+  "exports": "./src/index.ts",
+  "imports": {
+    "ts-essentials": "npm:ts-essentials",
+    "valibot": "npm:valibot"
+  }
+}

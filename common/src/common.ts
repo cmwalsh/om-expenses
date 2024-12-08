@@ -16,7 +16,7 @@ export const EmailAddress = v.pipe(
   v.string(),
   v.email("Not a valid email address"),
   v.title("Email Address"),
-  v.metadata(FieldMetadata({ icon: "@" })),
+  v.metadata(FieldMetadata({ icon: "@" }))
 );
 
 export const Password = (title: string, desc = "") =>

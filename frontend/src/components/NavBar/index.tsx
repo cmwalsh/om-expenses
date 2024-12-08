@@ -1,7 +1,7 @@
-import { useNavigate } from "@solidjs/router";
-import { createSignal, Show } from "solid-js";
-import { AppService } from "~/lib";
-import { Button } from "../Button";
+import { AppService } from "@frontend/lib";
+import { useNavigate } from "npm:@solidjs/router";
+import { createSignal, Show } from "npm:solid-js";
+import { Button } from "../Button/index.tsx";
 
 export function NavBar() {
   const user = () => AppService.get().getCurrentUser();
@@ -23,7 +23,7 @@ export function NavBar() {
     <nav class="navbar navbar-expand-lg mb-3">
       <div class="container-fluid">
         <a class="navbar-brand" href="#">
-          OM Expenses
+          OM Expenses1
         </a>
 
         <button class="navbar-toggler" type="button" aria-label="Toggle navigation" on:click={onToggle}>

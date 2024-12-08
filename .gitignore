@@ -136,3 +136,5 @@ result
 .nx/workspace-data
 
 .DS_Store
+
+.sass-cache/

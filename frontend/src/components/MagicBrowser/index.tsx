@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { assertError, camelToPascal, includes, keys } from "common";
-import { format } from "date-fns";
-import { enGB } from "date-fns/locale";
-import { JSXElement, createEffect, createSignal, onCleanup, onMount } from "solid-js";
-import { assert } from "ts-essentials";
-import * as v from "valibot";
-import { AlertDialog, openDialog } from "~/dialogs";
-import { Colour, FetchParameters, QuerySort, normaliseError } from "~/lib";
-import { DataTable, DataTableColumn } from "../DataTable";
-import { Pagination } from "../Pagination";
+import { AlertDialog, openDialog } from "@frontend/dialogs";
+import { Colour, FetchParameters, QuerySort, normaliseError } from "@frontend/lib";
+import { assertError, camelToPascal, includes, keys } from "@om-expenses/common";
+import { format } from "npm:date-fns";
+import { enGB } from "npm:date-fns/locale";
+import { JSXElement, createEffect, createSignal, onCleanup, onMount } from "npm:solid-js";
+import { assert } from "npm:ts-essentials";
+import * as v from "npm:valibot";
+import { DataTable, DataTableColumn } from "../DataTable/index.tsx";
+import { Pagination } from "../Pagination/index.tsx";
 
 interface Props<TSchema extends v.ObjectSchema<any, any>, TRow extends v.InferInput<TSchema>> {
   title?: string;
@@ -48,7 +48,7 @@ export function refreshAllBrowsers() {
 }
 
 export function MagicBrowser<TSchema extends v.ObjectSchema<any, any>, TRow extends v.InferInput<TSchema>>(
-  props: Props<TSchema, TRow> & Overrides<TRow>,
+  props: Props<TSchema, TRow> & Overrides<TRow>
 ) {
   const instance: MagicBrowserInstance = {
     refresh: () => {
@@ -65,7 +65,7 @@ export function MagicBrowser<TSchema extends v.ObjectSchema<any, any>, TRow exte
 
   const propSchemas = Object.entries(props.schema.entries) as readonly (readonly [
     string,
-    v.SchemaWithPipe<Array<any> & [any]>,
+    v.SchemaWithPipe<Array<any> & [any]>
   ])[];
 
   const [rows, setRows] = createSignal<{ rows: readonly TRow[]; total: number }>({

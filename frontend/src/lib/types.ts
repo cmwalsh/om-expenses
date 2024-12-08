@@ -1,9 +1,10 @@
-import type { AppRouter } from "backend";
-import { SearchResult } from "common";
-import { ElementOf } from "ts-essentials";
+import type { AppRouter } from "@om-expenses/backend";
+import type { SearchResult } from "@om-expenses/common";
+import type { ElementOf } from "npm:ts-essentials";
 
-type InferSearchReturn<TRoute extends (req: never) => unknown> =
-  InferReturn<TRoute> extends SearchResult<infer T> ? T : never;
+type InferSearchReturn<TRoute extends (req: never) => unknown> = InferReturn<TRoute> extends SearchResult<infer T>
+  ? T
+  : never;
 
 type InferReturn<TRoute extends (req: never) => unknown> = ReturnType<TRoute> extends PromiseLike<infer T> ? T : never;
 

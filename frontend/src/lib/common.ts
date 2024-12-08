@@ -1,4 +1,4 @@
-import { ElementOf } from "ts-essentials";
+import { ElementOf } from "npm:ts-essentials";
 
 export interface SessionUser {
   id: string;

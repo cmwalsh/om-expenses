@@ -1,7 +1,7 @@
-import { TripAddUserSchema, TripCreateSchema, TripUpdateSchema } from "common";
-import { and, eq, ilike, inArray, or } from "drizzle-orm";
-import * as uuid from "uuid";
-import * as v from "valibot";
+import { TripAddUserSchema, TripCreateSchema, TripUpdateSchema } from "@om-expenses/common";
+import { and, eq, ilike, inArray, or } from "npm:drizzle-orm";
+import * as uuid from "npm:uuid";
+import * as v from "npm:valibot";
 import { TripTable, UserToTripTable } from "../db/schema.ts";
 import { assertOneRecord, assertRole, db, PaginationSchema, toDrizzleOrderBy, UUID, withId } from "./common.ts";
 import { tRPC } from "./trpc.ts";
@@ -36,7 +36,7 @@ export const TripRouter = tRPC.router({
       const total = await db.$count(TripTable, condition);
 
       return { rows, total } as const;
-    },
+    }
   ),
 
   One: tRPC.ProtectedProcedure.input(v.parser(UUID)).query(async ({ input }) => {
@@ -63,7 +63,7 @@ export const TripRouter = tRPC.router({
         .update(TripTable)
         .set({ ...rest, updated: new Date() })
         .where(eq(TripTable.id, id));
-    },
+    }
   ),
 
   Delete: tRPC.ProtectedProcedure.input(v.parser(UUID)).mutation(async ({ ctx, input }) => {

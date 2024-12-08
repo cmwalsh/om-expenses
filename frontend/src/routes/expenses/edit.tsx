@@ -1,12 +1,12 @@
-import { RouteSectionProps } from "@solidjs/router";
-import { ExpenseUpdate, ExpenseUpdateSchema } from "common";
+import { Button, Card, DateInfo, MagicFields } from "@frontend/components";
+import { beginPage } from "@frontend/helper";
+import { addToast, AppService } from "@frontend/lib";
+import { ExpenseUpdate, ExpenseUpdateSchema } from "@om-expenses/common";
+import { RouteSectionProps } from "npm:@solidjs/router";
+import * as v from "npm:valibot";
 import { createResource, createSignal, Show, Suspense } from "solid-js";
-import * as v from "valibot";
-import { Button, Card, DateInfo, MagicFields } from "~/components";
-import { beginPage } from "~/helper";
-import { addToast, AppService } from "~/lib";
 
-export default function ExpenseEdit(props: RouteSectionProps) {
+export function ExpenseEdit(props: RouteSectionProps) {
   beginPage(["admin", "user"]);
 
   const id = () => props.params.id;

@@ -1,8 +1,9 @@
-import { pickPrefix } from "common";
-import { parse } from "dotenv";
 import fs from "node:fs";
 import path from "node:path";
-import * as v from "valibot";
+import process from "node:process";
+import { parse } from "npm:dotenv";
+import * as v from "npm:valibot";
+import { pickPrefix } from "../../../common/src/index.ts"; // Drizzle Kit bodge
 
 export const ConfigSchema = v.object({
   OM_DATABASE_URL: v.pipe(v.string(), v.startsWith("postgresql://")),
@@ -10,7 +11,7 @@ export const ConfigSchema = v.object({
   OM_BACKEND_PORT: v.pipe(
     v.string(),
     v.decimal(),
-    v.transform((s) => parseInt(s, 10)),
+    v.transform((s) => parseInt(s, 10))
   ),
 });
 

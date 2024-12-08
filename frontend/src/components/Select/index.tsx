@@ -1,5 +1,5 @@
-import { For, Show } from "solid-js";
-import { ElementOf } from "ts-essentials";
+import { For, Show } from "npm:solid-js";
+import { ElementOf } from "npm:ts-essentials";
 
 interface Props<TOptions extends readonly SelectOption[]> {
   id: string;
@@ -33,8 +33,8 @@ export function Select<TOptions extends readonly SelectOption[]>(props: Props<TO
           e.currentTarget.value === "[undefined]"
             ? undefined
             : e.currentTarget.value === "[null]"
-              ? null
-              : e.currentTarget.value,
+            ? null
+            : e.currentTarget.value
         )
       }
     >

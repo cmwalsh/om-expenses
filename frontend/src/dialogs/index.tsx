@@ -1,17 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { JSX } from "solid-js";
-import * as v from "valibot";
-import { FetchParameters, FetchResult } from "~/lib";
-import { BrowserDialog } from "./BrowserDialog";
-import { ConfirmDialog } from "./ConfirmDialog";
+import { FetchParameters, FetchResult } from "@frontend/lib";
+import { JSX } from "npm:solid-js";
+import * as v from "npm:valibot";
+import { BrowserDialog } from "./BrowserDialog/index.tsx";
+import { ConfirmDialog } from "./ConfirmDialog/index.tsx";
 
-export * from "./AlertDialog";
-export * from "./BrowserDialog";
+export * from "./AlertDialog/index.tsx";
+export * from "./BrowserDialog/index.tsx";
 
 // Helper for opening dialog components
 export async function openDialog<
   TProps extends { onClose?: (ret: any) => void },
-  TRet extends TProps extends { onClose?: (ret: infer T) => void } ? T : unknown,
+  TRet extends TProps extends { onClose?: (ret: infer T) => void } ? T : unknown
 >(Dialog: (props: TProps) => JSX.Element, props: TProps): Promise<TRet> {
   const { render } = await import("solid-js/web");
 
@@ -60,7 +60,7 @@ export async function openDialog<
 export async function openBrowser<TRow>(
   title: string,
   schema: v.ObjectSchema<any, any>,
-  onFetch: (params: FetchParameters) => Promise<FetchResult<TRow>>,
+  onFetch: (params: FetchParameters) => Promise<FetchResult<TRow>>
 ) {
   const row = await openDialog(BrowserDialog, {
     title,

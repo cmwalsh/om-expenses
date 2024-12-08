@@ -1,17 +1,23 @@
-import { CreateTRPCClient, createTRPCClient, httpBatchLink, TRPCClientError, TRPCLink } from "@trpc/client";
-import { observable } from "@trpc/server/observable";
+import { assertUnreachable, EntityType } from "@om-expenses/common";
 import type { AppRouter } from "backend";
-import { assertUnreachable, EntityType } from "common";
-import superjson from "superjson";
-import { assert } from "ts-essentials";
-import * as v from "valibot";
-import { FetchParameters, getApiBaseUrl, SessionUser } from "./common";
-import { SessionService } from "./session";
-import { TripRecord, UserRecord } from "./types";
+import {
+  CreateTRPCClient,
+  createTRPCClient,
+  httpBatchLink,
+  TRPCClientError,
+  TRPCLink,
+} from "npm:@trpc/client@11.0.0-rc.648";
+import { observable } from "npm:@trpc/server@11.0.0-rc.648/observable";
+import superjson from "npm:superjson";
+import { assert } from "npm:ts-essentials";
+import * as v from "npm:valibot";
+import { FetchParameters, getApiBaseUrl, SessionUser } from "./common.ts";
+import { SessionService } from "./session.ts";
+import { TripRecord, UserRecord } from "./types.ts";
 
-export * from "./common";
-export * from "./toast";
-export * from "./types";
+export * from "./common.ts";
+export * from "./toast.ts";
+export * from "./types.ts";
 
 interface CustomLinkOpts {
   onError: (err: Error) => void;
@@ -142,7 +148,7 @@ class LookupService {
 
   public async getMany(
     type: EntityType,
-    fetch: FetchParameters,
+    fetch: FetchParameters
   ): Promise<{ rows: readonly { id: string }[]; total: number }> {
     if (type === "User") {
       return this.api.User.Search.query(fetch);

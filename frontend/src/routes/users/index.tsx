@@ -1,10 +1,10 @@
-import { type RouteSectionProps } from "@solidjs/router";
-import { humanise } from "common";
-import * as v from "valibot";
-import { Card, LinkButton, MagicBrowser, refreshAllBrowsers } from "~/components";
-import { openConfirm } from "~/dialogs";
-import { beginPage } from "~/helper";
-import { AppService, FetchParameters, UserSearchRecord } from "~/lib";
+import { Card, LinkButton, MagicBrowser, refreshAllBrowsers } from "@frontend/components";
+import { openConfirm } from "@frontend/dialogs";
+import { beginPage } from "@frontend/helper";
+import { AppService, FetchParameters, UserSearchRecord } from "@frontend/lib";
+import { humanise } from "@om-expenses/common";
+import { type RouteSectionProps } from "npm:@solidjs/router";
+import * as v from "npm:valibot";
 
 const UserTableSchema = v.object({
   role: v.pipe(v.string(), v.title("Role")),
@@ -14,7 +14,7 @@ const UserTableSchema = v.object({
   updated: v.pipe(v.date(), v.title("Updated")),
 });
 
-export default function Users(props: RouteSectionProps) {
+export function Users(props: RouteSectionProps) {
   const { navigate } = beginPage("admin");
 
   const onFetch = async (params: FetchParameters) => {

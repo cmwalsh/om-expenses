@@ -1,6 +1,6 @@
-import { formatDistanceToNow } from "date-fns";
-import { createSignal, For } from "solid-js";
-import { removeToast, setToastListener, ToastInfo } from "~/lib";
+import { removeToast, setToastListener, ToastInfo } from "@frontend/lib";
+import { formatDistanceToNow } from "npm:date-fns";
+import { createSignal, For } from "npm:solid-js";
 
 interface Props {
   id: number;

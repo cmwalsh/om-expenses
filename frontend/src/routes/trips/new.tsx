@@ -1,12 +1,12 @@
-import { RouteSectionProps } from "@solidjs/router";
-import { TripCreate, TripCreateSchema } from "common";
-import { createSignal } from "solid-js";
-import * as v from "valibot";
-import { Button, Card, MagicFields } from "~/components";
-import { beginPage } from "~/helper";
-import { addToast, AppService } from "~/lib";
+import { Button, Card, MagicFields } from "@frontend/components";
+import { beginPage } from "@frontend/helper";
+import { addToast, AppService } from "@frontend/lib";
+import { TripCreate, TripCreateSchema } from "@om-expenses/common";
+import { RouteSectionProps } from "npm:@solidjs/router";
+import { createSignal } from "npm:solid-js";
+import * as v from "npm:valibot";
 
-export default function TripEdit(props: RouteSectionProps) {
+export function TripNew(props: RouteSectionProps) {
   const { navigate } = beginPage("admin");
 
   const [trip, setTrip] = createSignal<Partial<TripCreate>>({});

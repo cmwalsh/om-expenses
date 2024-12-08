@@ -1,8 +1,8 @@
-import { ExpenseCreateSchema, ExpenseStatus, ExpenseType, ExpenseUpdateSchema } from "common";
-import { and, count, eq, getTableColumns, ilike, or } from "drizzle-orm";
-import { assert } from "ts-essentials";
-import * as uuid from "uuid";
-import * as v from "valibot";
+import { ExpenseCreateSchema, ExpenseStatus, ExpenseType, ExpenseUpdateSchema } from "@om-expenses/common";
+import { and, count, eq, getTableColumns, ilike, or } from "npm:drizzle-orm";
+import { assert } from "npm:ts-essentials";
+import * as uuid from "npm:uuid";
+import * as v from "npm:valibot";
 import { ExpenseTable, TripTable, UserTable } from "../db/schema.ts";
 import { assertOneRecord, db, PaginationSchema, toDrizzleOrderBy, UUID, withId } from "./common.ts";
 import { tRPC } from "./trpc.ts";
@@ -10,7 +10,7 @@ import { tRPC } from "./trpc.ts";
 const ExpenseSearchSchema = v.intersect([
   PaginationSchema,
   v.partial(
-    v.object({ user_id: UUID, trip_id: UUID, type: v.picklist(ExpenseType), status: v.picklist(ExpenseStatus) }),
+    v.object({ user_id: UUID, trip_id: UUID, type: v.picklist(ExpenseType), status: v.picklist(ExpenseStatus) })
   ),
 ]);
 
@@ -31,7 +31,7 @@ export const ExpenseRouter = tRPC.router({
         user_id ? eq(ExpenseTable.user_id, user_id) : undefined,
         trip_id ? eq(ExpenseTable.trip_id, trip_id) : undefined,
         type ? eq(ExpenseTable.type, type) : undefined,
-        status ? eq(ExpenseTable.status, status) : undefined,
+        status ? eq(ExpenseTable.status, status) : undefined
       );
 
       const query = db
@@ -53,13 +53,13 @@ export const ExpenseRouter = tRPC.router({
         .where(condition);
 
       return { rows, total } as const;
-    },
+    }
   ),
 
   One: tRPC.ProtectedProcedure.input(v.parser(UUID)).query(async ({ ctx, input }) => {
     const condition = and(
       eq(ExpenseTable.id, input),
-      ctx.session.user.role !== "admin" ? eq(ExpenseTable.user_id, ctx.session.user.id) : undefined,
+      ctx.session.user.role !== "admin" ? eq(ExpenseTable.user_id, ctx.session.user.id) : undefined
     );
 
     return assertOneRecord(await db.select().from(ExpenseTable).where(condition));
@@ -92,7 +92,7 @@ export const ExpenseRouter = tRPC.router({
           .set({ ...rest, updated: new Date() })
           .where(eq(ExpenseTable.id, id));
       });
-    },
+    }
   ),
 
   Delete: tRPC.ProtectedProcedure.input(v.parser(UUID)).mutation(async ({ ctx, input }) => {

@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { EntityType, FieldMetadata, humanise } from "common";
-import { For } from "solid-js";
-import * as v from "valibot";
-import { FormFields } from "../FormFields";
-import { LookupInput } from "../LookupInput";
-import { Select, SelectOption } from "../Select";
-import { TextInput } from "../TextInput";
+import { EntityType, FieldMetadata, humanise } from "@om-expenses/common";
+import { For } from "npm:solid-js";
+import * as v from "npm:valibot";
+import { FormFields } from "../FormFields/index.tsx";
+import { LookupInput } from "../LookupInput/index.tsx";
+import { Select, SelectOption } from "../Select/index.tsx";
+import { TextInput } from "../TextInput/index.tsx";
 
 interface Props<TSchema extends v.ObjectSchema<any, any>, TData extends v.InferInput<TSchema>> {
   schema: TSchema;
@@ -17,7 +17,7 @@ interface Props<TSchema extends v.ObjectSchema<any, any>, TData extends v.InferI
 
 export function MagicFields<
   TSchema extends v.ObjectSchema<any, any>,
-  TData extends v.InferInput<v.SchemaWithPartial<TSchema, undefined>>,
+  TData extends v.InferInput<v.SchemaWithPartial<TSchema, undefined>>
 >(props: Props<TSchema, TData>) {
   const _schema = props.schema;
 
@@ -107,18 +107,18 @@ function getFieldInfo(formSchema: v.ObjectSchema<any, any>, fieldName: string) {
   const type = vSchema?.type;
 
   const validationType = propSchema.pipe.find(
-    (item): item is v.BaseValidation<any, any, any> => item.kind === "validation",
+    (item): item is v.BaseValidation<any, any, any> => item.kind === "validation"
   )?.type;
 
   const title =
     propSchema.pipe.find((item): item is v.TitleAction<string, string> => item.type === "title")?.title ?? "???";
 
   const description = propSchema.pipe.find(
-    (item): item is v.DescriptionAction<string, string> => item.type === "description",
+    (item): item is v.DescriptionAction<string, string> => item.type === "description"
   )?.description;
 
   const metadata = propSchema.pipe.find(
-    (item): item is v.MetadataAction<string, FieldMetadata> => item.type === "metadata",
+    (item): item is v.MetadataAction<string, FieldMetadata> => item.type === "metadata"
   )?.metadata;
 
   let inputType: "text" | "select" | "email" | "password" | "lookup" = "text";

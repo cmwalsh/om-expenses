@@ -1,7 +1,15 @@
 {
+  "name": "@om-expenses/backend",
+  "exports": "./src/index.ts",
   "tasks": {
     "dev": "deno --env-file=../.env --watch --allow-env --allow-read --allow-net src/index.ts",
     "start": "deno --allow-env --allow-read --allow-net src/index.ts",
     "push": "drizzle-kit push"
+  },
+  "imports": {
+    "drizzle-kit": "npm:drizzle-kit@^0.29.1",
+    "pg": "npm:pg@^8.13.1",
+    "ts-essentials": "npm:ts-essentials",
+    "valibot": "npm:valibot"
   }
 }

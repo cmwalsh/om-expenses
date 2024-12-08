@@ -1,5 +1,5 @@
-import { createSignal } from "solid-js";
-import { SessionUser } from "./common";
+import { createSignal } from "npm:solid-js";
+import { SessionUser } from "./common.ts";
 
 interface Session {
   sessionUser: SessionUser;

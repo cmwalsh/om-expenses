@@ -1,8 +1,8 @@
-import { useNavigate, useSearchParams } from "@solidjs/router";
+import { AppService } from "@frontend/lib";
+import { includes } from "@om-expenses/common";
 import type { AppRouter } from "backend";
-import { includes } from "common";
-import { assert } from "ts-essentials";
-import { AppService } from "~/lib";
+import { useNavigate, useSearchParams } from "npm:@solidjs/router";
+import { assert } from "npm:ts-essentials";
 
 export type Role = (ReturnType<AppRouter["User"]["One"]> extends PromiseLike<infer T> ? T : never)["role"];
 

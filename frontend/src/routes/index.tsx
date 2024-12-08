@@ -1,10 +1,10 @@
-import { useNavigate } from "@solidjs/router";
-import { createResource, For, Match, Show, Switch } from "solid-js";
-import { Card, Tile, TripSummary, UserTripSummary } from "~/components";
-import { beginPage } from "~/helper";
-import { AppService } from "~/lib";
+import { Card, Tile, TripSummary, UserTripSummary } from "@frontend/components";
+import { beginPage } from "@frontend/helper";
+import { AppService } from "@frontend/lib";
+import { useNavigate } from "npm:@solidjs/router";
+import { createResource, For, Match, Show, Switch } from "npm:solid-js";
 
-export default function Home() {
+export function Home() {
   const { user } = beginPage(["admin", "user"]);
 
   return (

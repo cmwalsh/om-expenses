@@ -1,8 +1,8 @@
-import { UserCreateSchema, UserUpdateSchema } from "common";
-import { and, eq, ilike, inArray, or } from "drizzle-orm";
-import { assert } from "ts-essentials";
-import * as uuid from "uuid";
-import * as v from "valibot";
+import { UserCreateSchema, UserUpdateSchema } from "@om-expenses/common";
+import { and, eq, ilike, inArray, or } from "npm:drizzle-orm";
+import { assert } from "npm:ts-essentials";
+import * as uuid from "npm:uuid";
+import * as v from "npm:valibot";
 import { UserTable, UserToTripTable } from "../db/schema.ts";
 import {
   assertOneRecord,
@@ -50,7 +50,7 @@ export const UserRouter = tRPC.router({
       const total = await db.$count(UserTable, condition);
 
       return { rows, total } as const;
-    },
+    }
   ),
 
   One: tRPC.ProtectedProcedure.input(v.parser(UUID)).query(async ({ input }) => {
@@ -97,7 +97,7 @@ export const UserRouter = tRPC.router({
           await tx.update(UserTable).set({ password_hash }).where(eq(UserTable.id, id));
         }
       });
-    },
+    }
   ),
 
   Delete: tRPC.ProtectedProcedure.input(v.parser(UUID)).mutation(async ({ ctx, input }) => {

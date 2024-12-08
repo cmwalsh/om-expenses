@@ -1,4 +1,4 @@
-import { children, createMemo, For, JSXElement } from "solid-js";
+import { children, createMemo, For, JSXElement } from "npm:solid-js";
 
 interface Props {
   children: JSXElement;

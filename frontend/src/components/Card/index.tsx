@@ -1,6 +1,6 @@
-import { children, createMemo, JSX, Show } from "solid-js";
-import { assert } from "ts-essentials";
-import { Colour } from "~/lib";
+import { Colour } from "@frontend/lib";
+import { children, createMemo, JSX, Show } from "npm:solid-js";
+import { assert } from "npm:ts-essentials";
 
 interface Props {
   colour?: Colour;

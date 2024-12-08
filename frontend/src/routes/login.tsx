@@ -1,12 +1,12 @@
-import { useNavigate, type RouteSectionProps } from "@solidjs/router";
-import { assertUnreachable, LoginData, LoginDataSchema } from "common";
-import { createSignal, onMount } from "solid-js";
-import { Button, Card, MagicFields } from "~/components";
-import { AlertDialog, openDialog } from "~/dialogs";
-import { getLogoutReason } from "~/helper";
-import { addToast, AppService } from "~/lib";
+import { Button, Card, MagicFields } from "@frontend/components";
+import { AlertDialog, openDialog } from "@frontend/dialogs";
+import { getLogoutReason } from "@frontend/helper";
+import { addToast, AppService } from "@frontend/lib";
+import { assertUnreachable, LoginData, LoginDataSchema } from "@om-expenses/common";
+import { useNavigate, type RouteSectionProps } from "npm:@solidjs/router";
+import { createSignal, onMount } from "npm:solid-js";
 
-export default function Login(props: RouteSectionProps) {
+export function Login(props: RouteSectionProps) {
   const navigate = useNavigate();
 
   onMount(() => {

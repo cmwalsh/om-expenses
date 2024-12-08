@@ -1,8 +1,8 @@
-import { EntityType } from "common";
-import { createEffect, createResource } from "solid-js";
-import { assert } from "ts-essentials";
-import { openBrowser } from "~/dialogs";
-import { AppService } from "~/lib";
+import { openBrowser } from "@frontend/dialogs";
+import { AppService } from "@frontend/lib";
+import { EntityType } from "npm:common";
+import { createEffect, createResource } from "npm:solid-js";
+import { assert } from "npm:ts-essentials";
 
 interface Props {
   id: string;
@@ -33,7 +33,7 @@ export function LookupInput(props: Props) {
     const row = await openBrowser(
       `Select ${props.entityType}`,
       lookupService.getLookupTableSchema(props.entityType),
-      (fetchParameters) => lookupService.getMany(props.entityType, fetchParameters),
+      (fetchParameters) => lookupService.getMany(props.entityType, fetchParameters)
     );
 
     if (row) {

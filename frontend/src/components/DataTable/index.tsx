@@ -1,7 +1,6 @@
-import { For, JSXElement } from "solid-js";
-import { Colour, QuerySort } from "~/lib";
-import { Button } from "../Button";
-import "./style.scss";
+import { Colour, QuerySort } from "@frontend/lib";
+import { For, JSXElement } from "npm:solid-js";
+import { Button } from "../Button/index.tsx";
 
 interface Props<TRow> {
   columns: readonly DataTableColumn<TRow>[];

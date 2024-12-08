@@ -1,5 +1,5 @@
-import { and, count, desc, eq, getTableColumns, isNotNull, or, sum } from "drizzle-orm";
-import * as v from "valibot";
+import { and, count, desc, eq, getTableColumns, isNotNull, or, sum } from "npm:drizzle-orm";
+import * as v from "npm:valibot";
 import { ExpenseTable, TripTable, UserTable, UserToTripTable } from "../db/schema.ts";
 import { db } from "./common.ts";
 import { tRPC } from "./trpc.ts";

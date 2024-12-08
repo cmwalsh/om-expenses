@@ -1,8 +1,8 @@
-import { assertError } from "common";
-import { createSignal, JSX } from "solid-js";
-import * as v from "valibot";
-import { AlertDialog, openDialog } from "~/dialogs";
-import { Colour, normaliseError } from "~/lib";
+import { AlertDialog, openDialog } from "@frontend/dialogs";
+import { Colour, normaliseError } from "@frontend/lib";
+import { assertError } from "@om-expenses/common";
+import { createSignal, JSX } from "npm:solid-js";
+import * as v from "npm:valibot";
 
 type LinkOrActionProps = { "on:click": Exclude<JSX.HTMLElementTags["button"]["on:click"], undefined> };
 

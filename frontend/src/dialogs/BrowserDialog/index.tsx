@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import * as v from "valibot";
-import { MagicBrowser } from "~/components";
-import { FetchParameters } from "~/lib";
+import { MagicBrowser } from "@frontend/components";
+import { FetchParameters } from "@frontend/lib";
+import * as v from "npm:valibot";
 
 interface Props {
   title: string;

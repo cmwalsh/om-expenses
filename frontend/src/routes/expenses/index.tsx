@@ -1,10 +1,10 @@
-import { useSearchParams, type RouteSectionProps } from "@solidjs/router";
-import { ExpenseStatus, ExpenseType, FieldMetadata, humanise } from "common";
-import * as v from "valibot";
-import { Button, Card, MagicBrowser, MagicFields, refreshAllBrowsers } from "~/components";
-import { openConfirm } from "~/dialogs";
-import { beginPage } from "~/helper";
-import { AppService, ExpenseSearchRecord, FetchParameters } from "~/lib";
+import { Button, Card, MagicBrowser, MagicFields, refreshAllBrowsers } from "@frontend/components";
+import { openConfirm } from "@frontend/dialogs";
+import { beginPage } from "@frontend/helper";
+import { AppService, ExpenseSearchRecord, FetchParameters } from "@frontend/lib";
+import { ExpenseStatus, ExpenseType, FieldMetadata, humanise } from "@om-expenses/common";
+import { useSearchParams, type RouteSectionProps } from "npm:@solidjs/router";
+import * as v from "npm:valibot";
 
 const ExpenseTableSchema = v.object({
   trip_name: v.pipe(v.string(), v.title("Trip")),
@@ -22,7 +22,7 @@ const ExpenseFilterSchema = v.partial(
     trip_id: v.pipe(v.string(), v.uuid(), v.title("Trip"), v.metadata(FieldMetadata({ icon: "✈", lookup: "Trip" }))),
     type: v.pipe(v.picklist(ExpenseType), v.title("Type"), v.metadata(FieldMetadata({ icon: "❓" }))),
     status: v.pipe(v.picklist(ExpenseStatus), v.title("Status"), v.metadata(FieldMetadata({ icon: "⏼" }))),
-  }),
+  })
 );
 
 type ExpenseFilter = v.InferInput<typeof ExpenseFilterSchema>;
@@ -30,7 +30,7 @@ type ExpenseFilter = v.InferInput<typeof ExpenseFilterSchema>;
 // Needed to clear search params (useSearchParams)
 const ClearFilter: ExpenseFilter = { user_id: undefined, trip_id: undefined, type: undefined, status: undefined };
 
-export default function Expenses(props: RouteSectionProps) {
+export function Expenses(props: RouteSectionProps) {
   const { user, navigate } = beginPage(["admin", "user"]);
 
   const schema = user()?.role === "admin" ? ExpenseFilterSchema : v.omit(ExpenseFilterSchema, ["user_id"]);
@@ -46,7 +46,7 @@ export default function Expenses(props: RouteSectionProps) {
   const onDelete = async (row: ExpenseSearchRecord) => {
     const res = await openConfirm(
       "Delete user",
-      `Are you sure you wish to delete expense for "${row.merchant}" of value "${parseFloat(row.amount).toFixed(2)}"`,
+      `Are you sure you wish to delete expense for "${row.merchant}" of value "${parseFloat(row.amount).toFixed(2)}"`
     );
 
     if (res === "yes") {

@@ -1,4 +1,4 @@
-import { For } from "solid-js";
+import { For } from "npm:solid-js";
 
 interface Props {
   class?: string;

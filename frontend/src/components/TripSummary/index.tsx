@@ -1,5 +1,4 @@
-import { TripSummaryInfo } from "~/lib";
-import "./style.scss";
+import { TripSummaryInfo } from "@frontend/lib";
 
 interface Props {
   tripSummary: TripSummaryInfo;

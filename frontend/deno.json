@@ -1,7 +1,21 @@
 {
+  "name": "@om-expenses/frontend",
+  "exports": "./src/app.tsx",
   "tasks": {
-    "dev": "vinxi dev --port 3001",
-    "build": "vinxi build",
-    "start": "PORT=3001 deno --allow-env --allow-net --allow-read .output/server/index.mjs"
+    "dev": "deno run --allow-read --allow-write --allow-env --allow-net --allow-run bundle.ts --watch",
+    "build": "deno run --allow-read --allow-write --allow-env --allow-net --allow-run bundle.ts --build",
+    "serve": "deno serve --allow-read --port 3001 server.ts",
+    "sass": "sass sass/bootstrap.scss web/css/bootstrap.css"
+  },
+  "imports": {
+    "bootstrap": "npm:bootstrap@^5.3.3",
+    "esbuild": "npm:esbuild@^0.24.0",
+    "jsx-runtime": "npm:jsx-runtime@^1.2.0",
+    "solid-js": "npm:solid-js@^1.9.3",
+    "@frontend/components": "./src/components/index.ts",
+    "@frontend/dialogs": "./src/dialogs/index.tsx",
+    "@frontend/lib": "./src/lib/index.ts",
+    "@frontend/helper": "./src/helper/index.ts",
+    "common": "@om-expenses/common"
   }
 }

@@ -1,19 +1,19 @@
-import { RouteSectionProps } from "@solidjs/router";
-import { TripUpdate, TripUpdateSchema } from "common";
+import { Button, Card, DateInfo, MagicBrowser, MagicFields, refreshAllBrowsers } from "@frontend/components";
+import { openBrowser, openConfirm } from "@frontend/dialogs";
+import { beginPage } from "@frontend/helper";
+import { addToast, AppService, FetchParameters, UserSearchRecord } from "@frontend/lib";
+import { TripUpdate, TripUpdateSchema } from "@om-expenses/common";
+import { RouteSectionProps } from "npm:@solidjs/router";
+import { assert } from "npm:ts-essentials";
+import * as v from "npm:valibot";
 import { createResource, createSignal, Show, Suspense } from "solid-js";
-import { assert } from "ts-essentials";
-import * as v from "valibot";
-import { Button, Card, DateInfo, MagicBrowser, MagicFields, refreshAllBrowsers } from "~/components";
-import { openBrowser, openConfirm } from "~/dialogs";
-import { beginPage } from "~/helper";
-import { addToast, AppService, FetchParameters, UserSearchRecord } from "~/lib";
 
 const UserPickSchema = v.object({
   email: v.pipe(v.string(), v.title("Email Address")),
   name: v.pipe(v.string(), v.title("Name")),
 });
 
-export default function TripEdit(props: RouteSectionProps) {
+export function TripEdit(props: RouteSectionProps) {
   beginPage("admin");
 
   const id = () => props.params.id;
@@ -50,7 +50,7 @@ export default function TripEdit(props: RouteSectionProps) {
   const onRemoveUser = async (row: UserSearchRecord) => {
     const res = await openConfirm(
       "Remove user from trip",
-      `Are you sure you wish to remove "${row.name}" from this trip?`,
+      `Are you sure you wish to remove "${row.name}" from this trip?`
     );
 
     if (res === "yes") {

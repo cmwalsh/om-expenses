@@ -1,5 +1,5 @@
-import { createHTTPServer } from "@trpc/server/adapters/standalone";
-import cors from "cors";
+import { createHTTPServer } from "npm:@trpc/server@11.0.0-rc.648/adapters/standalone";
+import cors from "npm:cors";
 import { Config } from "./config/index.ts";
 import { AppRouter, tRPC } from "./routers/index.ts";
 

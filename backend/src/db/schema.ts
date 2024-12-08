@@ -1,6 +1,6 @@
-import { ExpenseStatus, ExpenseType, UserRole } from "common";
-import { relations, sql } from "drizzle-orm";
-import { decimal, pgEnum, pgTable, timestamp, unique, uuid, varchar } from "drizzle-orm/pg-core";
+import { relations, sql } from "npm:drizzle-orm";
+import { decimal, pgEnum, pgTable, timestamp, unique, uuid, varchar } from "npm:drizzle-orm/pg-core";
+import { ExpenseStatus, ExpenseType, UserRole } from "../../../common/src/index.ts"; // Drizzle Kit bodge
 
 export type TableType = typeof UserTable | typeof TripTable | typeof ExpenseTable;
 
@@ -58,7 +58,7 @@ export const UserToTripTable = pgTable(
     return {
       unq: unique().on(t.user_id, t.trip_id).nullsNotDistinct(),
     };
-  },
+  }
 );
 
 export const UserToTripRelations = relations(UserToTripTable, ({ one }) => ({
