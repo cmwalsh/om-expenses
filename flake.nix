@@ -25,7 +25,7 @@
         let
           hashes = {
             aarch64-darwin = "sha256-CZdRMTO38wKv8CBJo1UjCcrVxymSDnITG5wG50Gaib0=";
-            x86_64-linux = "sha256-CZdRMTO38wKv8CBJo1UjCcrVxymSDnITG5wG50Gaib0=";
+            x86_64-linux = "sha256-xmEcL9cwpZRBrM0fiVZl7U6eA6qXrNV8GgFpPWS2jbg=";
           };
 
           # create a fixed-output derivation which captures our dependencies
@@ -38,7 +38,7 @@
 
             # run the same build as our main derivation to ensure we capture the correct set of dependencies
             buildPhase = ''
-              HOME="$(mktemp -d)"
+              export HOME="$(mktemp -d)"
 
               export DENO_DIR="deno-dir"
               mkdir -p $DENO_DIR
@@ -49,7 +49,7 @@
 
             # take the cached dependencies and add them to the output (remove .poll files which are random!)
             installPhase = ''
-              DENO_DIR="deno-dir"
+              export DENO_DIR="deno-dir"
 
               mkdir -p            $out/lib/deno-dir/
               cp -r $DENO_DIR/*   $out/lib/deno-dir/   
@@ -74,17 +74,14 @@
           nativeBuildInputs = with pkgs; [ deno deps ];
 
           installPhase = ''
-            HOME="$(mktemp -d)"
+            export HOME="$(mktemp -d)"
 
-            DENO_DIR=${deps}/lib/deno-dir/
-
-            # cp -r ${deps}/lib/node_modules .
-            # chmod -R u+rw node_modules
+            export DENO_DIR="$(mktemp -d)"
+            
+            cp -a ${deps}/lib/deno-dir/* $DENO_DIR/
+            chmod -R u+rw $DENO_DIR/
 
             deno install
-
-            ${pkgs.deno}/bin/deno cache backend/src/index.ts
-            ${pkgs.deno}/bin/deno cache frontend/server.ts
 
             ${pkgs.deno}/bin/deno task build
 
