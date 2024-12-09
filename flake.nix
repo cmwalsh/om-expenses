@@ -24,7 +24,7 @@
 
         let
           hashes = {
-            aarch64-darwin = "sha256-CZdRMTO38wKv8CBJo1UjCcrVxymSDnITG5wG50Gaib0=";
+            aarch64-darwin = "sha256-N4GxH/ItKUSatEq7NiMqgzvIS5bIZ8u9itKoVdhTz6g=";
             x86_64-linux = "sha256-NpZeWHpInVwqrl3OHn0CDLCLZ5HD55r5VOF54r1a0GY=";
           };
         in
