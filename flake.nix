@@ -25,12 +25,12 @@
         let
           hashes = {
             aarch64-darwin = "sha256-CZdRMTO38wKv8CBJo1UjCcrVxymSDnITG5wG50Gaib0=";
-            x86_64-linux = "sha256-z7cbW2z7Utnc4l6QuGX9nQcm9ZukOdjHPRO2Di79vXs=";
+            x86_64-linux = "sha256-NpZeWHpInVwqrl3OHn0CDLCLZ5HD55r5VOF54r1a0GY=";
           };
         in
         pkgs.stdenv.mkDerivation {
           pname = "om-expenses";
-          version = "0.0.12";
+          version = "0.1.0";
 
           src = ./.;
 
@@ -65,9 +65,9 @@
             cp -a frontend/dist   $out/lib/frontend/
 
             echo "Compiling backend..."
-            ${pkgs.deno}/bin/deno compile --cached-only --no-code-cache -o $out/bin/om-expenses-backend   backend/src/index.ts
+            ${pkgs.deno}/bin/deno compile --cached-only --no-code-cache --allow-read --allow-net --allow-env -o $out/bin/om-expenses-backend   backend/src/index.ts
             echo "Compiling frontend..."
-            ${pkgs.deno}/bin/deno compile --cached-only --no-code-cache -o $out/bin/om-expenses-frontend  frontend/server.ts
+            ${pkgs.deno}/bin/deno compile --cached-only --no-code-cache --allow-read --allow-net --allow-env -o $out/bin/om-expenses-frontend  frontend/server.ts
 
             rm -rf /tmp/build-inner
           '';
