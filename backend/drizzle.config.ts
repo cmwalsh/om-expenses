@@ -1,4 +1,4 @@
-import { defineConfig } from "npm:drizzle-kit";
+import { defineConfig } from "drizzle-kit";
 import { Config } from "./src/config/index.ts";
 
 export default defineConfig({

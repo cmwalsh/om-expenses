@@ -10,6 +10,8 @@
     "drizzle-kit": "npm:drizzle-kit@^0.29.1",
     "pg": "npm:pg@^8.13.1",
     "ts-essentials": "npm:ts-essentials",
-    "valibot": "npm:valibot"
+    "dotenv": "npm:dotenv",
+    "valibot": "npm:valibot",
+    "drizzle-orm": "npm:drizzle-orm"
   }
 }

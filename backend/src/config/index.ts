@@ -1,8 +1,8 @@
+import { parse } from "dotenv";
 import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
-import { parse } from "npm:dotenv";
-import * as v from "npm:valibot";
+import * as v from "valibot";
 import { pickPrefix } from "../../../common/src/index.ts"; // Drizzle Kit bodge
 
 export const ConfigSchema = v.object({
