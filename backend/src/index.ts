@@ -1,3 +1,4 @@
+/// <reference types='npm:@types/node' />
 import { createHTTPServer } from "npm:@trpc/server@11.0.0-rc.648/adapters/standalone";
 import cors from "npm:cors";
 import { Config } from "./config/index.ts";

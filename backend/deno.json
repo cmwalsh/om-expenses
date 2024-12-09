@@ -2,8 +2,8 @@
   "name": "@om-expenses/backend",
   "exports": "./src/index.ts",
   "tasks": {
-    "dev": "deno --env-file=../.env --watch --allow-env --allow-read --allow-net src/index.ts",
-    "start": "deno --allow-env --allow-read --allow-net src/index.ts",
+    "dev": "deno --env-file=../.env --watch --allow-env --allow-read --allow-net --cached-only src/index.ts",
+    "start": "deno --allow-env --allow-read --allow-net --cached-only src/index.ts",
     "push": "drizzle-kit push"
   },
   "imports": {

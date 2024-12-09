@@ -2,9 +2,9 @@
   "name": "@om-expenses/frontend",
   "exports": "./src/app.tsx",
   "tasks": {
-    "dev": "deno run --allow-read --allow-write --allow-env --allow-net --allow-run bundle.ts --watch",
-    "build": "deno run --allow-read --allow-write --allow-env --allow-net --allow-run bundle.ts --build",
-    "serve": "deno serve --allow-read --port 3001 server.ts",
+    "dev": "deno run --allow-read --allow-write --allow-env --allow-net --allow-run --cached-only bundle.ts --watch",
+    "build": "deno run --allow-read --allow-write --allow-env --allow-net --allow-run --cached-only bundle.ts --build",
+    "serve": "deno run --env-file=../.env --allow-read --allow-net --allow-env --cached-only server.ts",
     "sass": "sass sass/bootstrap.scss web/css/bootstrap.css"
   },
   "imports": {

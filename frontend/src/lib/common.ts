@@ -41,9 +41,9 @@ export const Colours = ["primary", "secondary", "success", "danger", "warning", 
 export type Colour = ElementOf<typeof Colours>;
 
 export function getApiBaseUrl() {
-  if (window.location.hostname === "localhost") {
-    return `http://localhost:${parseInt(window.location.port, 10) - 1}`;
+  if (location.hostname === "localhost" || /^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}$/.test(location.hostname)) {
+    return `http://${location.hostname}:${parseInt(location.port, 10) - 1}`;
   } else {
-    return window.location.origin.replace("://", "://api.");
+    return location.origin.replace("://", "://api.");
   }
 }
