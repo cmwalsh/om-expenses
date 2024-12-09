@@ -25,12 +25,12 @@
         let
           hashes = {
             aarch64-darwin = "sha256-CZdRMTO38wKv8CBJo1UjCcrVxymSDnITG5wG50Gaib0=";
-            x86_64-linux = "sha256-n0KiISz47BRgSoqJ1H8Rsn9QoTCQE0EZZxvebqNC4vk=";
+            x86_64-linux = "sha256-yEG4B8BpHC9CBDytfv7r6GDXIZGt/ZK0NQxRlVgrxJI=";
           };
         in
         pkgs.stdenv.mkDerivation {
           pname = "om-expenses";
-          version = "0.0.8";
+          version = "0.0.9";
 
           src = ./.;
 
@@ -63,9 +63,9 @@
             mkdir -p $out/frontend
 
             echo "Compiling backend..."
-            ${pkgs.deno}/bin/deno compile --cached-only -o $out/bin/om-expenses-backend   backend/src/index.ts
+            ${pkgs.deno}/bin/deno compile --cached-only --no-code-cache -o $out/bin/om-expenses-backend   backend/src/index.ts
             echo "Compiling frontend..."
-            ${pkgs.deno}/bin/deno compile --cached-only -o $out/bin/om-expenses-frontend  frontend/server.ts
+            ${pkgs.deno}/bin/deno compile --cached-only --no-code-cache -o $out/bin/om-expenses-frontend  frontend/server.ts
           '';
         };
     });
