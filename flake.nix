@@ -25,7 +25,7 @@
         let
           hashes = {
             aarch64-darwin = "sha256-CZdRMTO38wKv8CBJo1UjCcrVxymSDnITG5wG50Gaib0=";
-            x86_64-linux = "sha256-4iJ+G1q0a8XrF2GFkyS/tA5I2q4uUMkwBkVmS2CgLEM=";
+            x86_64-linux = "sha256-FR2oKChuU3emwrRJsMv//plL6zvpqV1FTgcIJsLI97g=";
           };
         in
         pkgs.stdenv.mkDerivation {
@@ -45,6 +45,8 @@
 
           installPhase = ''
             export HOME="$(mktemp -d)"
+
+            rm -rf .git
 
             ${pkgs.deno}/bin/deno cache backend/src/index.ts
             ${pkgs.deno}/bin/deno cache frontend/bundle.ts
