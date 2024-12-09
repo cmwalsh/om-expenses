@@ -25,7 +25,7 @@
         let
           hashes = {
             aarch64-darwin = "sha256-CZdRMTO38wKv8CBJo1UjCcrVxymSDnITG5wG50Gaib0=";
-            x86_64-linux = "sha256-FR2oKChuU3emwrRJsMv//plL6zvpqV1FTgcIJsLI97g=";
+            x86_64-linux = "sha256-SRBV25ocONjnQdz5tT3ci9g6eyiW6muWDof+uKMxuhc=";
           };
         in
         pkgs.stdenv.mkDerivation {
@@ -47,6 +47,7 @@
             export HOME="$(mktemp -d)"
 
             rm -rf .git
+            rm -f flake.nix
 
             ${pkgs.deno}/bin/deno cache backend/src/index.ts
             ${pkgs.deno}/bin/deno cache frontend/bundle.ts
