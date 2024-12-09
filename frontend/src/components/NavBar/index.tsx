@@ -23,7 +23,7 @@ export function NavBar() {
     <nav class="navbar navbar-expand-lg mb-3">
       <div class="container-fluid">
         <a class="navbar-brand" href="#">
-          OM Expenses1
+          OM Expenses
         </a>
 
         <button class="navbar-toggler" type="button" aria-label="Toggle navigation" on:click={onToggle}>
