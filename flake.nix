@@ -25,12 +25,12 @@
         let
           hashes = {
             aarch64-darwin = "sha256-CZdRMTO38wKv8CBJo1UjCcrVxymSDnITG5wG50Gaib0=";
-            x86_64-linux = "sha256-vuJ36EBENzOfVi8jWvDhO5HNE0Zbg6cmN3+Uycp+tRE=";
+            x86_64-linux = "sha256-X5mH7CFjYfOtn632ZFsv8bfCkI/MCWCMJI9Pi5c/8zc=";
           };
         in
         pkgs.stdenv.mkDerivation {
           pname = "om-expenses";
-          version = "0.0.9";
+          version = "0.0.10";
 
           src = ./.;
 
