@@ -25,7 +25,7 @@
         let
           hashes = {
             aarch64-darwin = "sha256-CZdRMTO38wKv8CBJo1UjCcrVxymSDnITG5wG50Gaib0=";
-            x86_64-linux = "sha256-SRBV25ocONjnQdz5tT3ci9g6eyiW6muWDof+uKMxuhc=";
+            x86_64-linux = "sha256-pruO1DTyf5v4Z/YZa0URL7WdwS/u3NsWqCd9j1AGNbw=";
           };
         in
         pkgs.stdenv.mkDerivation {
@@ -44,10 +44,13 @@
           outputHash = hashes.${system};
 
           installPhase = ''
+            shopt -s extglob
+
             export HOME="$(mktemp -d)"
 
-            rm -rf .git
-            rm -f flake.nix
+            mkdir build-inner
+            mv !(build-inner) build-inner/
+            cd build-inner
 
             ${pkgs.deno}/bin/deno cache backend/src/index.ts
             ${pkgs.deno}/bin/deno cache frontend/bundle.ts
