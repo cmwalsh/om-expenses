@@ -25,12 +25,12 @@
         let
           hashes = {
             aarch64-darwin = "sha256-CZdRMTO38wKv8CBJo1UjCcrVxymSDnITG5wG50Gaib0=";
-            x86_64-linux = "sha256-dpb83DlBAawnGvKV8HukIk3p5JPk3gJLv7z75d5mTvA=";
+            x86_64-linux = "sha256-z7cbW2z7Utnc4l6QuGX9nQcm9ZukOdjHPRO2Di79vXs=";
           };
         in
         pkgs.stdenv.mkDerivation {
           pname = "om-expenses";
-          version = "0.0.11";
+          version = "0.0.12";
 
           src = ./.;
 
@@ -59,8 +59,10 @@
             ${pkgs.deno}/bin/deno task build
 
             mkdir -p $out/bin
-            mkdir -p $out/backend
-            mkdir -p $out/frontend
+            mkdir -p $out/lib/frontend
+
+            cp -a frontend/web    $out/lib/frontend/
+            cp -a frontend/dist   $out/lib/frontend/
 
             echo "Compiling backend..."
             ${pkgs.deno}/bin/deno compile --cached-only --no-code-cache -o $out/bin/om-expenses-backend   backend/src/index.ts
