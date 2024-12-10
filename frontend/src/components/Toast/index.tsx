@@ -1,6 +1,5 @@
-import { removeToast, setToastListener, ToastInfo } from "@frontend/lib";
 import { formatDistanceToNow } from "npm:date-fns";
-import { createSignal, For } from "npm:solid-js";
+import { createSignal } from "npm:solid-js";
 
 interface Props {
   id: number;
@@ -33,32 +32,6 @@ export function Toast(props: Props) {
         <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close" on:click={onClose}></button>
       </div>
       <div class="toast-body">{props.message}</div>
-    </div>
-  );
-}
-
-export function ToastContainer() {
-  const [toasts, setToast] = createSignal<ToastInfo[]>([]);
-
-  setToastListener(setToast);
-
-  const onClose = (id: number) => {
-    removeToast(id);
-  };
-
-  return (
-    <div class="toast-container position-fixed bottom-0 end-0 p-3">
-      <For each={toasts()}>
-        {(toastInfo) => (
-          <Toast
-            id={toastInfo.id}
-            title={toastInfo.title}
-            time={toastInfo.time}
-            message={toastInfo.message}
-            onClose={onClose}
-          />
-        )}
-      </For>
     </div>
   );
 }

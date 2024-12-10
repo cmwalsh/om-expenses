@@ -1,9 +1,9 @@
 import { Button, Card, DateInfo, MagicBrowser, MagicFields, refreshAllBrowsers } from "@frontend/components";
 import { openBrowser, openConfirm } from "@frontend/dialogs";
 import { beginPage } from "@frontend/helper";
-import { addToast, AppService, FetchParameters, UserSearchRecord } from "@frontend/lib";
-import { TripUpdate, TripUpdateSchema } from "@om-expenses/common";
-import { RouteSectionProps } from "npm:@solidjs/router";
+import { AppService, type FetchParameters, type UserSearchRecord } from "@frontend/lib";
+import { type TripUpdate, TripUpdateSchema } from "@om-expenses/common";
+import type { RouteSectionProps } from "npm:@solidjs/router";
 import { assert } from "npm:ts-essentials";
 import * as v from "npm:valibot";
 import { createResource, createSignal, Show, Suspense } from "solid-js";
@@ -14,7 +14,7 @@ const UserPickSchema = v.object({
 });
 
 export function TripEdit(props: RouteSectionProps) {
-  beginPage("admin");
+  const { toastService } = beginPage("admin");
 
   const id = () => props.params.id;
 
@@ -29,7 +29,7 @@ export function TripEdit(props: RouteSectionProps) {
 
     await AppService.get().tRPC.Trip.Update.mutate([id(), res]);
 
-    addToast({ title: "Save", message: "Save successful", life: 5000 });
+    toastService.addToast({ title: "Save", message: "Save successful", life: 5000 });
   };
 
   const onFetchUsers = async (params: FetchParameters) => {

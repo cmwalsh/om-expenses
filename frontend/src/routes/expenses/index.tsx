@@ -1,7 +1,7 @@
 import { Button, Card, MagicBrowser, MagicFields, refreshAllBrowsers } from "@frontend/components";
 import { openConfirm } from "@frontend/dialogs";
 import { beginPage } from "@frontend/helper";
-import { AppService, ExpenseSearchRecord, FetchParameters } from "@frontend/lib";
+import { AppService, type ExpenseSearchRecord, type FetchParameters } from "@frontend/lib";
 import { ExpenseStatus, ExpenseType, FieldMetadata, humanise } from "@om-expenses/common";
 import { useSearchParams, type RouteSectionProps } from "npm:@solidjs/router";
 import * as v from "npm:valibot";

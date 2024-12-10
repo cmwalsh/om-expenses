@@ -1,4 +1,5 @@
 import { LoginDataSchema } from "@om-expenses/common";
+import EventEmitter, { on } from "node:events";
 import { eq } from "npm:drizzle-orm";
 import jwt from "npm:jsonwebtoken";
 import { assert } from "npm:ts-essentials";
@@ -7,6 +8,12 @@ import { Config } from "../config/index.ts";
 import { UserTable } from "../db/schema.ts";
 import { assertOneRecord, db, scryptAsync, type TokenPayload } from "./common.ts";
 import { tRPC } from "./trpc.ts";
+
+interface LoginActivity {
+  loggedIn: string[];
+}
+
+const loginEvents = new EventEmitter<LoginActivity>();
 
 export const AuthRouter = tRPC.router({
   Login: tRPC.PublicProcedure.input(v.parser(LoginDataSchema)).mutation(async ({ input }) => {
@@ -21,6 +28,16 @@ export const AuthRouter = tRPC.router({
 
     const token = jwt.sign(payload, Config.OM_SECRET_KEY, { expiresIn: "1h" }); // Expires in 1 hour
 
+    loginEvents.emit("loggedIn", `User "${user.name}" just logged in`);
+
     return { user, token };
+  }),
+
+  Activity: tRPC.ProtectedProcedure.subscription(async function* (opts) {
+    for await (const [data] of on(loginEvents, "loggedIn", {
+      signal: opts.signal,
+    })) {
+      yield data as string;
+    }
   }),
 });

@@ -1,13 +1,13 @@
 import { Button, Card, DateInfo, MagicFields } from "@frontend/components";
 import { beginPage } from "@frontend/helper";
-import { addToast, AppService } from "@frontend/lib";
-import { ExpenseUpdate, ExpenseUpdateSchema } from "@om-expenses/common";
-import { RouteSectionProps } from "npm:@solidjs/router";
+import { AppService } from "@frontend/lib";
+import { type ExpenseUpdate, ExpenseUpdateSchema } from "@om-expenses/common";
+import type { RouteSectionProps } from "npm:@solidjs/router";
 import * as v from "npm:valibot";
 import { createResource, createSignal, Show, Suspense } from "solid-js";
 
 export function ExpenseEdit(props: RouteSectionProps) {
-  beginPage(["admin", "user"]);
+  const { toastService } = beginPage(["admin", "user"]);
 
   const id = () => props.params.id;
 
@@ -22,13 +22,13 @@ export function ExpenseEdit(props: RouteSectionProps) {
 
     await AppService.get().tRPC.Expense.Update.mutate([id(), res]);
 
-    addToast({ title: "Save", message: "Save successful", life: 5000 });
+    toastService.addToast({ title: "Save", message: "Save successful", life: 5000 });
   };
 
   const onApprove = async () => {
     await AppService.get().tRPC.Expense.Approve.mutate(id());
 
-    addToast({ title: "Approved", message: "Approved successfully", life: 5000 });
+    toastService.addToast({ title: "Approved", message: "Approved successfully", life: 5000 });
   };
 
   return (

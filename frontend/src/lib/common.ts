@@ -1,4 +1,4 @@
-import { ElementOf } from "npm:ts-essentials";
+import type { ElementOf } from "npm:ts-essentials";
 
 export interface SessionUser {
   id: string;
@@ -40,10 +40,9 @@ export const Colours = ["primary", "secondary", "success", "danger", "warning", 
 
 export type Colour = ElementOf<typeof Colours>;
 
-export function getApiBaseUrl() {
-  if (location.hostname === "localhost" || /^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}$/.test(location.hostname)) {
-    return `http://${location.hostname}:${parseInt(location.port, 10) - 1}`;
-  } else {
-    return location.origin.replace("://", "://api.");
-  }
+// deno-lint-ignore no-explicit-any
+export function bindMethods(that: any) {
+  Object.getOwnPropertyNames(Object.getPrototypeOf(that))
+    .filter((prop) => typeof that[prop] === "function" && prop !== "constructor")
+    .forEach((method) => (that[method] = that[method].bind(that)));
 }

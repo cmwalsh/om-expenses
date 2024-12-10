@@ -1,13 +1,13 @@
 import { Button, Card, DateInfo, MagicFields } from "@frontend/components";
 import { beginPage } from "@frontend/helper";
-import { addToast, AppService } from "@frontend/lib";
-import { UserUpdate, UserUpdateSchema } from "@om-expenses/common";
-import { RouteSectionProps } from "npm:@solidjs/router";
+import { AppService } from "@frontend/lib";
+import { type UserUpdate, UserUpdateSchema } from "@om-expenses/common";
+import type { RouteSectionProps } from "npm:@solidjs/router";
 import { createResource, createSignal, Show, Suspense } from "npm:solid-js";
 import * as v from "npm:valibot";
 
 export function UserEdit(props: RouteSectionProps) {
-  beginPage("admin");
+  const { toastService } = beginPage("admin");
 
   const id = () => props.params.id;
 
@@ -22,7 +22,7 @@ export function UserEdit(props: RouteSectionProps) {
 
     await AppService.get().tRPC.User.Update.mutate([id(), res]);
 
-    addToast({ title: "Save", message: "Save successful", life: 5000 });
+    toastService.addToast({ title: "Save", message: "Save successful", life: 5000 });
   };
 
   return (

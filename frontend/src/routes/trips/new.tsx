@@ -1,13 +1,13 @@
 import { Button, Card, MagicFields } from "@frontend/components";
 import { beginPage } from "@frontend/helper";
-import { addToast, AppService } from "@frontend/lib";
-import { TripCreate, TripCreateSchema } from "@om-expenses/common";
-import { RouteSectionProps } from "npm:@solidjs/router";
+import { AppService } from "@frontend/lib";
+import { type TripCreate, TripCreateSchema } from "@om-expenses/common";
+import type { RouteSectionProps } from "npm:@solidjs/router";
 import { createSignal } from "npm:solid-js";
 import * as v from "npm:valibot";
 
 export function TripNew(props: RouteSectionProps) {
-  const { navigate } = beginPage("admin");
+  const { navigate, toastService } = beginPage("admin");
 
   const [trip, setTrip] = createSignal<Partial<TripCreate>>({});
   const [submittedCount, setSubmittedCount] = createSignal(0);
@@ -22,7 +22,7 @@ export function TripNew(props: RouteSectionProps) {
 
     const id = await AppService.get().tRPC.Trip.Create.mutate(res);
 
-    addToast({ title: "Save", message: "Save successful", life: 5000 });
+    toastService.addToast({ title: "Save", message: "Save successful", life: 5000 });
     navigate(`/trips/${id}`);
   };
 

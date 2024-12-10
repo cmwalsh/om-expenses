@@ -1,3 +1,5 @@
+import { bindMethods } from "./common.ts";
+
 export interface ToastInfo {
   id: number;
   title: string;
@@ -6,30 +8,37 @@ export interface ToastInfo {
   message: string;
 }
 
-let Toasts: readonly ToastInfo[] = [];
-let LastId = 0;
-
 type Listener = (toasts: readonly ToastInfo[]) => void;
-let Listener: Listener | undefined;
 
-export function addToast(toast: Omit<ToastInfo, "id" | "time">) {
-  Toasts = [...Toasts, { id: LastId++, time: Date.now(), ...toast }];
-  if (Listener) Listener(Toasts);
-}
+export class ToastService {
+  private toasts: readonly ToastInfo[] = [];
+  private lastId = 0;
 
-export function removeToast(id: number) {
-  Toasts = Toasts.filter((t) => t.id !== id);
-  if (Listener) Listener(Toasts);
-}
+  private listener: Listener | undefined;
 
-export function setToastListener(listener: Listener) {
-  Listener = listener;
-}
+  constructor() {
+    setInterval(() => {
+      const expired = this.toasts.filter((t) => t.time + t.life < Date.now());
+      if (expired.length > 0) {
+        this.toasts = this.toasts.filter((t) => !expired.includes(t));
+        if (this.listener) this.listener(this.toasts);
+      }
+    }, 1000);
 
-setInterval(() => {
-  const expired = Toasts.filter((t) => t.time + t.life < Date.now());
-  if (expired.length > 0) {
-    Toasts = Toasts.filter((t) => !expired.includes(t));
-    if (Listener) Listener(Toasts);
+    bindMethods(this);
   }
-}, 1000);
+
+  public addToast(toast: Omit<ToastInfo, "id" | "time">) {
+    this.toasts = [...this.toasts, { id: this.lastId++, time: Date.now(), ...toast }];
+    if (this.listener) this.listener(this.toasts);
+  }
+
+  public removeToast(id: number) {
+    this.toasts = this.toasts.filter((t) => t.id !== id);
+    if (this.listener) this.listener(this.toasts);
+  }
+
+  public setToastListener(listener: Listener) {
+    this.listener = listener;
+  }
+}

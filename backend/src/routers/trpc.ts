@@ -1,5 +1,4 @@
 import { assertUnreachable } from "@om-expenses/common";
-import type { IncomingMessage } from "node:http";
 import { initTRPC, TRPCError } from "npm:@trpc/server@11.0.0-rc.648";
 import type { CreateHTTPContextOptions } from "npm:@trpc/server@11.0.0-rc.648/adapters/standalone";
 import { eq } from "npm:drizzle-orm";
@@ -7,22 +6,24 @@ import superjson from "npm:superjson@2.2.2";
 import { UserTable } from "../db/schema.ts";
 import { assertOneRecord, db, verifyToken } from "./common.ts";
 
+// deno-lint-ignore no-namespace
 export namespace tRPC {
   const tRPC = initTRPC.context<Context>().create({
     transformer: superjson,
   });
 
   export const createContext = async (opts: CreateHTTPContextOptions) => {
-    const session = await getSession(opts.req);
+    let authorization = opts.info.connectionParams?.authorization;
+    if (!authorization) authorization = opts.req.headers["authorization"];
+
+    const session = await getSession(authorization);
 
     return {
       session,
     };
   };
 
-  async function getSession(req: IncomingMessage) {
-    const authorization = req.headers["authorization"];
-
+  async function getSession(authorization: string | undefined) {
     const verifyResponse = verifyToken(authorization);
 
     if (verifyResponse[0] === "expired") {

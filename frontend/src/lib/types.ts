@@ -6,7 +6,9 @@ type InferSearchReturn<TRoute extends (req: never) => unknown> = InferReturn<TRo
   ? T
   : never;
 
-type InferReturn<TRoute extends (req: never) => unknown> = ReturnType<TRoute> extends PromiseLike<infer T> ? T : never;
+export type InferReturn<TRoute extends (req: never) => unknown> = ReturnType<TRoute> extends PromiseLike<infer T>
+  ? T
+  : never;
 
 export type UserSearchRecord = InferSearchReturn<AppRouter["User"]["Search"]>;
 export type TripSearchRecord = InferSearchReturn<AppRouter["Trip"]["Search"]>;

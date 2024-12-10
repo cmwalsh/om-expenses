@@ -1,25 +1,26 @@
 import { Button, Card, MagicFields } from "@frontend/components";
 import { AlertDialog, openDialog } from "@frontend/dialogs";
 import { getLogoutReason } from "@frontend/helper";
-import { addToast, AppService } from "@frontend/lib";
-import { assertUnreachable, LoginData, LoginDataSchema } from "@om-expenses/common";
+import { AppService } from "@frontend/lib";
+import { assertUnreachable, LoginDataSchema, type LoginData } from "@om-expenses/common";
 import { useNavigate, type RouteSectionProps } from "npm:@solidjs/router";
 import { createSignal, onMount } from "npm:solid-js";
 
 export function Login(props: RouteSectionProps) {
   const navigate = useNavigate();
+  const { toastService } = AppService.get();
 
   onMount(() => {
     const reason = getLogoutReason();
 
     if (reason === "expired") {
-      addToast({
+      toastService.addToast({
         life: 3_600_000,
         title: "Logged out",
         message: "You have been logged out because your session has expired.",
       });
     } else if (reason === "permissions") {
-      addToast({
+      toastService.addToast({
         life: 10_000,
         title: "Invalid permissions",
         message: "You do not have access to this area.",

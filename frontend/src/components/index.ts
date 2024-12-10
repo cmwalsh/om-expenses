@@ -12,5 +12,6 @@ export * from "./Select/index.tsx";
 export * from "./TextInput/index.tsx";
 export * from "./Tile/index.tsx";
 export * from "./Toast/index.tsx";
+export * from "./ToastContainer/index.tsx";
 export * from "./TripSummary/index.tsx";
 export * from "./UserTripSummary/index.tsx";

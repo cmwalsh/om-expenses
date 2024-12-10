@@ -1,9 +1,9 @@
 import { Card, LinkButton, MagicBrowser, refreshAllBrowsers } from "@frontend/components";
 import { openConfirm } from "@frontend/dialogs";
 import { beginPage } from "@frontend/helper";
-import { AppService, FetchParameters, UserSearchRecord } from "@frontend/lib";
+import { AppService, type FetchParameters, type UserSearchRecord } from "@frontend/lib";
 import { humanise } from "@om-expenses/common";
-import { type RouteSectionProps } from "npm:@solidjs/router";
+import type { RouteSectionProps } from "npm:@solidjs/router";
 import * as v from "npm:valibot";
 
 const UserTableSchema = v.object({

@@ -1,13 +1,13 @@
 import { Button, Card, MagicFields } from "@frontend/components";
 import { beginPage } from "@frontend/helper";
-import { addToast, AppService } from "@frontend/lib";
-import { UserCreate, UserCreateSchema } from "@om-expenses/common";
-import { RouteSectionProps } from "npm:@solidjs/router";
+import { AppService } from "@frontend/lib";
+import { type UserCreate, UserCreateSchema } from "@om-expenses/common";
+import type { RouteSectionProps } from "npm:@solidjs/router";
 import { createSignal } from "npm:solid-js";
 import * as v from "npm:valibot";
 
 export function UserNew(props: RouteSectionProps) {
-  const { navigate } = beginPage("admin");
+  const { navigate, toastService } = beginPage("admin");
 
   const [user, setUser] = createSignal<Partial<UserCreate>>({});
   const [submittedCount, setSubmittedCount] = createSignal(0);
@@ -22,7 +22,7 @@ export function UserNew(props: RouteSectionProps) {
 
     const id = await AppService.get().tRPC.User.Create.mutate(res);
 
-    addToast({ title: "Save", message: "Save successful", life: 5000 });
+    toastService.addToast({ title: "Save", message: "Save successful", life: 5000 });
     navigate(`/users/${id}`);
   };
 

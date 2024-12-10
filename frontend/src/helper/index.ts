@@ -1,31 +1,42 @@
-import { AppService } from "@frontend/lib";
+import { AppService, type InferReturn } from "@frontend/lib";
+import type { AppRouter } from "@om-expenses/backend";
 import { includes } from "@om-expenses/common";
-import type { AppRouter } from "backend";
 import { useNavigate, useSearchParams } from "npm:@solidjs/router";
 import { assert } from "npm:ts-essentials";
 
-export type Role = (ReturnType<AppRouter["User"]["One"]> extends PromiseLike<infer T> ? T : never)["role"];
+export type Role = InferReturn<AppRouter["User"]["One"]>["role"];
 
 export function beginPage(_role: Role | Role[]) {
   const role = _role instanceof Array ? _role : [_role];
   assert(role.length > 0, "beginPage: Must have at least one role!");
 
   const navigate = useNavigate();
-
   const user = AppService.get().getCurrentUser();
+  const { toastService } = AppService.get();
+
+  const helpers = { navigate, toastService };
 
   if (!user) {
     navigate("/login");
 
-    return { user: () => null, navigate };
+    return { user: () => null, ...helpers };
   }
   if (!role.includes(user.role)) {
     navigate("/login?reason=permissions");
 
-    return { user: () => null, navigate };
+    return { user: () => null, ...helpers };
   }
 
-  return { user: () => user, navigate };
+  return { user: () => user, ...helpers };
+}
+
+export function beginPageNoRole() {
+  const user = AppService.get().getCurrentUser();
+  const { toastService } = AppService.get();
+
+  const helpers = { toastService };
+
+  return { user: () => user, ...helpers };
 }
 
 export function getLogoutReason() {

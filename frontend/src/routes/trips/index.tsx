@@ -1,8 +1,8 @@
 import { Card, LinkButton, MagicBrowser, refreshAllBrowsers } from "@frontend/components";
 import { openConfirm } from "@frontend/dialogs";
 import { beginPage } from "@frontend/helper";
-import { AppService, FetchParameters, TripSearchRecord } from "@frontend/lib";
-import { type RouteSectionProps } from "npm:@solidjs/router";
+import { AppService, type FetchParameters, type TripSearchRecord } from "@frontend/lib";
+import type { RouteSectionProps } from "npm:@solidjs/router";
 import * as v from "npm:valibot";
 
 const TripTableSchema = v.object({
