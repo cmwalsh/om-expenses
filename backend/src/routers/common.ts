@@ -3,7 +3,8 @@ import { scrypt } from "node:crypto";
 import { asc, desc, getTableColumns } from "npm:drizzle-orm";
 import { drizzle } from "npm:drizzle-orm/node-postgres";
 import type { PgColumn } from "npm:drizzle-orm/pg-core";
-import jwt from "npm:jsonwebtoken";
+// @deno-types="@types/jsonwebtoken"
+import jwt from "jsonwebtoken";
 import { assert } from "npm:ts-essentials";
 import * as v from "npm:valibot";
 import { Config } from "../config/index.ts";
