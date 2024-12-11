@@ -1,7 +1,7 @@
 import { Card, LinkButton, MagicBrowser, refreshAllBrowsers } from "@frontend/components";
 import { openConfirm } from "@frontend/dialogs";
 import { beginPage } from "@frontend/helper";
-import { AppService, type FetchParameters, type TripSearchRecord } from "@frontend/lib";
+import type { FetchParameters, TripSearchRecord } from "@frontend/lib";
 import type { RouteSectionProps } from "npm:@solidjs/router";
 import * as v from "npm:valibot";
 
@@ -13,17 +13,17 @@ const TripTableSchema = v.object({
 });
 
 export function Trips(props: RouteSectionProps) {
-  const { navigate } = beginPage("admin");
+  const { navigate, tRPC } = beginPage("admin");
 
   const onFetch = async (params: FetchParameters) => {
-    return AppService.get().tRPC.Trip.Search.query(params);
+    return tRPC.Trip.Search.query(params);
   };
 
   const onDelete = async (row: TripSearchRecord) => {
     const res = await openConfirm("Delete user", `Are you sure you wish to delete "${row.name}"`);
 
     if (res === "yes") {
-      await AppService.get().tRPC.Trip.Delete.mutate(row.id);
+      await tRPC.Trip.Delete.mutate(row.id);
       refreshAllBrowsers();
     }
   };

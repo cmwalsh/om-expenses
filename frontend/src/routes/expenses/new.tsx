@@ -1,13 +1,12 @@
 import { Button, Card, MagicFields } from "@frontend/components";
 import { beginPage } from "@frontend/helper";
-import { AppService } from "@frontend/lib";
 import { type ExpenseCreate, ExpenseCreateSchema } from "@om-expenses/common";
 import { type RouteSectionProps, useSearchParams } from "npm:@solidjs/router";
 import { createSignal } from "npm:solid-js";
 import * as v from "npm:valibot";
 
 export function ExpenseNew(props: RouteSectionProps) {
-  const { navigate, toastService } = beginPage(["admin", "user"]);
+  const { navigate, tRPC, toastService } = beginPage(["admin", "user"]);
 
   const [searchParams] = useSearchParams();
 
@@ -25,7 +24,7 @@ export function ExpenseNew(props: RouteSectionProps) {
     setSubmittedCount(submittedCount() + 1);
     const res = v.parse(ExpenseCreateSchema, expense());
 
-    const id = await AppService.get().tRPC.Expense.Create.mutate(res);
+    const id = await tRPC.Expense.Create.mutate(res);
 
     toastService.addToast({ title: "Save", message: "Save successful", life: 5000 });
     navigate(`/expenses/${id}`);

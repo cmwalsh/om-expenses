@@ -1,7 +1,7 @@
 import { Button, Card, MagicBrowser, MagicFields, refreshAllBrowsers } from "@frontend/components";
 import { openConfirm } from "@frontend/dialogs";
 import { beginPage } from "@frontend/helper";
-import { AppService, type ExpenseSearchRecord, type FetchParameters } from "@frontend/lib";
+import type { ExpenseSearchRecord, FetchParameters } from "@frontend/lib";
 import { ExpenseStatus, ExpenseType, FieldMetadata, humanise } from "@om-expenses/common";
 import { useSearchParams, type RouteSectionProps } from "npm:@solidjs/router";
 import * as v from "npm:valibot";
@@ -31,7 +31,7 @@ type ExpenseFilter = v.InferInput<typeof ExpenseFilterSchema>;
 const ClearFilter: ExpenseFilter = { user_id: undefined, trip_id: undefined, type: undefined, status: undefined };
 
 export function Expenses(props: RouteSectionProps) {
-  const { user, navigate } = beginPage(["admin", "user"]);
+  const { user, navigate, tRPC } = beginPage(["admin", "user"]);
 
   const schema = user()?.role === "admin" ? ExpenseFilterSchema : v.omit(ExpenseFilterSchema, ["user_id"]);
 
@@ -40,7 +40,7 @@ export function Expenses(props: RouteSectionProps) {
   // const [filter, setFilter] = createSignal<ExpenseFilter>(v.parse(ExpenseFilterSchema, searchParams));
 
   const onFetch = async (params: FetchParameters) => {
-    return AppService.get().tRPC.Expense.Search.query({ ...params, ...filter });
+    return tRPC.Expense.Search.query({ ...params, ...filter });
   };
 
   const onDelete = async (row: ExpenseSearchRecord) => {
@@ -50,7 +50,7 @@ export function Expenses(props: RouteSectionProps) {
     );
 
     if (res === "yes") {
-      await AppService.get().tRPC.Trip.Delete.mutate(row.id);
+      await tRPC.Trip.Delete.mutate(row.id);
       refreshAllBrowsers();
     }
   };

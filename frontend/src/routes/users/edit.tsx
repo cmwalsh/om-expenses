@@ -1,17 +1,16 @@
 import { Button, Card, DateInfo, MagicFields } from "@frontend/components";
 import { beginPage } from "@frontend/helper";
-import { AppService } from "@frontend/lib";
 import { type UserUpdate, UserUpdateSchema } from "@om-expenses/common";
 import type { RouteSectionProps } from "npm:@solidjs/router";
 import { createResource, createSignal, Show, Suspense } from "npm:solid-js";
 import * as v from "npm:valibot";
 
 export function UserEdit(props: RouteSectionProps) {
-  const { toastService } = beginPage("admin");
+  const { tRPC, toastService } = beginPage("admin");
 
   const id = () => props.params.id;
 
-  const [user, { mutate }] = createResource(() => AppService.get().tRPC.User.One.query(props.params.id));
+  const [user, { mutate }] = createResource(() => tRPC.User.One.query(props.params.id));
   const [submittedCount, setSubmittedCount] = createSignal(0);
 
   const onChange = (data: UserUpdate) => mutate({ ...user()!, ...data });
@@ -20,7 +19,7 @@ export function UserEdit(props: RouteSectionProps) {
     setSubmittedCount(submittedCount() + 1);
     const res = v.parse(UserUpdateSchema, user());
 
-    await AppService.get().tRPC.User.Update.mutate([id(), res]);
+    await tRPC.User.Update.mutate([id(), res]);
 
     toastService.addToast({ title: "Save", message: "Save successful", life: 5000 });
   };

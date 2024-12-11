@@ -12,9 +12,9 @@ export function beginPage(_role: Role | Role[]) {
 
   const navigate = useNavigate();
   const user = AppService.get().getCurrentUser();
-  const { toastService } = AppService.get();
+  const { tRPC, toastService } = AppService.get();
 
-  const helpers = { navigate, toastService };
+  const helpers = { navigate, tRPC, toastService };
 
   if (!user) {
     navigate("/login");
@@ -32,9 +32,9 @@ export function beginPage(_role: Role | Role[]) {
 
 export function beginPageNoRole() {
   const user = AppService.get().getCurrentUser();
-  const { toastService } = AppService.get();
+  const { tRPC, toastService } = AppService.get();
 
-  const helpers = { toastService };
+  const helpers = { tRPC, toastService };
 
   return { user: () => user, ...helpers };
 }

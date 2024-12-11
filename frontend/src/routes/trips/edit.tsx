@@ -14,11 +14,11 @@ const UserPickSchema = v.object({
 });
 
 export function TripEdit(props: RouteSectionProps) {
-  const { toastService } = beginPage("admin");
+  const { tRPC, toastService } = beginPage("admin");
 
   const id = () => props.params.id;
 
-  const [trip, { mutate }] = createResource(() => AppService.get().tRPC.Trip.One.query(props.params.id));
+  const [trip, { mutate }] = createResource(() => tRPC.Trip.One.query(props.params.id));
   const [submittedCount, setSubmittedCount] = createSignal(0);
 
   const onChange = (data: TripUpdate) => mutate({ ...trip()!, ...data });
@@ -27,13 +27,13 @@ export function TripEdit(props: RouteSectionProps) {
     setSubmittedCount(submittedCount() + 1);
     const res = v.parse(TripUpdateSchema, trip());
 
-    await AppService.get().tRPC.Trip.Update.mutate([id(), res]);
+    await tRPC.Trip.Update.mutate([id(), res]);
 
     toastService.addToast({ title: "Save", message: "Save successful", life: 5000 });
   };
 
   const onFetchUsers = async (params: FetchParameters) => {
-    return AppService.get().tRPC.User.Search.query({ ...params, trip_id: id() });
+    return tRPC.User.Search.query({ ...params, trip_id: id() });
   };
 
   const onAddUser = async () => {
@@ -42,7 +42,7 @@ export function TripEdit(props: RouteSectionProps) {
     const row = await openBrowser("Add User", UserPickSchema, AppService.get().tRPC.User.Search.query);
 
     if (row) {
-      await AppService.get().tRPC.Trip.AddUser.mutate({ trip_id: id(), user_id: row.id });
+      await tRPC.Trip.AddUser.mutate({ trip_id: id(), user_id: row.id });
       refreshAllBrowsers();
     }
   };
@@ -54,7 +54,7 @@ export function TripEdit(props: RouteSectionProps) {
     );
 
     if (res === "yes") {
-      await AppService.get().tRPC.Trip.RemoveUser.mutate({ trip_id: id(), user_id: row.id });
+      await tRPC.Trip.RemoveUser.mutate({ trip_id: id(), user_id: row.id });
       refreshAllBrowsers();
     }
   };

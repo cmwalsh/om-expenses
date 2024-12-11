@@ -1,7 +1,7 @@
 import { Card, LinkButton, MagicBrowser, refreshAllBrowsers } from "@frontend/components";
 import { openConfirm } from "@frontend/dialogs";
 import { beginPage } from "@frontend/helper";
-import { AppService, type FetchParameters, type UserSearchRecord } from "@frontend/lib";
+import type { FetchParameters, UserSearchRecord } from "@frontend/lib";
 import { humanise } from "@om-expenses/common";
 import type { RouteSectionProps } from "npm:@solidjs/router";
 import * as v from "npm:valibot";
@@ -15,17 +15,17 @@ const UserTableSchema = v.object({
 });
 
 export function Users(props: RouteSectionProps) {
-  const { navigate } = beginPage("admin");
+  const { navigate, tRPC } = beginPage("admin");
 
   const onFetch = async (params: FetchParameters) => {
-    return AppService.get().tRPC.User.Search.query(params);
+    return tRPC.User.Search.query(params);
   };
 
   const onDelete = async (row: UserSearchRecord) => {
     const res = await openConfirm("Delete user", `Are you sure you wish to delete "${row.name}"`);
 
     if (res === "yes") {
-      await AppService.get().tRPC.User.Delete.mutate(row.id);
+      await tRPC.User.Delete.mutate(row.id);
       refreshAllBrowsers();
     }
   };
