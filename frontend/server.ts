@@ -12,13 +12,6 @@ Deno.serve({ port }, (req: Request) => {
     req = new Request(`${url.protocol}//${url.host}/`, req);
   }
 
-  if (url.pathname.startsWith("/js")) {
-    return serveDir(req, {
-      fsRoot: "dist",
-      urlRoot: "js",
-    });
-  }
-
   return serveDir(req, {
     fsRoot: "web",
     urlRoot: "",

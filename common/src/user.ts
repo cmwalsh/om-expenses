@@ -3,8 +3,16 @@ import * as v from "valibot";
 import { EmailAddress, FieldMetadata, Password } from "./common.ts";
 
 export const UserRole = ["admin", "user"] as const;
-
 export type UserRole = ElementOf<typeof UserRole>;
+
+export interface UserInfo {
+  id: string;
+  name: string;
+  role: UserRole;
+  email: string;
+  created?: Date;
+  updated?: Date;
+}
 
 export const LoginDataSchema = v.object({
   email: EmailAddress,

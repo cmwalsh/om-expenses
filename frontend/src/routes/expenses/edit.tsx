@@ -1,17 +1,23 @@
 import { Button, Card, DateInfo, MagicFields } from "@frontend/components";
 import { beginPage } from "@frontend/helper";
-import { type ExpenseUpdate, ExpenseUpdateSchema } from "@om-expenses/common";
+import { canApprove, type ExpenseUpdate, ExpenseUpdateSchema } from "@om-expenses/common";
 import type { RouteSectionProps } from "npm:@solidjs/router";
 import * as v from "npm:valibot";
 import { createResource, createSignal, Show, Suspense } from "solid-js";
 
 export function ExpenseEdit(props: RouteSectionProps) {
-  const { tRPC, toastService } = beginPage(["admin", "user"]);
+  const { user, tRPC, toastService } = beginPage(["admin", "user"]);
 
   const id = () => props.params.id;
 
   const [expense, { mutate }] = createResource(() => tRPC.Expense.One.query(props.params.id));
   const [submittedCount, setSubmittedCount] = createSignal(0);
+
+  const approveButtonVisible = () => {
+    const u = user();
+    const e = expense();
+    return u && e && canApprove(u, e).success;
+  };
 
   const onChange = (data: ExpenseUpdate) => mutate({ ...expense()!, ...data });
 
@@ -54,9 +60,11 @@ export function ExpenseEdit(props: RouteSectionProps) {
           </form>
         </Card.Body>
         <Card.Footer>
-          <Button colour="warning" type="button" on:click={onApprove}>
-            Approve
-          </Button>
+          <Show when={approveButtonVisible()}>
+            <Button colour="warning" type="button" on:click={onApprove}>
+              Approve
+            </Button>
+          </Show>
           <Button colour="primary" type="button" on:click={onSave}>
             Save
           </Button>

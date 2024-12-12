@@ -138,3 +138,5 @@ result
 .DS_Store
 
 .sass-cache/
+
+frontend/web/js/app.js

@@ -23,7 +23,7 @@ const ctx = await esbuild.context({
   ],
 
   entryPoints: ["src/app.tsx"],
-  outdir: "dist/",
+  outdir: "web/js/",
   bundle: true,
   platform: "browser",
   target: "esnext",

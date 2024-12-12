@@ -32,3 +32,55 @@ export function pickPrefix<TObj extends object, TPrefix extends string>(obj: TOb
 type PickPrefix<S extends string, P extends string> = S extends `${P}${string}` ? S : never;
 
 // const foo: { foo_one: number; foo_two: number } = pickPrefix({ foo_one: 1, foo_two: 2, bar_one: 1 }, "foo");
+
+type AndCondition = {
+  and: Condition[];
+};
+
+type OrCondition = {
+  or: Condition[];
+};
+
+type TrueCondition = readonly [boolean, string];
+
+type Condition = AndCondition | OrCondition | TrueCondition;
+
+export function assertConditions(condition: Condition): { success: boolean; message: string } {
+  if ("length" in condition && condition.length === 2) {
+    const [expression, message] = condition;
+    return {
+      success: expression,
+      message: `"${message}"`,
+    };
+  } else if ("and" in condition) {
+    if (condition.and.length === 0) {
+      return { success: true, message: "No conditions to evaluate" };
+    }
+
+    const ands = condition.and.map(assertConditions);
+
+    return {
+      success: !ands.some((c) => !c.success),
+      message: `(Must be all of: ${ands
+        .filter((c) => !c.success)
+        .map((c) => `${c.message}`)
+        .join(" AND ")})`,
+    };
+  } else if ("or" in condition) {
+    if (condition.or.length === 0) {
+      return { success: false, message: "No conditions to evaluate" };
+    }
+
+    const ors = condition.or.map(assertConditions);
+
+    return {
+      success: ors.some((c) => c.success),
+      message: `(Must be either: ${ors
+        .filter((c) => !c.success)
+        .map((c) => `${c.message}`)
+        .join(" OR ")})`,
+    };
+  }
+
+  throw new Error("Invalid condition format");
+}

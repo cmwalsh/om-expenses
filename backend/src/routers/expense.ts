@@ -1,4 +1,4 @@
-import { ExpenseCreateSchema, ExpenseStatus, ExpenseType, ExpenseUpdateSchema } from "@om-expenses/common";
+import { canApprove, ExpenseCreateSchema, ExpenseStatus, ExpenseType, ExpenseUpdateSchema } from "@om-expenses/common";
 import { and, count, eq, getTableColumns, ilike, or } from "npm:drizzle-orm";
 import { assert } from "npm:ts-essentials";
 import * as uuid from "npm:uuid";
@@ -104,11 +104,11 @@ export const ExpenseRouter = tRPC.router({
   }),
 
   Approve: tRPC.ProtectedProcedure.input(v.parser(UUID)).mutation(async ({ ctx, input }) => {
-    assert(ctx.session.user.role === "admin", "No permission");
-
     await db.transaction(async (tx) => {
       const expense = assertOneRecord(await tx.select().from(ExpenseTable).where(eq(ExpenseTable.id, input)));
-      assert(expense.status === "unapproved", "Only unapproved expenses can be approved");
+
+      const result = canApprove(ctx.session.user, expense);
+      if (!result.success) throw new Error(result.message);
 
       await tx.update(ExpenseTable).set({ status: "approved" }).where(eq(ExpenseTable.id, input));
     });

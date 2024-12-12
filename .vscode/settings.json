@@ -18,5 +18,6 @@
   "[nix]": {
     "editor.defaultFormatter": "jnoortheen.nix-ide"
   },
-  "deno.enable": true
+  "deno.enable": true,
+  "terminal.integrated.environmentChangesRelaunch": true
 }
