@@ -24,7 +24,7 @@
         let
           hashes = {
             aarch64-darwin = "sha256-N4GxH/ItKUSatEq7NiMqgzvIS5bIZ8u9itKoVdhTz6g=";
-            x86_64-linux = "sha256-NpZeWHpInVwqrl3OHn0CDLCLZ5HD55r5VOF54r1a0GY=";
+            x86_64-linux = "sha256-D6+dePWakxD+dbHHzBqeLw0qVpvpg/0n1tZ6vojt0sQ=";
           };
         in
         pkgs.stdenv.mkDerivation {
@@ -51,9 +51,7 @@
             mv * /tmp/build-inner/
             cd /tmp/build-inner
 
-            ${pkgs.deno}/bin/deno cache backend/src/index.ts
-            ${pkgs.deno}/bin/deno cache frontend/bundle.ts
-            ${pkgs.deno}/bin/deno cache frontend/server.ts
+            ${pkgs.deno}/bin/deno i
 
             ${pkgs.deno}/bin/deno task build
 
@@ -61,7 +59,6 @@
             mkdir -p $out/lib/frontend
 
             cp -a frontend/web    $out/lib/frontend/
-            cp -a frontend/dist   $out/lib/frontend/
 
             echo "Compiling backend..."
             ${pkgs.deno}/bin/deno compile --cached-only --no-code-cache --allow-read --allow-net --allow-env -o $out/bin/om-expenses-backend   backend/src/index.ts
